@@ -5,14 +5,12 @@ from models import Event, Session, User
 def load_data(file_path):
     with open(file_path, mode='r', encoding='utf-8') as file:
         reader = csv.reader(file)
+        headers = next(reader)
         events = [list(map(str.strip, line)) for line in reader]
-        return events[0],events[1:]
+    return headers, events
 
-def crate_events (data,names):
-    events=[]
-    for i in data:
-        events.append(Event(names,i))
-    return events
+def create_events(data, names):
+    return [Event(names, row) for row in data]
 
 def crate_sessions(events):
     sessions = []
