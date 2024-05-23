@@ -1,6 +1,6 @@
 import time
 from data_loader import load_data, create_events, crate_sessions, crate_users
-from visualization import plot_data
+from visualization import plot_line_chart,plot_bar_chart,plot_scatter_plot,plot_histogram,plot_heatmap,plot_bubble_chart,plot_area_chart,plot_pie_chart
 from interface import create_ui
 
 def main():
@@ -25,6 +25,15 @@ def main():
     print(names)
     print()
     print(data[0])
+
+    plot_line_chart()
+    plot_bar_chart()
+    plot_scatter_plot()
+    plot_histogram()
+    plot_heatmap()
+    plot_bubble_chart()
+    plot_area_chart()
+    plot_pie_chart()
 
 if __name__ == "__main__":
     main()
