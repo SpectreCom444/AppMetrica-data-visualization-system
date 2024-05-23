@@ -1,12 +1,14 @@
 import csv
 import json
 from models import Event, Session, User
+#from interface import crate_data_processing_ui
 
 def load_data(file_path):
     with open(file_path, mode='r', encoding='utf-8') as file:
         reader = csv.reader(file)
         headers = next(reader)
         events = [list(map(str.strip, line)) for line in reader]
+    #crate_data_processing_ui()
     return headers, events
 
 def create_events(data, names):
