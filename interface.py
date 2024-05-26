@@ -53,31 +53,37 @@ def create_fig_canvas():
 
 def create_vizualization_button():
     
+    selected_data = tk.StringVar()
+    selected_data.set(shared_state.names[0])
+    dropdown_menu = tk.OptionMenu(root, selected_data, *shared_state.names)
+    canvas.create_window(400, 50, window=dropdown_menu)
+
     create_fig_canvas()
-    plot_line_button = tk.Button(root, text="Plot Line Chart", command=lambda: plot_line_chart(fig_canvas,shared_state.names[9]))
-    canvas.create_window(400, 50, window=plot_line_button)
+    plot_line_button = tk.Button(root, text="Plot Line Chart", command=lambda: plot_line_chart(fig_canvas,selected_data.get()))
+    canvas.create_window(400, 100, window=plot_line_button)
 
-    plot_bar_button = tk.Button(root, text="Plot Bar Chart", command=lambda: plot_bar_chart(fig_canvas,shared_state.names[9]))
-    canvas.create_window(400, 100, window=plot_bar_button)
+    plot_bar_button = tk.Button(root, text="Plot Bar Chart", command=lambda: plot_bar_chart(fig_canvas,selected_data.get()))
+    canvas.create_window(400, 150, window=plot_bar_button)
 
-    plot_scatter_button = tk.Button(root, text="Plot Scatter Plot", command=lambda: plot_scatter_plot(fig_canvas,shared_state.names[9]))
-    canvas.create_window(400, 150, window=plot_scatter_button)
+    plot_scatter_button = tk.Button(root, text="Plot Scatter Plot", command=lambda: plot_scatter_plot(fig_canvas,selected_data.get()))
+    canvas.create_window(400, 200, window=plot_scatter_button)
 
-    plot_histogram_button = tk.Button(root, text="Plot Histogram", command=lambda: plot_histogram(fig_canvas,shared_state.names[9]))
-    canvas.create_window(400, 200, window=plot_histogram_button)
+    plot_histogram_button = tk.Button(root, text="Plot Histogram", command=lambda: plot_histogram(fig_canvas,selected_data.get()))
+    canvas.create_window(400, 250, window=plot_histogram_button)
 
-    plot_heatmap_button = tk.Button(root, text="Plot Heatmap", command=lambda: plot_heatmap(fig_canvas,shared_state.names[9]),bg='grey')
-    canvas.create_window(400, 250, window=plot_heatmap_button)
+    plot_heatmap_button = tk.Button(root, text="Plot Heatmap", command=lambda: plot_heatmap(fig_canvas,selected_data.get()),bg='grey')
+    canvas.create_window(400, 300, window=plot_heatmap_button)
 
-    plot_bubble_button = tk.Button(root, text="Plot Bubble Chart", command=lambda: plot_bubble_chart(fig_canvas,shared_state.names[9]))
-    canvas.create_window(400, 300, window=plot_bubble_button)
+    plot_bubble_button = tk.Button(root, text="Plot Bubble Chart", command=lambda: plot_bubble_chart(fig_canvas,selected_data.get()))
+    canvas.create_window(400, 350, window=plot_bubble_button)
 
-    plot_area_button = tk.Button(root, text="Plot Area Chart", command=lambda: plot_area_chart(fig_canvas,shared_state.names[9]))
-    canvas.create_window(400, 350, window=plot_area_button)
+    plot_area_button = tk.Button(root, text="Plot Area Chart", command=lambda: plot_area_chart(fig_canvas,selected_data.get()))
+    canvas.create_window(400, 400, window=plot_area_button)
 
-    plot_pie_button = tk.Button(root, text="Plot Pie Chart", command=lambda: plot_pie_chart(fig_canvas,shared_state.names[9]))
-    canvas.create_window(400, 400, window=plot_pie_button)
-    
+    plot_pie_button = tk.Button(root, text="Plot Pie Chart", command=lambda: plot_pie_chart(fig_canvas,selected_data.get()))
+    canvas.create_window(400, 450, window=plot_pie_button)
+
+  
 def load_data_done():
 
     load_data_checkbox.select()
