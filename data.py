@@ -1,55 +1,57 @@
 import time
 from data_loader import create_events,crate_sessions,crate_users,load_data
 
-data_result = None
-events_result = None
-sessions_result = None
-users_result = None
-names = None
+class SharedState:
+    def __init__(self):
+        self.data_result = None
+        self.events_result = None
+        self.sessions_result = None
+        self.users_result = None
+        self.names = None
+    
+    def is_session_create(self):
+        return self.sessions_result!=None
 
-def is_session_create():
-    return sessions_result!=None
+    def is_users_create(self):
+        return self.users_result!=None
 
-def is_users_create():
-    return users_result!=None
+    def is_events_create(self):
+        return  self.events_result!=None
 
-def is_events_create():
-    return events_result!=None
+shared_state = SharedState()
+
 
 def load_data_wrapper(load_data_done,):
     start_time = time.time()
-    global data_result
-    global names
-    names,data_result = load_data("E://AppMetrica-data//test.csv")
+    shared_state.names,shared_state.data_result = load_data("E://AppMetrica-data//test.csv")
+    print(*shared_state.names)
     print(f"> data is loaded in {time.time() - start_time:.2f} seconds")
     load_data_done()
+  
 
 def data_processing(create_ui_session, create_ui_user):
     start_time = time.time()
-    global events_result
-    events_result = create_events(data_result, names)
-    print(f"> events {len(events_result)} created in {time.time() - start_time:.2f} seconds")
+    shared_state.events_result = create_events(shared_state.data_result, shared_state.names)
+    print(f"> events {len( shared_state.events_result)} created in {time.time() - start_time:.2f} seconds")
 
-    if "session_id" in names:
+    if "session_id" in  shared_state.names:
         create_ui_session()
 
-        if "appmetrica_device_id" in names:
+        if "appmetrica_device_id" in  shared_state.names:
             create_ui_user()
             
 
 def create_session(create_session_done):
     start_time = time.time()
-    global sessions_result
-    sessions_result = crate_sessions(events_result)
-    print(f"> sessions {len(sessions_result)} created in {time.time() - start_time:.2f} seconds")
+    shared_state.sessions_result = crate_sessions( shared_state.events_result)
+    print(f"> sessions {len( shared_state.sessions_result)} created in {time.time() - start_time:.2f} seconds")
     create_session_done()
 
 def create_users(create_user_done):
-    if not is_session_create():
+    if not shared_state.is_session_create():
         create_session()
     
     start_time = time.time()
-    global users_result
-    users_result = crate_users(sessions_result)
-    print(f"> users {len(users_result)} created in {time.time() - start_time:.2f} seconds")
+    shared_state.users_result = crate_users( shared_state.sessions_result)
+    print(f"> users {len( shared_state.users_result)} created in {time.time() - start_time:.2f} seconds")
     create_user_done()
