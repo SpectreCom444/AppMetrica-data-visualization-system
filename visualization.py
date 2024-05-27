@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from data import shared_state
+from shared import shared_state
 
 def counter_events(events, metric_name):
     events_count = {}
@@ -12,6 +12,26 @@ def counter_events(events, metric_name):
         else:
             events_count[value] = 1
     return events_count
+
+def create_chart(canvas,event_name,chart_type):
+    if chart_type == 'line':
+        plot_line_chart(canvas, event_name)
+    elif chart_type == 'bar':
+        plot_bar_chart(canvas, event_name)
+    elif chart_type == 'pie':
+        plot_pie_chart(canvas, event_name)
+    elif chart_type == 'scatter':
+        plot_scatter_plot(canvas, event_name)
+    elif chart_type == 'histogram':
+        plot_histogram(canvas, event_name)
+    elif chart_type == 'heatmap':
+        plot_heatmap(canvas, event_name)
+    elif chart_type == 'bubble':
+        plot_bubble_chart(canvas, event_name)
+    elif chart_type == 'area':
+        plot_area_chart(canvas, event_name)
+    else:
+        raise ValueError(f"Unsupported chart type: {chart_type}")
 
 def plot_line_chart(canvas,event_name):
     events_count=counter_events(shared_state.events_result,event_name)
@@ -72,7 +92,6 @@ def plot_histogram(canvas, event_name):
     ax.set_ylabel("Frequency")
     canvas.figure = fig
     canvas.draw()
-
 
 def plot_heatmap(canvas,event_name):
     data = np.random.rand(10, 10)

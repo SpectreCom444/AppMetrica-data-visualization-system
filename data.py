@@ -1,24 +1,6 @@
 import time
 from data_loader import create_events,crate_sessions,crate_users,load_data
-
-class SharedState:
-    def __init__(self):
-        self.data_result = None
-        self.events_result = None
-        self.sessions_result = None
-        self.users_result = None
-        self.names = None
-    
-    def is_session_create(self):
-        return self.sessions_result!=None
-
-    def is_users_create(self):
-        return self.users_result!=None
-
-    def is_events_create(self):
-        return  self.events_result!=None
-
-shared_state = SharedState()
+from shared import shared_state
 
 
 def load_data_wrapper(load_data_done,):

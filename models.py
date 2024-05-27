@@ -1,5 +1,6 @@
 import json
 from typing import List, Union, Dict, Any
+from shared import shared_state
 
 KEY_JSON_FIELD = "event_json"
 
@@ -11,29 +12,23 @@ class Event:
                              f"{len(field_names)}/{len(values)}\n"
                              f"{field_names}/{values}")
 
-        self.__dict__ = {key: self.convert_JSON_to_dict(value) if key == KEY_JSON_FIELD else value
-                         for key, value in zip(field_names, values)}
+        self.__dict__ = {}
+        for key, value in zip(field_names, values):
+            if key == KEY_JSON_FIELD:
+                json_dict = self.convert_JSON_to_dict(value)
+                self.__dict__[key] = json_dict
+                shared_state.add_to_json_tree(json_dict)
+            else:
+                self.__dict__[key] = value
 
     def get_value(self, key: str) -> Any:
         return self.__dict__.get(key)
 
     @staticmethod
-    def convert_JSON_to_dict(stringJSON: str) -> Union[str, List[Union[str, tuple]]]:
-        def traverse_dict(d: Dict[str, Any], parent: str = None):
-            for key, value in d.items():
-                if parent is not None:
-                    result.append((parent, key))
-                if isinstance(value, dict):
-                    traverse_dict(value, key)
-                else:
-                    result.append((key, value))
-
+    def convert_JSON_to_dict(stringJSON: str) -> Union[str, Dict[str, Any]]:
         if not stringJSON:
             return stringJSON
-        data = json.loads(stringJSON)
-        result = []
-        traverse_dict(data)
-        return result
+        return json.loads(stringJSON)
 
 
 class Session:

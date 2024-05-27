@@ -1,8 +1,11 @@
 import tkinter as tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from data import load_data_wrapper, data_processing, create_session, create_users,shared_state
-from visualization import plot_line_chart,plot_bar_chart,plot_scatter_plot,plot_histogram,plot_heatmap,plot_bubble_chart,plot_area_chart,plot_pie_chart
+from data import load_data_wrapper, data_processing, create_session, create_users
+from shared import shared_state
+from visualization import create_chart
+
+types_graphs = ["line","bar","pie","scatter","histogram","heatmap","bubble","area"]
 
 def uploadin_and_processing():
     load_data_wrapper(load_data_done)
@@ -52,37 +55,54 @@ def create_fig_canvas():
     fig_canvas.get_tk_widget().pack(side=tk.RIGHT,padx=100)
 
 def create_vizualization_button():
-    
+    global panel_json_event
+
+    panel_json_event = tk.Frame(root)
+    panel_json_event.pack_forget()
+
+    def on_selected_data_change(*args):
+        create_custom_event_menu(selected_data.get() == "event_json")
+
+    panel = tk.Frame(root)
+    canvas.create_window(400, 200, window=panel)
+
     selected_data = tk.StringVar()
     selected_data.set(shared_state.names[0])
-    dropdown_menu = tk.OptionMenu(root, selected_data, *shared_state.names)
-    canvas.create_window(400, 50, window=dropdown_menu)
+    selected_data.trace('w', on_selected_data_change)
+    dropdown_selected_data = tk.OptionMenu(panel, selected_data, *shared_state.names)
+    dropdown_selected_data.pack(pady=10)
+
+    
+    selected_chart_type = tk.StringVar()
+    selected_chart_type.set(types_graphs[0])   
+    dropdown_selected_chart_type = tk.OptionMenu(panel, selected_chart_type, *types_graphs)
+    dropdown_selected_chart_type.pack(pady=10)
 
     create_fig_canvas()
-    plot_line_button = tk.Button(root, text="Plot Line Chart", command=lambda: plot_line_chart(fig_canvas,selected_data.get()))
-    canvas.create_window(400, 100, window=plot_line_button)
+    plot_button = tk.Button(panel, text="Plot chart", command=lambda: create_chart(fig_canvas,selected_data.get(),selected_chart_type.get()))
+    plot_button.pack(pady=10)
 
-    plot_bar_button = tk.Button(root, text="Plot Bar Chart", command=lambda: plot_bar_chart(fig_canvas,selected_data.get()))
-    canvas.create_window(400, 150, window=plot_bar_button)
 
-    plot_scatter_button = tk.Button(root, text="Plot Scatter Plot", command=lambda: plot_scatter_plot(fig_canvas,selected_data.get()))
-    canvas.create_window(400, 200, window=plot_scatter_button)
 
-    plot_histogram_button = tk.Button(root, text="Plot Histogram", command=lambda: plot_histogram(fig_canvas,selected_data.get()))
-    canvas.create_window(400, 250, window=plot_histogram_button)
+def create_custom_event_menu(show):
+    if show:    
+        panel_json_event.pack()
+        canvas.create_window(700, 200, window=panel_json_event)
+        max_buttons_per_row = 5
+        row = 0
+        col = 0
 
-    plot_heatmap_button = tk.Button(root, text="Plot Heatmap", command=lambda: plot_heatmap(fig_canvas,selected_data.get()),bg='grey')
-    canvas.create_window(400, 300, window=plot_heatmap_button)
-
-    plot_bubble_button = tk.Button(root, text="Plot Bubble Chart", command=lambda: plot_bubble_chart(fig_canvas,selected_data.get()))
-    canvas.create_window(400, 350, window=plot_bubble_button)
-
-    plot_area_button = tk.Button(root, text="Plot Area Chart", command=lambda: plot_area_chart(fig_canvas,selected_data.get()))
-    canvas.create_window(400, 400, window=plot_area_button)
-
-    plot_pie_button = tk.Button(root, text="Plot Pie Chart", command=lambda: plot_pie_chart(fig_canvas,selected_data.get()))
-    canvas.create_window(400, 450, window=plot_pie_button)
-
+        for key in enumerate(shared_state.json_tree.keys()):
+            button = tk.Button(panel_json_event, text=key) 
+            button.grid(row=row, column=col, padx=5, pady=5)
+            col += 1
+            if col >= max_buttons_per_row:
+                col = 0
+                row += 1
+    else:
+        panel_json_event.pack_forget()
+        
+    
   
 def load_data_done():
 
