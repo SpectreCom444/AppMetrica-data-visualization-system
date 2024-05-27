@@ -48,11 +48,17 @@ class CustomEventMenu:
     def update_options(self):
         current_level = self.shared_state.json_tree
         for opt in self.selected_options:
-            current_level = current_level.get(opt, {})
+            if isinstance(current_level, dict):
+                current_level = current_level.get(opt, {})
+            else:
+                current_level = {}
+                break
+
         if isinstance(current_level, dict):
             self.current_options = list(current_level.keys())
         else:
-            self.current_options = []
+            self.current_options = [current_level]
+
         self.create_buttons()
     
     def create_text_widget(self):
@@ -69,6 +75,9 @@ class CustomEventMenu:
             self.panel.destroy()
             self.panel = None
 
+    def get_selected_options(self):
+        return self.selected_options 
+    
 def uploadin_and_processing():
     load_data_wrapper(load_data_done)
     data_processing(create_events_done)
@@ -122,6 +131,8 @@ def create_ui():
 def create_vizualization_button():
     global fig_canvas   
     global menu_instance
+    global selected_data
+    global selected_chart_type
 
     def on_selected_data_change(*args):
         create_custom_event_menu(selected_data.get() == "event_json")
@@ -143,12 +154,17 @@ def create_vizualization_button():
 
     fig_canvas = FigureCanvasTkAgg( Figure(figsize=(5, 4), dpi=150), master=canvas)  
     fig_canvas.draw()
-    fig_canvas.get_tk_widget().pack(side=tk.RIGHT,padx=100)
-
-    plot_button = tk.Button(panel, text="Plot chart", command=lambda: create_chart(fig_canvas,selected_data.get(),selected_chart_type.get()))
+    fig_canvas.get_tk_widget().pack(side=tk.RIGHT,padx=100)      
+    plot_button = tk.Button(panel, text="Plot chart", command=data_for_chart)
     plot_button.pack(pady=10)
 
     menu_instance = None 
+
+def data_for_chart():
+    if selected_data.get() == "event_json":
+        create_chart(fig_canvas,menu_instance.get_selected_options(),selected_chart_type.get())
+    else:
+        create_chart(fig_canvas,selected_data.get(),selected_chart_type.get())
 
 def create_custom_event_menu(show):
     global menu_instance

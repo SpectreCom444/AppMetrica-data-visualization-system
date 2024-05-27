@@ -20,14 +20,13 @@ class SharedState:
       
 
         def update_tree(tree, data):
-            for key, value in data.items():            
+            for key, value in data.items():
                 if isinstance(value, dict):
-                    if key not in tree:
+                    if key not in tree or not isinstance(tree[key], dict):
                         tree[key] = {}
-                        update_tree(tree[key], value)
+                    update_tree(tree[key], value)
                 else:
-                    if key not in tree:
-                        tree[key] = value
+                    tree[key] = value
 
         update_tree(self.json_tree, json_data)
 

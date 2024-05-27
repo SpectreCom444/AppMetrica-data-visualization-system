@@ -13,28 +13,59 @@ def counter_events(events, metric_name):
             events_count[value] = 1
     return events_count
 
+def counter_events_list(events, metric_names):      
+
+    def check_event(tree, metric_names):
+        
+        if metric_names[0] in tree:
+            if len(metric_names) > 1:
+                return check_event(tree[metric_names[0]], metric_names[1:])
+            else:
+                if isinstance(tree, dict):
+                    return tree[metric_names[0]]
+                else:
+                    return None
+        else:
+            return None
+        
+    events_count = {}
+    for event in events:
+        names = check_event(event.__dict__["event_json"], metric_names)
+        if names is not None:
+            for name in names:
+                if name in events_count:
+                    events_count[name] += 1
+                else:
+                    events_count[name] = 1
+    
+    return events_count
+
+
 def create_chart(canvas,event_name,chart_type):
+    if isinstance(event_name, list):
+        events_count=counter_events_list(shared_state.events_result,event_name)
+    else:
+        events_count=counter_events(shared_state.events_result,event_name)
     if chart_type == 'line':
-        plot_line_chart(canvas, event_name)
+        plot_line_chart(canvas,events_count)
     elif chart_type == 'bar':
-        plot_bar_chart(canvas, event_name)
+        plot_bar_chart(canvas,events_count)
     elif chart_type == 'pie':
-        plot_pie_chart(canvas, event_name)
+        plot_pie_chart(canvas,events_count)
     elif chart_type == 'scatter':
-        plot_scatter_plot(canvas, event_name)
+        plot_scatter_plot(canvas,events_count)
     elif chart_type == 'histogram':
-        plot_histogram(canvas, event_name)
+        plot_histogram(canvas,events_count)
     elif chart_type == 'heatmap':
-        plot_heatmap(canvas, event_name)
+        plot_heatmap(canvas,events_count)
     elif chart_type == 'bubble':
-        plot_bubble_chart(canvas, event_name)
+        plot_bubble_chart(canvas,events_count)
     elif chart_type == 'area':
-        plot_area_chart(canvas, event_name)
+        plot_area_chart(canvas,events_count)
     else:
         raise ValueError(f"Unsupported chart type: {chart_type}")
 
-def plot_line_chart(canvas,event_name):
-    events_count=counter_events(shared_state.events_result,event_name)
+def plot_line_chart(canvas,events_count):
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()
@@ -45,8 +76,7 @@ def plot_line_chart(canvas,event_name):
     canvas.figure = fig  
     canvas.draw()
 
-def plot_bar_chart(canvas,event_name):
-    events_count=counter_events(shared_state.events_result,event_name)
+def plot_bar_chart(canvas,events_count):
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()
@@ -57,8 +87,7 @@ def plot_bar_chart(canvas,event_name):
     canvas.figure = fig  
     canvas.draw()
 
-def plot_pie_chart(canvas,event_name):
-    events_count=counter_events(shared_state.events_result,event_name)
+def plot_pie_chart(canvas,events_count):
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()
@@ -67,8 +96,7 @@ def plot_pie_chart(canvas,event_name):
     canvas.figure = fig 
     canvas.draw()
 
-def plot_scatter_plot(canvas,event_name):
-    events_count=counter_events(shared_state.events_result,event_name)
+def plot_scatter_plot(canvas,events_count):
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()
@@ -80,8 +108,7 @@ def plot_scatter_plot(canvas,event_name):
     canvas.draw()
 
 
-def plot_histogram(canvas, event_name):
-    events_count = counter_events(shared_state.events_result, event_name)
+def plot_histogram(canvas,events_count):
     x = list(events_count.keys())
     y = list(events_count.values())
     
@@ -93,7 +120,7 @@ def plot_histogram(canvas, event_name):
     canvas.figure = fig
     canvas.draw()
 
-def plot_heatmap(canvas,event_name):
+def plot_heatmap(canvas,events_count):
     data = np.random.rand(10, 10)
     fig, ax = plt.subplots()
     cax = ax.imshow(data, cmap='hot', interpolation='nearest')
@@ -102,8 +129,7 @@ def plot_heatmap(canvas,event_name):
     canvas.figure = fig 
     canvas.draw()
 
-def plot_bubble_chart(canvas,event_name):
-    events_count=counter_events(shared_state.events_result,event_name)
+def plot_bubble_chart(canvas,events_count):
     x = list(events_count.keys())
     y = list(events_count.values())
     sizes = y
@@ -115,8 +141,8 @@ def plot_bubble_chart(canvas,event_name):
     canvas.figure = fig 
     canvas.draw()
 
-def plot_area_chart(canvas,event_name):
-    events_count=counter_events(shared_state.events_result,event_name)
+def plot_area_chart(canvas,events_count):
+    
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()
