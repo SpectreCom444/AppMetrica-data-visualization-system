@@ -7,7 +7,7 @@ def load_data(file_path):
         reader = csv.reader(file)
         headers = next(reader)
         events = [list(map(str.strip, line)) for line in reader]
-    return headers, events[0:15000]
+    return headers, events[0:25000]
 
 def create_events(data, names):
     return [Event(names, row) for row in data]
