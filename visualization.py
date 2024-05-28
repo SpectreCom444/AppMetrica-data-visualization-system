@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from shared import shared_state
+from shared import shared_state, TypeOfData
 
 def counter_events(events, metric_name):
     events_count = {}
@@ -41,11 +41,13 @@ def counter_events_list(events, metric_names):
     return events_count
 
 
-def create_chart(canvas,event_name,chart_type):
-    if isinstance(event_name, list):
+def create_chart(type_of_data, canvas,event_name,chart_type):
+    if TypeOfData.TREE == type_of_data:
         events_count=counter_events_list(shared_state.events_result,event_name)
-    else:
+    elif TypeOfData.FIELD_NAME == type_of_data:
         events_count=counter_events(shared_state.events_result,event_name)
+
+
     if chart_type == 'line':
         plot_line_chart(canvas,events_count)
     elif chart_type == 'bar':

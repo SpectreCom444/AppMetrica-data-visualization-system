@@ -1,3 +1,5 @@
+from enum import Enum
+
 class SharedState:
     def __init__(self):
         self.data_result = None
@@ -26,8 +28,18 @@ class SharedState:
                         tree[key] = {}
                     update_tree(tree[key], value)
                 else:
-                    tree[key] = value
+                    if key in tree:
+                        if isinstance(tree[key], list):
+                            tree[key].append(value)
+                        else:
+                            tree[key] = [tree[key], value]
+                    else:
+                        tree[key] = value
 
         update_tree(self.json_tree, json_data)
 
 shared_state= SharedState()
+
+class TypeOfData(Enum):
+    FIELD_NAME = 1
+    TREE = 2

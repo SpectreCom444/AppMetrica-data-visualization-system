@@ -2,10 +2,14 @@ import tkinter as tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from data import load_data_wrapper, data_processing, create_session, create_users
-from shared import shared_state
+from shared import shared_state, TypeOfData
 from visualization import create_chart
 
+
 types_graphs = ["line","bar","pie","scatter","histogram","heatmap","bubble","area"]
+
+
+
 
 class CustomEventMenu:
     def __init__(self, canvas, shared_state):
@@ -77,6 +81,7 @@ class CustomEventMenu:
 
     def get_selected_options(self):
         return self.selected_options 
+    
     
 def uploadin_and_processing():
     load_data_wrapper(load_data_done)
@@ -162,9 +167,13 @@ def create_vizualization_button():
 
 def data_for_chart():
     if selected_data.get() == "event_json":
-        create_chart(fig_canvas,menu_instance.get_selected_options(),selected_chart_type.get())
+        if len(menu_instance.get_selected_options())>0:
+            create_chart(TypeOfData.TREE,fig_canvas,menu_instance.get_selected_options(),selected_chart_type.get())
+        else:
+            if "event_name" in shared_state.names :
+                create_chart(TypeOfData.FIELD_NAME,fig_canvas,"event_name",selected_chart_type.get())
     else:
-        create_chart(fig_canvas,selected_data.get(),selected_chart_type.get())
+        create_chart(TypeOfData.FIELD_NAME,fig_canvas,selected_data.get(),selected_chart_type.get())
 
 def create_custom_event_menu(show):
     global menu_instance
