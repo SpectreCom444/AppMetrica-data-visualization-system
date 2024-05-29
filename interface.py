@@ -23,14 +23,22 @@ class CustomEventMenu:
         self.create_text_widget()
         self.create_buttons()  
         self.create_undo_button()
-
-    def create_buttons(self):
+    
+    def create_buttons(self):           
         for widget in self.panel.winfo_children():
             if isinstance(widget, tk.Button) and widget != self.undo_button:
-                widget.destroy()
-
-        for idx, option in enumerate(self.current_options):
-            button = tk.Button(self.panel, text=option, command=lambda opt=option: self.add_to_selected(opt))
+                widget.destroy()    
+        current_level = self.shared_state.json_tree
+        for opt in self.selected_options:
+            if isinstance(current_level, dict):
+                current_level = current_level.get(opt, {})
+            else:
+                current_level = {}
+                break
+        for idx, option in enumerate(self.current_options):     
+            has_children = isinstance(current_level.get(option, {}), dict) and bool(current_level.get(option, {}))
+            state = tk.NORMAL if has_children else tk.DISABLED
+            button = tk.Button(self.panel, text=option, command=lambda opt=option: self.add_to_selected(opt), state=state)
             button.grid(row=(idx // 5) + 1, column=idx % 5, padx=5, pady=5)
 
     def create_undo_button(self):
@@ -62,7 +70,6 @@ class CustomEventMenu:
             self.current_options = list(current_level.keys())
         else:
             self.current_options = [current_level]
-
         self.create_buttons()
     
     def create_text_widget(self):
@@ -72,7 +79,7 @@ class CustomEventMenu:
     def update_text_widget(self):
         self.text_widget.delete(1.0, tk.END)
         for option in self.selected_options:
-            self.text_widget.insert(tk.END, option + '->')
+            self.text_widget.insert(tk.END, str(option) + '->')
 
     def remove_panel(self):
         if self.panel:

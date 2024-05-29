@@ -19,22 +19,16 @@ class SharedState:
         return  self.events_result!=None
     
     def add_to_json_tree(self, json_data):
-      
-
         def update_tree(tree, data):
             for key, value in data.items():
                 if isinstance(value, dict):
-                    if key not in tree or not isinstance(tree[key], dict):
+                    if key not in tree:
                         tree[key] = {}
                     update_tree(tree[key], value)
                 else:
-                    if key in tree:
-                        if isinstance(tree[key], list):
-                            tree[key].append(value)
-                        else:
-                            tree[key] = [tree[key], value]
-                    else:
-                        tree[key] = value
+                    if key not in tree:
+                        tree[key] = {}
+                    tree[key][value] = {}
 
         update_tree(self.json_tree, json_data)
 

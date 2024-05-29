@@ -31,12 +31,20 @@ def counter_events_list(events, metric_names):
     events_count = {}
     for event in events:
         names = check_event(event.__dict__["event_json"], metric_names)
-        if names is not None:
-            for name in names:
-                if name in events_count:
-                    events_count[name] += 1
+        if names is not None :
+            if isinstance(names,str):
+                if names in events_count:
+                    events_count[names] += 1
                 else:
-                    events_count[name] = 1
+                    events_count[names] = 1             
+            else:
+                for name in names:
+                    if name in events_count:
+                        events_count[name] += 1
+                    else:
+                        events_count[name] = 1
+              
+        
     
     return events_count
 
