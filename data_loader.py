@@ -1,6 +1,7 @@
 import csv
 import json
 from models import Event, Session, User
+import constants
 
 def load_data(file_path):
     with open(file_path, mode='r', encoding='utf-8') as file:
@@ -17,7 +18,7 @@ def crate_sessions(events):
     session_dict = {}
 
     for event in events:
-        session_id = event.get_value('session_id')
+        session_id = event.get_value(constants.SESSION_ID)
         if session_id not in session_dict:
             new_session = Session(event)
             sessions.append(new_session)

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from shared import shared_state, TypeOfData
 from filters import data_filter
+import constants
 
 def counter_events(events, metric_name):
     events_count = {}
@@ -31,7 +32,7 @@ def counter_events_list(events, metric_names):
         
     events_count = {}
     for event in events:
-        names = check_event(event.__dict__["event_json"], metric_names)
+        names = check_event(event.__dict__[constants.EVENT_JSON], metric_names)
         if names is not None :
             if isinstance(names,str):
                 if names in events_count:

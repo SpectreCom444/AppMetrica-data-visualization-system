@@ -2,8 +2,7 @@ import json
 from typing import List, Union, Dict, Any
 from shared import shared_state
 from datetime import datetime
-
-KEY_JSON_FIELD = "event_json"
+import constants
 
 class Event:
     def __init__(self, field_names: List[str], values: List[str]):
@@ -15,11 +14,11 @@ class Event:
 
         self.__dict__ = {}
         for key, value in zip(field_names, values):
-            if key == KEY_JSON_FIELD:
+            if key == constants.EVENT_JSON:
                 json_dict = self.convert_JSON_to_dict(value)
                 self.__dict__[key] = json_dict
                 shared_state.add_to_json_tree(json_dict)
-            elif key == "event_datetime":
+            elif key == constants.EVENT_DATATIME:
                 self.__dict__[key] = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
             else:
                 self.__dict__[key] = value
@@ -37,8 +36,8 @@ class Event:
 class Session:
     def __init__(self, event: Event):
         self.events = [event]
-        self.id_session = event.get_value("session_id")
-        self.id_user = event.get_value("appmetrica_device_id")
+        self.id_session = event.get_value(constants.SESSION_ID)
+        self.id_user = event.get_value(constants.DEVICE_ID)
 
     def add_event(self, event: Event):
         self.events.append(event)

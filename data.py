@@ -2,7 +2,6 @@ import time
 from data_loader import create_events,crate_sessions,crate_users,load_data
 from shared import shared_state
 
-
 def load_data_wrapper(load_data_done):
     start_time = time.time()
     shared_state.names,shared_state.data_result = load_data("E://AppMetrica-data//test.csv")

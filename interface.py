@@ -6,6 +6,7 @@ from shared import shared_state, TypeOfData
 from visualization import create_chart
 from tkcalendar import DateEntry
 from visualization_params import VisualizationParams
+import constants
 
 types_graphs = ["line","bar","pie","scatter","histogram","heatmap","bubble","area"]
 
@@ -91,10 +92,10 @@ class CustomEventMenu:
 def uploadin_and_processing():
     load_data_wrapper(load_data_done)
     data_processing(create_events_done)
-    if "session_id" in  shared_state.names:
+    if constants.SESSION_ID in  shared_state.names:
         create_session(create_session_done)
 
-        if "appmetrica_device_id" in  shared_state.names:
+        if constants.DEVICE_ID in  shared_state.names:
             create_users(create_user_done)
     
 def create_ui():
@@ -164,7 +165,7 @@ def create_vizualization_button():
     global selected_chart_type
 
     def on_selected_data_change(*args):
-        create_custom_event_menu(selected_data.get() == "event_json")
+        create_custom_event_menu(selected_data.get() == constants.EVENT_JSON)
 
     panel = tk.Frame(root)
     canvas.create_window(200, 200, window=panel)
@@ -188,23 +189,23 @@ def create_vizualization_button():
     plot_button.pack(pady=10)
 
     menu_instance = None 
-    if "event_datetime" in shared_state.names:
+    if constants.EVENT_DATATIME in shared_state.names:
         create_date_selector()
 
 def data_for_chart():
 
    
-    if selected_data.get() == "event_json":
+    if selected_data.get() == constants.EVENT_JSON:
         if len(menu_instance.get_selected_options())>0:
             visualization_params=VisualizationParams(TypeOfData.TREE,fig_canvas,menu_instance.get_selected_options(),selected_chart_type.get())
         else:
-            if "event_name" in shared_state.names :
-                visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,"event_name",selected_chart_type.get())
+            if constants.EVENT_NAME in shared_state.names :
+                visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,constants.EVENT_NAME,selected_chart_type.get())
     else:
         visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,selected_data.get(),selected_chart_type.get())
 
 
-    if "event_datetime" in shared_state.names:
+    if constants.EVENT_DATATIME in shared_state.names:
         visualization_params.set_data_time(start_date_entry.get(),end_date_entry.get())
 
     create_chart(visualization_params)
