@@ -7,8 +7,7 @@ from visualization import create_chart
 from tkcalendar import DateEntry
 from visualization_params import VisualizationParams
 import constants
-
-types_graphs = ["line","bar","pie","scatter","histogram","heatmap","bubble","area"]
+import type_graphs
 
 class CustomEventMenu:
     def __init__(self, canvas, shared_state):
@@ -178,8 +177,8 @@ def create_vizualization_button():
 
     
     selected_chart_type = tk.StringVar()
-    selected_chart_type.set(types_graphs[0])   
-    dropdown_selected_chart_type = tk.OptionMenu(panel, selected_chart_type, *types_graphs)
+    selected_chart_type.set( next(iter(type_graphs.TYPES_GRAPHS)))   
+    dropdown_selected_chart_type = tk.OptionMenu(panel, selected_chart_type, *type_graphs.TYPES_GRAPHS)
     dropdown_selected_chart_type.pack(pady=10)
 
     fig_canvas = FigureCanvasTkAgg( Figure(figsize=(5, 4), dpi=150), master=canvas)  
@@ -193,16 +192,14 @@ def create_vizualization_button():
         create_date_selector()
 
 def data_for_chart():
-
-   
     if selected_data.get() == constants.EVENT_JSON:
         if len(menu_instance.get_selected_options())>0:
-            visualization_params=VisualizationParams(TypeOfData.TREE,fig_canvas,menu_instance.get_selected_options(),selected_chart_type.get())
+            visualization_params=VisualizationParams(TypeOfData.TREE,fig_canvas,menu_instance.get_selected_options(),type_graphs.TYPES_GRAPHS[selected_chart_type.get()] )
         else:
             if constants.EVENT_NAME in shared_state.names :
-                visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,constants.EVENT_NAME,selected_chart_type.get())
+                visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,constants.EVENT_NAME,type_graphs.TYPES_GRAPHS[selected_chart_type.get()] )
     else:
-        visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,selected_data.get(),selected_chart_type.get())
+        visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,selected_data.get(),type_graphs.TYPES_GRAPHS[selected_chart_type.get()] )
 
 
     if constants.EVENT_DATATIME in shared_state.names:

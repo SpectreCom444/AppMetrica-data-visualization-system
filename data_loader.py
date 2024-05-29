@@ -1,5 +1,4 @@
 import csv
-import json
 from models import Event, Session, User
 import constants
 

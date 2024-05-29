@@ -5,6 +5,8 @@ from shared import shared_state, TypeOfData
 from filters import data_filter
 import constants
 
+
+
 def counter_events(events, metric_name):
     events_count = {}
     for event in events:
@@ -63,25 +65,7 @@ def create_chart(visualization_params):
     elif TypeOfData.FIELD_NAME == visualization_params.type_of_data:
         events_count=counter_events(data,visualization_params.selected_data)
 
-
-    if visualization_params.selected_chart_type == 'line':
-        plot_line_chart(visualization_params.canvas,events_count)
-    elif visualization_params.selected_chart_type == 'bar':
-        plot_bar_chart(visualization_params.canvas,events_count)
-    elif visualization_params.selected_chart_type == 'pie':
-        plot_pie_chart(visualization_params.canvas,events_count)
-    elif visualization_params.selected_chart_type == 'scatter':
-        plot_scatter_plot(visualization_params.canvas,events_count)
-    elif visualization_params.selected_chart_type == 'histogram':
-        plot_histogram(visualization_params.canvas,events_count)
-    elif visualization_params.selected_chart_type == 'heatmap':
-        plot_heatmap(visualization_params.canvas,events_count)
-    elif visualization_params.selected_chart_type == 'bubble':
-        plot_bubble_chart(visualization_params.canvas,events_count)
-    elif visualization_params.selected_chart_type == 'area':
-        plot_area_chart(visualization_params.canvas,events_count)
-    else:
-        raise ValueError(f"Unsupported chart type: {visualization_params.selected_chart_type}")
+    visualization_params.selected_chart_type(visualization_params.canvas, events_count)
 
 def plot_line_chart(canvas,events_count):
     x = list(events_count.keys())
