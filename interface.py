@@ -4,12 +4,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from data import load_data_wrapper, data_processing, create_session, create_users
 from shared import shared_state, TypeOfData
 from visualization import create_chart
-
+from tkcalendar import DateEntry
+from visualization_params import VisualizationParams
 
 types_graphs = ["line","bar","pie","scatter","histogram","heatmap","bubble","area"]
-
-
-
 
 class CustomEventMenu:
     def __init__(self, canvas, shared_state):
@@ -140,6 +138,25 @@ def create_ui():
 
     root.mainloop()
 
+def create_date_selector():
+    global start_date_entry
+    global end_date_entry
+
+    frame_date_selector = tk.Frame(root)
+    frame_date_selector.pack()
+    canvas.create_window(200, 400, window=frame_date_selector)
+
+    tk.Label(frame_date_selector, text="Start Date:").grid(row=0, column=0, padx=5, pady=5)
+    
+    start_date_entry = DateEntry(frame_date_selector, width=12, background='darkblue',foreground='white', borderwidth=2, date_pattern='y-mm-dd')
+    start_date_entry.grid(row=0, column=1, padx=5, pady=5)
+
+    tk.Label(frame_date_selector, text="End Date:").grid(row=1, column=0, padx=5, pady=5)
+    
+    end_date_entry = DateEntry(frame_date_selector, width=12, background='darkblue',foreground='white', borderwidth=2, date_pattern='y-mm-dd')
+    end_date_entry.grid(row=1, column=1, padx=5, pady=5)
+
+
 def create_vizualization_button():
     global fig_canvas   
     global menu_instance
@@ -171,16 +188,27 @@ def create_vizualization_button():
     plot_button.pack(pady=10)
 
     menu_instance = None 
+    if "event_datetime" in shared_state.names:
+        create_date_selector()
 
 def data_for_chart():
+
+   
     if selected_data.get() == "event_json":
         if len(menu_instance.get_selected_options())>0:
-            create_chart(TypeOfData.TREE,fig_canvas,menu_instance.get_selected_options(),selected_chart_type.get())
+            visualization_params=VisualizationParams(TypeOfData.TREE,fig_canvas,menu_instance.get_selected_options(),selected_chart_type.get())
         else:
             if "event_name" in shared_state.names :
-                create_chart(TypeOfData.FIELD_NAME,fig_canvas,"event_name",selected_chart_type.get())
+                visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,"event_name",selected_chart_type.get())
     else:
-        create_chart(TypeOfData.FIELD_NAME,fig_canvas,selected_data.get(),selected_chart_type.get())
+        visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,selected_data.get(),selected_chart_type.get())
+
+
+    if "event_datetime" in shared_state.names:
+        visualization_params.set_data_time(start_date_entry.get(),end_date_entry.get())
+
+    create_chart(visualization_params)
+            
 
 def create_custom_event_menu(show):
     global menu_instance

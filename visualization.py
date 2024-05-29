@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from shared import shared_state, TypeOfData
+from filters import data_filter
 
 def counter_events(events, metric_name):
     events_count = {}
@@ -49,31 +50,37 @@ def counter_events_list(events, metric_names):
     return events_count
 
 
-def create_chart(type_of_data, canvas,event_name,chart_type):
-    if TypeOfData.TREE == type_of_data:
-        events_count=counter_events_list(shared_state.events_result,event_name)
-    elif TypeOfData.FIELD_NAME == type_of_data:
-        events_count=counter_events(shared_state.events_result,event_name)
+def create_chart(visualization_params):
+
+    data = shared_state.events_result
+
+    if visualization_params.get_time_limits:
+        data= data_filter(data,visualization_params.start_date_entry,visualization_params.end_date_entry)
+
+    if TypeOfData.TREE == visualization_params.type_of_data:
+        events_count=counter_events_list(data,visualization_params.selected_data)
+    elif TypeOfData.FIELD_NAME == visualization_params.type_of_data:
+        events_count=counter_events(data,visualization_params.selected_data)
 
 
-    if chart_type == 'line':
-        plot_line_chart(canvas,events_count)
-    elif chart_type == 'bar':
-        plot_bar_chart(canvas,events_count)
-    elif chart_type == 'pie':
-        plot_pie_chart(canvas,events_count)
-    elif chart_type == 'scatter':
-        plot_scatter_plot(canvas,events_count)
-    elif chart_type == 'histogram':
-        plot_histogram(canvas,events_count)
-    elif chart_type == 'heatmap':
-        plot_heatmap(canvas,events_count)
-    elif chart_type == 'bubble':
-        plot_bubble_chart(canvas,events_count)
-    elif chart_type == 'area':
-        plot_area_chart(canvas,events_count)
+    if visualization_params.selected_chart_type == 'line':
+        plot_line_chart(visualization_params.canvas,events_count)
+    elif visualization_params.selected_chart_type == 'bar':
+        plot_bar_chart(visualization_params.canvas,events_count)
+    elif visualization_params.selected_chart_type == 'pie':
+        plot_pie_chart(visualization_params.canvas,events_count)
+    elif visualization_params.selected_chart_type == 'scatter':
+        plot_scatter_plot(visualization_params.canvas,events_count)
+    elif visualization_params.selected_chart_type == 'histogram':
+        plot_histogram(visualization_params.canvas,events_count)
+    elif visualization_params.selected_chart_type == 'heatmap':
+        plot_heatmap(visualization_params.canvas,events_count)
+    elif visualization_params.selected_chart_type == 'bubble':
+        plot_bubble_chart(visualization_params.canvas,events_count)
+    elif visualization_params.selected_chart_type == 'area':
+        plot_area_chart(visualization_params.canvas,events_count)
     else:
-        raise ValueError(f"Unsupported chart type: {chart_type}")
+        raise ValueError(f"Unsupported chart type: {visualization_params.selected_chart_type}")
 
 def plot_line_chart(canvas,events_count):
     x = list(events_count.keys())

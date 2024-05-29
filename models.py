@@ -1,6 +1,7 @@
 import json
 from typing import List, Union, Dict, Any
 from shared import shared_state
+from datetime import datetime
 
 KEY_JSON_FIELD = "event_json"
 
@@ -18,6 +19,8 @@ class Event:
                 json_dict = self.convert_JSON_to_dict(value)
                 self.__dict__[key] = json_dict
                 shared_state.add_to_json_tree(json_dict)
+            elif key == "event_datetime":
+                self.__dict__[key] = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
             else:
                 self.__dict__[key] = value
 
