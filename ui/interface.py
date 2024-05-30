@@ -9,6 +9,14 @@ from visualization_params import VisualizationParams
 import constants
 import type_graphs
 from tkinterdnd2 import DND_FILES, TkinterDnD
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.uic import loadUi
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super(MainWindow, self).__init__()
+        loadUi('ui/data-loader.ui', self)
 
 class CustomEventMenu:
     def __init__(self, canvas, shared_state):
@@ -101,6 +109,7 @@ def uploading_and_processing(path):
 
     
 def create_ui():
+
     global root
     global canvas
     global load_data_checkbox
@@ -110,46 +119,44 @@ def create_ui():
     global fig_canvas
     global drop_frame
     global load_data_frame
-    root = TkinterDnD.Tk()
-    root.attributes('-fullscreen', True)
+    # root = TkinterDnD.Tk()
+    # root.attributes('-fullscreen', True)
 
-    canvas = tk.Canvas(root)
-    canvas.pack(fill=tk.BOTH, expand=True)
+    # canvas = tk.Canvas(root)
+    # canvas.pack(fill=tk.BOTH, expand=True)
 
-    close_button = tk.Button(root, text=" X ", command=root.quit, bg="red")
-    canvas.create_window(1800, 50, window=close_button)
-    drop_frame = tk.Frame(root, width=300, height=300, bg='lightgrey')
-    drop_frame.pack_propagate(False)
-    canvas.create_window(root.winfo_screenwidth()/2, root.winfo_screenheight()/2, window=drop_frame)
+    # drop_frame = tk.Frame(root, width=300, height=300, bg='lightgrey')
+    # drop_frame.pack_propagate(False)
+    # canvas.create_window(root.winfo_screenwidth()/2, root.winfo_screenheight()/2, window=drop_frame)
 
-    drop_frame.drop_target_register(DND_FILES)
-    drop_frame.dnd_bind('<<Drop>>', lambda event: uploading_and_processing(event.data))
+    # drop_frame.drop_target_register(DND_FILES)
+    # drop_frame.dnd_bind('<<Drop>>', lambda event: uploading_and_processing(event.data))
 
-    label = tk.Label(drop_frame, text="Drag and drop the file here", bg='lightgrey')
-    label.pack(expand=True)
+    # label = tk.Label(drop_frame, text="Drag and drop the file here", bg='lightgrey')
+    # label.pack(expand=True)
 
 
-    load_data_frame = tk.Frame(root)
-    load_data_frame.pack()
-    canvas.create_window(100, 150, window=load_data_frame)
+    # load_data_frame = tk.Frame(root)
+    # load_data_frame.pack()
+    # canvas.create_window(100, 150, window=load_data_frame)
 
-    load_data_checkbox_var = tk.IntVar()
-    load_data_checkbox = tk.Checkbutton(load_data_frame, text="Load Data", variable=load_data_checkbox_var, state='disabled')
-    load_data_checkbox.grid(row=1, column=1, padx=5, pady=5)
+    # load_data_checkbox_var = tk.IntVar()
+    # load_data_checkbox = tk.Checkbutton(load_data_frame, text="Load Data", variable=load_data_checkbox_var, state='disabled')
+    # load_data_checkbox.grid(row=1, column=1, padx=5, pady=5)
 
-    create_events_checkbox_var = tk.IntVar()
-    create_events_checkbox = tk.Checkbutton(load_data_frame, text="Create events", variable=create_events_checkbox_var, state='disabled')
-    create_events_checkbox.grid(row=2, column=1, padx=5, pady=5)
+    # create_events_checkbox_var = tk.IntVar()
+    # create_events_checkbox = tk.Checkbutton(load_data_frame, text="Create events", variable=create_events_checkbox_var, state='disabled')
+    # create_events_checkbox.grid(row=2, column=1, padx=5, pady=5)
 
-    create_sessions_checkbox_var = tk.IntVar()
-    create_sessions_checkbox = tk.Checkbutton(load_data_frame, text="Create sessions", variable=create_sessions_checkbox_var, state='disabled')
-    create_sessions_checkbox.grid(row=3, column=1, padx=5, pady=5)
+    # create_sessions_checkbox_var = tk.IntVar()
+    # create_sessions_checkbox = tk.Checkbutton(load_data_frame, text="Create sessions", variable=create_sessions_checkbox_var, state='disabled')
+    # create_sessions_checkbox.grid(row=3, column=1, padx=5, pady=5)
 
-    create_users_checkbox_var = tk.IntVar()
-    create_users_checkbox = tk.Checkbutton(load_data_frame, text="Create users", variable=create_users_checkbox_var, state='disabled')
-    create_users_checkbox.grid(row=4, column=1, padx=5, pady=5)
+    # create_users_checkbox_var = tk.IntVar()
+    # create_users_checkbox = tk.Checkbutton(load_data_frame, text="Create users", variable=create_users_checkbox_var, state='disabled')
+    # create_users_checkbox.grid(row=4, column=1, padx=5, pady=5)
 
-    root.mainloop()
+    # root.mainloop()
 
 def create_date_selector():
     global start_date_entry
@@ -194,15 +201,22 @@ def create_vizualization_button():
     dropdown_selected_chart_type = tk.OptionMenu(panel, selected_chart_type, *type_graphs.TYPES_GRAPHS)
     dropdown_selected_chart_type.pack(pady=10)
 
-    fig_canvas = FigureCanvasTkAgg( Figure(figsize=(5, 4), dpi=150), master=canvas)  
-    fig_canvas.draw()
-    fig_canvas.get_tk_widget().pack(side=tk.RIGHT,padx=100)      
     plot_button = tk.Button(panel, text="Plot chart", command=data_for_chart)
     plot_button.pack(pady=10)
 
     menu_instance = None 
     if constants.EVENT_DATATIME in shared_state.names:
         create_date_selector()
+
+
+
+    # fig = Figure(figsize=(5, 4), dpi=150)
+    # fig_canvas = FigureCanvasTkAgg(fig, master=canvas)
+    # fig_canvas.draw()
+    # fig_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)      
+   
+
+
 
 def data_for_chart():
     if selected_data.get() == constants.EVENT_JSON:
