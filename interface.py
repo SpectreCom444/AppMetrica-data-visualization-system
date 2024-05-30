@@ -8,6 +8,7 @@ from tkcalendar import DateEntry
 from visualization_params import VisualizationParams
 import constants
 import type_graphs
+from tkinterdnd2 import DND_FILES, TkinterDnD
 
 class CustomEventMenu:
     def __init__(self, canvas, shared_state):
@@ -88,14 +89,16 @@ class CustomEventMenu:
         return self.selected_options 
     
     
-def uploadin_and_processing():
-    load_data_wrapper(load_data_done)
+def uploading_and_processing(path):
+    drop_frame.destroy()
+    load_data_wrapper(path,load_data_done)
     data_processing(create_events_done)
     if constants.SESSION_ID in  shared_state.names:
         create_session(create_session_done)
 
         if constants.DEVICE_ID in  shared_state.names:
             create_users(create_user_done)
+
     
 def create_ui():
     global root
@@ -105,8 +108,9 @@ def create_ui():
     global create_sessions_checkbox
     global create_users_checkbox
     global fig_canvas
-
-    root = tk.Tk()
+    global drop_frame
+    global load_data_frame
+    root = TkinterDnD.Tk()
     root.attributes('-fullscreen', True)
 
     canvas = tk.Canvas(root)
@@ -114,27 +118,36 @@ def create_ui():
 
     close_button = tk.Button(root, text=" X ", command=root.quit, bg="red")
     canvas.create_window(1800, 50, window=close_button)
+    drop_frame = tk.Frame(root, width=300, height=300, bg='lightgrey')
+    drop_frame.pack_propagate(False)
+    canvas.create_window(root.winfo_screenwidth()/2, root.winfo_screenheight()/2, window=drop_frame)
 
-    
+    drop_frame.drop_target_register(DND_FILES)
+    drop_frame.dnd_bind('<<Drop>>', lambda event: uploading_and_processing(event.data))
 
-    load_data_button = tk.Button(root, text="Load Data", command=uploadin_and_processing)
-    canvas.create_window(50, 100, window=load_data_button)
+    label = tk.Label(drop_frame, text="Drag and drop the file here", bg='lightgrey')
+    label.pack(expand=True)
+
+
+    load_data_frame = tk.Frame(root)
+    load_data_frame.pack()
+    canvas.create_window(100, 150, window=load_data_frame)
 
     load_data_checkbox_var = tk.IntVar()
-    load_data_checkbox = tk.Checkbutton(root, text="Load Data", variable=load_data_checkbox_var, state='disabled')
-    canvas.create_window(50, 150, window=load_data_checkbox)
+    load_data_checkbox = tk.Checkbutton(load_data_frame, text="Load Data", variable=load_data_checkbox_var, state='disabled')
+    load_data_checkbox.grid(row=1, column=1, padx=5, pady=5)
 
     create_events_checkbox_var = tk.IntVar()
-    create_events_checkbox = tk.Checkbutton(root, text="Create events", variable=create_events_checkbox_var, state='disabled')
-    canvas.create_window(50, 200, window=create_events_checkbox)
+    create_events_checkbox = tk.Checkbutton(load_data_frame, text="Create events", variable=create_events_checkbox_var, state='disabled')
+    create_events_checkbox.grid(row=2, column=1, padx=5, pady=5)
 
     create_sessions_checkbox_var = tk.IntVar()
-    create_sessions_checkbox = tk.Checkbutton(root, text="Create sessions", variable=create_sessions_checkbox_var, state='disabled')
-    canvas.create_window(50, 250, window=create_sessions_checkbox)
+    create_sessions_checkbox = tk.Checkbutton(load_data_frame, text="Create sessions", variable=create_sessions_checkbox_var, state='disabled')
+    create_sessions_checkbox.grid(row=3, column=1, padx=5, pady=5)
 
     create_users_checkbox_var = tk.IntVar()
-    create_users_checkbox = tk.Checkbutton(root, text="Create users", variable=create_users_checkbox_var, state='disabled')
-    canvas.create_window(50, 300, window=create_users_checkbox)
+    create_users_checkbox = tk.Checkbutton(load_data_frame, text="Create users", variable=create_users_checkbox_var, state='disabled')
+    create_users_checkbox.grid(row=4, column=1, padx=5, pady=5)
 
     root.mainloop()
 
@@ -234,4 +247,5 @@ def create_session_done():
 
 def create_user_done():
     create_users_checkbox.select()
+    load_data_frame.destroy()
 

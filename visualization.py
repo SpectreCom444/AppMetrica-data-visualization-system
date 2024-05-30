@@ -65,92 +65,83 @@ def create_chart(visualization_params):
     elif TypeOfData.FIELD_NAME == visualization_params.type_of_data:
         events_count=counter_events(data,visualization_params.selected_data)
 
-    visualization_params.selected_chart_type(visualization_params.canvas, events_count)
+    visualization_params.selected_chart_type(visualization_params.canvas, events_count,visualization_params.selected_data)
 
-def plot_line_chart(canvas,events_count):
+def plot_line_chart(canvas,events_count,metric_name):
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()
     ax.plot(x, y, marker='o')
-    ax.set_title("Line Chart")
+    ax.set_title(metric_name)
     ax.set_xlabel("X-axis")
     ax.set_ylabel("Y-axis")
     canvas.figure = fig  
     canvas.draw()
 
-def plot_bar_chart(canvas,events_count):
+def plot_bar_chart(canvas,events_count,metric_name):
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()
     ax.bar(x, y)
-    ax.set_title("Bar Chart")
+    ax.set_title(metric_name)
     ax.set_xlabel("Categories")
     ax.set_ylabel("Values")
     canvas.figure = fig  
     canvas.draw()
 
-def plot_pie_chart(canvas,events_count):
+def plot_pie_chart(canvas,events_count,metric_name):
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()
     ax.pie(y, labels=x, autopct='%1.1f%%')
-    ax.set_title("Pie Chart")
+    ax.set_title(metric_name)
     canvas.figure = fig 
     canvas.draw()
 
-def plot_scatter_plot(canvas,events_count):
+def plot_scatter_plot(canvas,events_count,metric_name):
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()
     ax.scatter(x, y)
-    ax.set_title("Scatter Plot")
+    ax.set_title(metric_name)
     ax.set_xlabel("X-axis")
     ax.set_ylabel("Y-axis")
     canvas.figure = fig 
     canvas.draw()
 
 
-def plot_histogram(canvas,events_count):
+def plot_histogram(canvas,events_count,metric_name):
     x = list(events_count.keys())
     y = list(events_count.values())
     
     fig, ax = plt.subplots()
     ax.hist(y, bins=len(x), edgecolor='black')
-    ax.set_title("Histogram")
+    ax.set_title(metric_name)
     ax.set_xlabel("Value")
     ax.set_ylabel("Frequency")
     canvas.figure = fig
     canvas.draw()
 
-def plot_heatmap(canvas,events_count):
-    data = np.random.rand(10, 10)
-    fig, ax = plt.subplots()
-    cax = ax.imshow(data, cmap='hot', interpolation='nearest')
-    fig.colorbar(cax)
-    ax.set_title("Heatmap")
-    canvas.figure = fig 
-    canvas.draw()
-
-def plot_bubble_chart(canvas,events_count):
+def plot_bubble_chart(canvas,events_count,metric_name):
     x = list(events_count.keys())
     y = list(events_count.values())
     sizes = y
     fig, ax = plt.subplots()
     ax.scatter(x, y,sizes)
-    ax.set_title("Bubble Chart")
+    ax.set_title(metric_name)
     ax.set_xlabel("X-axis")
     ax.set_ylabel("Y-axis")
     canvas.figure = fig 
     canvas.draw()
 
-def plot_area_chart(canvas,events_count):
+def plot_area_chart(canvas,events_count,metric_name):
     
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()
     ax.fill_between(x, y, color="skyblue", alpha=0.4)
     ax.plot(x, y, color="Slateblue", alpha=0.6)
-    ax.set_title("Area Chart")
+    ax.set_title(metric_name)
     ax.set_xlabel("X-axis")
     ax.set_ylabel("Y-axis")
     canvas.figure = fig 
