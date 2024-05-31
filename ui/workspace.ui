@@ -62,48 +62,27 @@
        <item row="1" column="1">
         <widget class="QComboBox" name="selected_chart_type"/>
        </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
           <string>start date:</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="3" column="1">
         <widget class="QDateEdit" name="start_date_entry"/>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="label_4">
          <property name="text">
           <string>end date:</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QDateEdit" name="end_date_entry"/>
        </item>
        <item row="6" column="0" colspan="2">
-        <widget class="QPushButton" name="plot_button">
-         <property name="text">
-          <string>Plot chart</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>to other everything less </string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QSlider" name="horizontalSlider">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0" colspan="2">
         <widget class="QGroupBox" name="group_box_json_buttons">
          <property name="minimumSize">
           <size>
@@ -151,6 +130,70 @@
               <layout class="QGridLayout" name="matrix_of_buttons_grid"/>
              </item>
             </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="2">
+        <widget class="QPushButton" name="plot_button">
+         <property name="text">
+          <string>Plot chart</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>to other everything less </string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QSlider" name="horizontalSlider">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="minimumSize">
+          <size>
+           <width>40</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>GroupBox</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="today_button">
+            <property name="text">
+             <string>today</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="last_3_days_button">
+            <property name="text">
+             <string>last 3 days</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="last_week_button">
+            <property name="text">
+             <string>last week</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="last_month_button">
+            <property name="text">
+             <string>last month</string>
+            </property>
            </widget>
           </item>
          </layout>

@@ -54,7 +54,8 @@ class WorkspaceWindow(QMainWindow):
 
         self.plot_button.clicked.connect(self.data_for_chart)
 
-        self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    
+        if constants.EVENT_DATATIME in shared_state.names:
+            self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    
         self.create_canvas_ptl()
         self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
 
@@ -84,12 +85,22 @@ class WorkspaceWindow(QMainWindow):
         self.start_date_entry.setEnabled(enable)
         self.end_date_entry.setEnabled(enable)
 
+        self.today_button.clicked.connect(lambda: self.set_time_period(QDate.currentDate().addDays(-1)))
+        self.last_3_days_button.clicked.connect(lambda: self.set_time_period(QDate.currentDate().addDays(-3)))
+        self.last_week_button.clicked.connect(lambda: self.set_time_period(QDate.currentDate().addDays(-7)))
+        self.last_month_button.clicked.connect(lambda: self.set_time_period(QDate.currentDate().addMonths(-1)))
+
 
     def create_custom_event_menu(self, show):
         if show:
             self.group_box_json_buttons.show()
         else:
             self.group_box_json_buttons.hide()
+
+    def set_time_period(self,start_date):
+        self.start_date_entry.setDate(start_date)
+        self.end_date_entry.setDate(QDate.currentDate())
+
             
 
    
