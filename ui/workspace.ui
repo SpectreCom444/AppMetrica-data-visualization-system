@@ -52,9 +52,6 @@
        <item row="0" column="1">
         <widget class="QComboBox" name="dropdown_selected_data"/>
        </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="selected_chart_type"/>
-       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
@@ -62,11 +59,8 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QDateEdit" name="start_date_entry"/>
-       </item>
-       <item row="3" column="1">
-        <widget class="QDateEdit" name="end_date_entry"/>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="selected_chart_type"/>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_3">
@@ -75,6 +69,9 @@
          </property>
         </widget>
        </item>
+       <item row="2" column="1">
+        <widget class="QDateEdit" name="start_date_entry"/>
+       </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_4">
          <property name="text">
@@ -82,11 +79,87 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0" colspan="2">
+       <item row="3" column="1">
+        <widget class="QDateEdit" name="end_date_entry"/>
+       </item>
+       <item row="6" column="0" colspan="2">
         <widget class="QPushButton" name="plot_button">
          <property name="text">
           <string>Plot chart</string>
          </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>to other everything less </string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QSlider" name="horizontalSlider">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <widget class="QGroupBox" name="group_box_json_buttons">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>300</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>custom events</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,10">
+          <item>
+           <widget class="QLabel" name="dictionary_path">
+            <property name="minimumSize">
+             <size>
+              <width>10</width>
+              <height>10</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="undo_button">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(222, 0, 0);</string>
+            </property>
+            <property name="text">
+             <string>Undo</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="matrix_of_buttons">
+            <property name="minimumSize">
+             <size>
+              <width>500</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <layout class="QGridLayout" name="matrix_of_buttons_grid"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -102,7 +175,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>726</width>
+         <width>388</width>
          <height>591</height>
         </rect>
        </property>

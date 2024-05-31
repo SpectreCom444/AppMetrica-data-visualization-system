@@ -19,6 +19,7 @@ class DataLoaderWindow(QMainWindow):
         self.drop_frame.dropEvent = self.drop_event
 
         self.drop_frame.mousePressEvent = self.open_file_dialog
+        self.showMaximized() 
 
     def load_data_done(self):
         self.load_data_checkbox.setChecked(True)

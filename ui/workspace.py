@@ -12,6 +12,7 @@ from PyQt5.QtCore import Qt, QMimeData
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
+from PyQt5 import QtWidgets
 
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
@@ -26,6 +27,8 @@ class WorkspaceWindow(QMainWindow):
         super(WorkspaceWindow, self).__init__()
         loadUi('ui/workspace.ui', self)
         self.create_vizualization_button()
+        self.custom_event_menu =CustomEventMenu(self)
+        self.showMaximized() 
 
     def create_canvas_ptl(self):
         self.layout = QVBoxLayout(self.canvas_graphs)
@@ -53,15 +56,15 @@ class WorkspaceWindow(QMainWindow):
 
         self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    
         self.create_canvas_ptl()
+        self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
 
     def data_for_chart(self):
         if self.dropdown_selected_data.currentText() == constants.EVENT_JSON:
-            pass
-            # if len(menu_instance.get_selected_options())>0:
-            #     visualization_params=VisualizationParams(TypeOfData.TREE,self.canvas_graphs,menu_instance.get_selected_options(),type_graphs.TYPES_GRAPHS[selected_chart_type.get()] )
-            # else:
-            #     if constants.EVENT_NAME in shared_state.names :
-            #         visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,self.canvas_graphs,constants.EVENT_NAME,type_graphs.TYPES_GRAPHS[selected_chart_type.get()] )
+            if len(self.custom_event_menu.get_selected_options())>0:
+                visualization_params=VisualizationParams(TypeOfData.TREE,self.canvas,self.custom_event_menu.get_selected_options(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
+            else:
+                if constants.EVENT_NAME in shared_state.names :
+                    visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,self.canvas,constants.EVENT_NAME,type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
         else:
             visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,self.canvas,self.dropdown_selected_data.currentText(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
 
@@ -83,51 +86,46 @@ class WorkspaceWindow(QMainWindow):
 
 
     def create_custom_event_menu(self, show):
-        global menu_instance
-        # if show:
-        #     if menu_instance is None:
-        #         menu_instance = CustomEventMenu(canvas, shared_state)
-        # else:
-        #     if menu_instance is not None:
-        #         menu_instance.remove_panel()
-        #         menu_instance = None
+        if show:
+            self.group_box_json_buttons.show()
+        else:
+            self.group_box_json_buttons.hide()
             
 
    
 
 class CustomEventMenu:
-    def __init__(self, canvas, shared_state):
-        self.canvas = canvas
-        self.shared_state = shared_state
-        self.panel = tk.Frame(self.canvas)
-        self.panel.pack()
-        self.canvas.create_window(600, 200, window=self.panel)
+    def __init__(self,workspace_window):
+
+        self.matrix_of_buttons_grid= workspace_window.matrix_of_buttons_grid
+        self.dictionary_path=workspace_window.dictionary_path
+        self.undo_button= workspace_window.undo_button
+        self.undo_button.clicked.connect(self.undo_last_selection)        
         self.selected_options = []
-        self.current_options = list(self.shared_state.json_tree.keys())
-        self.create_text_widget()
-        self.create_buttons()  
-        self.create_undo_button()
+        self.current_options = list(shared_state.json_tree.keys())
+        self.update_buttons()  
     
-    def create_buttons(self):           
-        for widget in self.panel.winfo_children():
-            if isinstance(widget, tk.Button) and widget != self.undo_button:
-                widget.destroy()    
-        current_level = self.shared_state.json_tree
+    def update_buttons(self):        
+
+        for i in reversed(range(self.matrix_of_buttons_grid.count())):
+            widget = self.matrix_of_buttons_grid.itemAt(i).widget()
+            if isinstance(widget, QtWidgets.QPushButton) and widget != self.undo_button:
+                widget.deleteLater()
+        
+        current_level = shared_state.json_tree
         for opt in self.selected_options:
             if isinstance(current_level, dict):
                 current_level = current_level.get(opt, {})
             else:
                 current_level = {}
                 break
-        for idx, option in enumerate(self.current_options):     
+        
+        for option in self.current_options:
             has_children = isinstance(current_level.get(option, {}), dict) and bool(current_level.get(option, {}))
-            state = tk.NORMAL if has_children else tk.DISABLED
-            button = tk.Button(self.panel, text=option, command=lambda opt=option: self.add_to_selected(opt), state=state)
-            button.grid(row=(idx // 5) + 1, column=idx % 5, padx=5, pady=5)
-
-    def create_undo_button(self):
-        self.undo_button = tk.Button(self.panel, text="Undo", command=self.undo_last_selection)
-        self.undo_button.grid(row=0, column=5, padx=5, pady=5)
+            button = QtWidgets.QPushButton(option)
+            button.setEnabled(has_children)
+            button.clicked.connect(lambda opt=option: self.add_to_selected(opt))
+            self.matrix_of_buttons_grid.addWidget(button)
 
     def add_to_selected(self, option):
         if option not in self.selected_options:
@@ -142,7 +140,7 @@ class CustomEventMenu:
             self.update_options()
 
     def update_options(self):
-        current_level = self.shared_state.json_tree
+        current_level = shared_state.json_tree
         for opt in self.selected_options:
             if isinstance(current_level, dict):
                 current_level = current_level.get(opt, {})
@@ -154,21 +152,12 @@ class CustomEventMenu:
             self.current_options = list(current_level.keys())
         else:
             self.current_options = [current_level]
-        self.create_buttons()
-    
-    def create_text_widget(self):
-        self.text_widget = tk.Text(self.panel, height=1, width=40)
-        self.text_widget.grid(row=0, column=0, columnspan=5, padx=5, pady=5)
+        self.update_buttons()
     
     def update_text_widget(self):
-        self.text_widget.delete(1.0, tk.END)
+        self.dictionary_path.clear()
         for option in self.selected_options:
-            self.text_widget.insert(tk.END, str(option) + '->')
-
-    def remove_panel(self):
-        if self.panel:
-            self.panel.destroy()
-            self.panel = None
+            self.dictionary_path.insertPlainText(str(option) + '->')
 
     def get_selected_options(self):
         return self.selected_options 
