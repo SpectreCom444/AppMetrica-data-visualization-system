@@ -8,13 +8,13 @@ class VisualizationParams:
         self.time_limits= False
 
     def set_data_time(self, start_date_entry, end_date_entry):
-        if len(start_date_entry) == 10:
+        if isinstance(start_date_entry, str) and len(start_date_entry) == 10:
             start_date_entry += ' 00:00:00'
-        if len(end_date_entry) == 10:  
+        if isinstance(end_date_entry, str) and len(end_date_entry) == 10:
             end_date_entry += ' 23:59:59'
 
-        self.start_date_entry = datetime.strptime(start_date_entry, '%Y-%m-%d %H:%M:%S')
-        self.end_date_entry = datetime.strptime(end_date_entry, '%Y-%m-%d %H:%M:%S')
+        self.start_date_entry = start_date_entry
+        self.end_date_entry = end_date_entry
     
     def get_time_limits(self):
         return self.time_limits

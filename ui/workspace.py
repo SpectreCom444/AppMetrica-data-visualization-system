@@ -1,23 +1,39 @@
 import tkinter as tk
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from shared import shared_state, TypeOfData
 from visualization import create_chart
 from tkcalendar import DateEntry
 import type_graphs
 import constants
 from visualization_params import VisualizationParams
-
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from PyQt5.QtWidgets import QMainWindow, QApplication, QCheckBox, QPushButton, QVBoxLayout, QWidget, QFrame
 from PyQt5.QtCore import Qt, QMimeData
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
+from PyQt5.QtCore import QDate
+
+
+class MatplotlibCanvas(FigureCanvasQTAgg):
+    def __init__(self, parent):
+        fig = Figure()
+        self.fig = Figure()
+        super(MatplotlibCanvas, self).__init__(self.fig)
+        self.setParent(parent)
 
 class WorkspaceWindow(QMainWindow):
     def __init__(self):
         super(WorkspaceWindow, self).__init__()
         loadUi('ui/workspace.ui', self)
         self.create_vizualization_button()
+
+    def create_canvas_ptl(self):
+        self.layout = QVBoxLayout(self.canvas_graphs)
+        self.canvas_graphs.setLayout(self.layout)
+        self.canvas = MatplotlibCanvas(self.canvas_graphs)
+        self.layout.addWidget(self.canvas)
+
+        self.canvas_graphs.setWidgetResizable(True)
 
     def create_vizualization_button(self):
 
@@ -35,55 +51,36 @@ class WorkspaceWindow(QMainWindow):
 
         self.plot_button.clicked.connect(self.data_for_chart)
 
-        if constants.EVENT_DATATIME in shared_state.names:
-            self.create_date_selector()
-
-
-
-        # fig = Figure(figsize=(5, 4), dpi=150)
-        # fig_canvas = FigureCanvasTkAgg(fig, master=canvas)
-        # fig_canvas.draw()
-        # fig_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)      
-    
-    
+        self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    
+        self.create_canvas_ptl()
 
     def data_for_chart(self):
-        pass
-        # if selected_data.get() == constants.EVENT_JSON:
-        #     if len(menu_instance.get_selected_options())>0:
-        #         visualization_params=VisualizationParams(TypeOfData.TREE,fig_canvas,menu_instance.get_selected_options(),type_graphs.TYPES_GRAPHS[selected_chart_type.get()] )
-        #     else:
-        #         if constants.EVENT_NAME in shared_state.names :
-        #             visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,constants.EVENT_NAME,type_graphs.TYPES_GRAPHS[selected_chart_type.get()] )
-        # else:
-        #     visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,fig_canvas,selected_data.get(),type_graphs.TYPES_GRAPHS[selected_chart_type.get()] )
+        if self.dropdown_selected_data.currentText() == constants.EVENT_JSON:
+            pass
+            # if len(menu_instance.get_selected_options())>0:
+            #     visualization_params=VisualizationParams(TypeOfData.TREE,self.canvas_graphs,menu_instance.get_selected_options(),type_graphs.TYPES_GRAPHS[selected_chart_type.get()] )
+            # else:
+            #     if constants.EVENT_NAME in shared_state.names :
+            #         visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,self.canvas_graphs,constants.EVENT_NAME,type_graphs.TYPES_GRAPHS[selected_chart_type.get()] )
+        else:
+            visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,self.canvas,self.dropdown_selected_data.currentText(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
 
 
-        # if constants.EVENT_DATATIME in shared_state.names:
-        #     visualization_params.set_data_time(start_date_entry.get(),end_date_entry.get())
+        if constants.EVENT_DATATIME in shared_state.names:
+            visualization_params.set_data_time( self.start_date_entry.date(), self.end_date_entry.date())
 
-        # create_chart(visualization_params)
+        create_chart(visualization_params)
 
-    def create_date_selector(self):
-        pass
-        # global root
-        # global canvas
-        # global start_date_entry
-        # global end_date_entry
+    def set_date_selector(self, enable: bool):
+        self.start_date_entry.setDisplayFormat("yyyy-MM-dd")
+        self.start_date_entry.setDate(QDate.currentDate())
 
-        # frame_date_selector = tk.Frame(root)
-        # frame_date_selector.pack()
-        # canvas.create_window(200, 400, window=frame_date_selector)
+        self.end_date_entry.setDisplayFormat("yyyy-MM-dd")
+        self.end_date_entry.setDate(QDate.currentDate())
 
-        # tk.Label(frame_date_selector, text="Start Date:").grid(row=0, column=0, padx=5, pady=5)
-        
-        # start_date_entry = DateEntry(frame_date_selector, width=12, background='darkblue',foreground='white', borderwidth=2, date_pattern='y-mm-dd')
-        # start_date_entry.grid(row=0, column=1, padx=5, pady=5)
+        self.start_date_entry.setEnabled(enable)
+        self.end_date_entry.setEnabled(enable)
 
-        # tk.Label(frame_date_selector, text="End Date:").grid(row=1, column=0, padx=5, pady=5)
-        
-        # end_date_entry = DateEntry(frame_date_selector, width=12, background='darkblue',foreground='white', borderwidth=2, date_pattern='y-mm-dd')
-        # end_date_entry.grid(row=1, column=1, padx=5, pady=5)
 
     def create_custom_event_menu(self, show):
         global menu_instance
