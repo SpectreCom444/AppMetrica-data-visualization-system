@@ -120,13 +120,18 @@ class CustomEventMenu:
                 current_level = {}
                 break
         
-        for option in self.current_options:
+        for idx, option in enumerate(self.current_options):     
             has_children = isinstance(current_level.get(option, {}), dict) and bool(current_level.get(option, {}))
             button = QtWidgets.QPushButton(option)
             button.setEnabled(has_children)
-            button.clicked.connect(lambda opt=option: self.add_to_selected(opt))
+            button.clicked.connect(self.create_button_handler(option))
             self.matrix_of_buttons_grid.addWidget(button)
 
+    def create_button_handler(self, option):
+        def handler():
+            self.add_to_selected(option)
+        return handler
+    
     def add_to_selected(self, option):
         if option not in self.selected_options:
             self.selected_options.append(option)
@@ -157,7 +162,7 @@ class CustomEventMenu:
     def update_text_widget(self):
         self.dictionary_path.clear()
         for option in self.selected_options:
-            self.dictionary_path.insertPlainText(str(option) + '->')
+            self.dictionary_path.setText(self.dictionary_path.text() + str(option) + '->')
 
     def get_selected_options(self):
         return self.selected_options 

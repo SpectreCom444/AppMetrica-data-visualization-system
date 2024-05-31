@@ -108,23 +108,17 @@
          <property name="minimumSize">
           <size>
            <width>100</width>
-           <height>300</height>
+           <height>100</height>
           </size>
          </property>
          <property name="title">
           <string>custom events</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,10">
+         <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,1">
           <item>
-           <widget class="QLabel" name="dictionary_path">
-            <property name="minimumSize">
-             <size>
-              <width>10</width>
-              <height>10</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
+           <widget class="QLineEdit" name="dictionary_path">
+            <property name="enabled">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -142,7 +136,7 @@
            <widget class="QFrame" name="matrix_of_buttons">
             <property name="minimumSize">
              <size>
-              <width>500</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
@@ -152,7 +146,7 @@
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
+            <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
              <item>
               <layout class="QGridLayout" name="matrix_of_buttons_grid"/>
              </item>
@@ -175,7 +169,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>388</width>
+         <width>692</width>
          <height>591</height>
         </rect>
        </property>
