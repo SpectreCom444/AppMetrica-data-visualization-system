@@ -135,21 +135,14 @@
          </layout>
         </widget>
        </item>
-       <item row="7" column="0" colspan="2">
-        <widget class="QPushButton" name="plot_button">
-         <property name="text">
-          <string>Plot chart</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
+       <item row="9" column="0">
         <widget class="QLabel" name="label_5">
          <property name="text">
           <string>to other everything less </string>
          </property>
         </widget>
        </item>
-       <item row="8" column="1">
+       <item row="9" column="1">
         <widget class="QSlider" name="horizontalSlider">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -165,7 +158,7 @@
           </size>
          </property>
          <property name="title">
-          <string>GroupBox</string>
+          <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0">
@@ -199,6 +192,27 @@
          </layout>
         </widget>
        </item>
+       <item row="8" column="0">
+        <widget class="QPushButton" name="clear_button">
+         <property name="text">
+          <string>Clear all</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QPushButton" name="plot_button">
+         <property name="text">
+          <string>Plot chart down</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QPushButton" name="plot_button_right">
+         <property name="text">
+          <string>Plot chart right</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -216,6 +230,11 @@
          <height>591</height>
         </rect>
        </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="canvas_container_layout"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>

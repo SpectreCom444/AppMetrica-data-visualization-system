@@ -30,17 +30,31 @@ class WorkspaceWindow(QMainWindow):
         self.custom_event_menu =CustomEventMenu(self)
         self.showMaximized() 
 
-    def create_canvas_ptl(self):
-        self.layout = QVBoxLayout(self.canvas_graphs)
-        self.canvas_graphs.setLayout(self.layout)
-        self.canvas = MatplotlibCanvas(self.canvas_graphs)
-        self.layout.addWidget(self.canvas)
+    def create_canvas_ptl_down(self):
+        row_count = self.canvas_container_layout.rowCount()
+        canvas_container = QWidget()
+        layout = QVBoxLayout(canvas_container)
+        canvas_container.setLayout(layout)
+        canvas = MatplotlibCanvas(canvas_container)
+        layout.addWidget(canvas)
 
-        self.canvas_graphs.setWidgetResizable(True)
+        self.canvas_container_layout.addWidget(canvas_container, row_count, 0)
+
+        return canvas
+
+    def create_canvas_ptl_right(self):
+        column_count = self.canvas_container_layout.columnCount()
+        canvas_container = QWidget()
+        layout = QVBoxLayout(canvas_container)
+        canvas_container.setLayout(layout)
+        canvas = MatplotlibCanvas(canvas_container)
+        layout.addWidget(canvas)
+
+        self.canvas_container_layout.addWidget(canvas_container, 0, column_count)
+
+        return canvas
 
     def create_vizualization_button(self):
-
-
         def on_selected_data_change(*args):
             self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
 
@@ -52,22 +66,35 @@ class WorkspaceWindow(QMainWindow):
         self.selected_chart_type.setCurrentText(next(iter(type_graphs.TYPES_GRAPHS)))
         self.selected_chart_type.currentTextChanged.connect(on_selected_data_change)
 
-        self.plot_button.clicked.connect(self.data_for_chart)
+        self.plot_button.clicked.connect(lambda: self.data_for_chart("down"))
+        self.plot_button_right.clicked.connect(lambda: self.data_for_chart("right"))
+        self.clear_button.clicked.connect(self.clear_all)
+        
 
         if constants.EVENT_DATATIME in shared_state.names:
             self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    
-        self.create_canvas_ptl()
         self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
 
-    def data_for_chart(self):
+    def clear_all(self):
+        for i in reversed(range(self.canvas_container_layout.count())):
+            widget = self.canvas_container_layout.itemAt(i).widget()
+            self.canvas_container_layout.removeWidget(widget)
+            widget.deleteLater()
+
+    def data_for_chart(self,direction):
+        if direction == "down":
+            canvas = self.create_canvas_ptl_down()
+        elif direction == "right":
+            canvas = self.create_canvas_ptl_right()
+
         if self.dropdown_selected_data.currentText() == constants.EVENT_JSON:
             if len(self.custom_event_menu.get_selected_options())>0:
-                visualization_params=VisualizationParams(TypeOfData.TREE,self.canvas,self.custom_event_menu.get_selected_options(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
+                visualization_params=VisualizationParams(TypeOfData.TREE,canvas,self.custom_event_menu.get_selected_options(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
             else:
                 if constants.EVENT_NAME in shared_state.names :
-                    visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,self.canvas,constants.EVENT_NAME,type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
+                    visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,canvas,constants.EVENT_NAME,type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
         else:
-            visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,self.canvas,self.dropdown_selected_data.currentText(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
+            visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,canvas,self.dropdown_selected_data.currentText(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
 
 
         if constants.EVENT_DATATIME in shared_state.names:
