@@ -5,7 +5,6 @@ from shared import shared_state
 def load_data_wrapper(path,load_data_done):
     start_time = time.time()
     shared_state.names,shared_state.data_result = load_data(path)
-    print(*shared_state.names)
     print(f"> data is loaded in {time.time() - start_time:.2f} seconds")
     load_data_done()
   
