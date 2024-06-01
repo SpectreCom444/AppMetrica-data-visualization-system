@@ -1,7 +1,7 @@
 
-from data import load_data_wrapper, data_processing, create_session, create_users
-from shared import shared_state
-import constants
+from core.data import load_data, data_processing, create_session, create_users
+from core.shared import shared_state
+import config.constants as constants
 
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QFileDialog
 from PyQt5.QtWidgets import QMainWindow
@@ -34,7 +34,7 @@ class DataLoaderWindow(QMainWindow):
         self.create_users_checkbox.setChecked(True)
 
     def uploading_and_processing(self, path):
-        load_data_wrapper(path,self.load_data_done)
+        load_data(path,self.load_data_done)
         data_processing(self.create_events_done)
         if constants.SESSION_ID in  shared_state.names:
             create_session(self.create_session_done)

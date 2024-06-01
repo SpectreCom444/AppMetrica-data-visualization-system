@@ -1,10 +1,10 @@
 import time
-from shared import shared_state
-from models import Event, Session, User
-import constants
+from core.shared import shared_state
+from core.models import Event, Session, User
+import config.constants as constants
 import csv
 
-def load_data_wrapper(path,load_data_done):
+def load_data(path,load_data_done):
     start_time = time.time()
 
     with open(path, mode='r', encoding='utf-8') as file:
@@ -20,9 +20,7 @@ def data_processing(create_events_done):
     shared_state.events_result = create_events(shared_state.data_result, shared_state.names)
     print(f"> events {len( shared_state.events_result)} created in {time.time() - start_time:.2f} seconds")
     create_events_done()
-
-            
-
+       
 def create_session(create_session_done):
     start_time = time.time()
     shared_state.sessions_result = crate_sessions( shared_state.events_result)

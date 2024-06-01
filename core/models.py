@@ -1,8 +1,8 @@
 import json
 from typing import List, Union, Dict, Any
-from shared import shared_state
+from core.shared import shared_state
 from datetime import datetime
-import constants
+import config.constants as constants
 
 class Event:
     def __init__(self, field_names: List[str], values: List[str]):

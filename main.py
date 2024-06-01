@@ -1,5 +1,5 @@
 
-from shared import shared_state
+from core.shared import shared_state
 from PyQt5.QtWidgets import QApplication
 from ui.data_loader_interface import DataLoaderWindow
 import sys

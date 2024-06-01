@@ -1,6 +1,6 @@
 from datetime import datetime
-import constants
-from enums import DisplayMode,HistogramType,Orientation
+import config.constants as constants
+from enums.enums import DisplayMode,HistogramType,Orientation
 class VisualizationParams:
     def __init__(self):
         self.time_limits= False

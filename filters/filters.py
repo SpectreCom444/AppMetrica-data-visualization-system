@@ -1,5 +1,5 @@
 from datetime import datetime
-import constants
+import config.constants as constants
 
 class Filters:
     def __init__(self,visualization_params):

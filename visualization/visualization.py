@@ -1,9 +1,9 @@
 
 import matplotlib.pyplot as plt
-from shared import shared_state
-from enums import TypeOfData
-from filters import Filters
-import constants
+from core.shared import shared_state
+from enums.enums import TypeOfData
+from filters.filters import Filters
+import config.constants as constants
 
 
 def counter(elements,metric_name,visualization_params, filters):

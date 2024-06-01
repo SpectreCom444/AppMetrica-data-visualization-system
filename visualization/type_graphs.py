@@ -1,4 +1,4 @@
-from visualization import plot_line_chart,plot_bar_chart,plot_pie_chart,plot_scatter_plot,plot_histogram,plot_bubble_chart,plot_area_chart,plot_ring_chart,plot_funnel
+from visualization.visualization import plot_line_chart,plot_bar_chart,plot_pie_chart,plot_scatter_plot,plot_histogram,plot_bubble_chart,plot_area_chart,plot_ring_chart,plot_funnel
 
 TYPES_GRAPHS= {
     'line': plot_line_chart,

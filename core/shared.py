@@ -1,5 +1,3 @@
-
-
 class SharedState:
     def __init__(self):
         self.data_result = None

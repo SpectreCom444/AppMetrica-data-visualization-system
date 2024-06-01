@@ -1,10 +1,10 @@
 from matplotlib.figure import Figure
-from shared import shared_state
-from visualization import create_chart
+from core.shared import shared_state
+from visualization.visualization import create_chart
 from tkcalendar import DateEntry
-import type_graphs
-import constants
-from visualization_params import VisualizationParams
+import visualization.type_graphs as type_graphs
+import config.constants as constants
+from visualization.visualization_params import VisualizationParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from PyQt5.QtWidgets import QMainWindow, QApplication, QCheckBox, QPushButton, QVBoxLayout, QWidget, QFrame
 from PyQt5.QtCore import Qt, QMimeData
@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from PyQt5 import QtWidgets
-from enums import DisplayMode,HistogramType,Orientation,TypeOfData
+from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData
 
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
