@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from core.shared import shared_state
-from enums.enums import TypeOfData, GraphType, TypeOfMeasurement
+from enums.enums import TypeOfData, GraphType, TypeOfMeasurement,Orientation,HistogramType,DisplayMode
 from filters.filters import Filters
 import config.constants as constants
 
@@ -120,15 +120,16 @@ def create_chart(visualization_params):
 
     events_count = counting_other(events_count, visualization_params.other_reference)
 
-    plotter = Plotter(visualization_params.canvas, visualization_params.selected_data, visualization_params.type_of_measurement)
+    plotter = Plotter(visualization_params.canvas, visualization_params.selected_data, visualization_params.type_of_measurement,visualization_params.orientation)
     plotter.plot(visualization_params.selected_chart_type, events_count)
 
 
 class Plotter:
-    def __init__(self, canvas, metric_name, type_of_measurement, x_label="X-axis", y_label="Y-axis"):
+    def __init__(self, canvas, metric_name, type_of_measurement,orientation, x_label="X-axis", y_label="Y-axis"):
         self.canvas = canvas
         self.metric_name = metric_name
         self.type_of_measurement = type_of_measurement
+        self.orientation = orientation
         self.x_label = x_label
         self.y_label = y_label
 
@@ -159,7 +160,10 @@ class Plotter:
         x = list(events_count.keys())
         y = list(events_count.values())
         fig, ax = self._setup_plot(x, y)
-        ax.bar(x, y)
+        if self.orientation == Orientation.HORIZONTAL:
+            ax.bar(x, y)
+        elif self.orientation == Orientation.VERTICAL:
+            ax.barh(x, width=y)
         self.canvas.figure = fig
         self.canvas.draw()
 
@@ -175,7 +179,15 @@ class Plotter:
         self.canvas.draw()
 
     def plot_ring_chart(self, events_count):
-        self.plot_pie_chart(events_count)
+        if self.type_of_measurement == TypeOfMeasurement.PERCENTAGES:
+            events_count = self._convert_to_percentage(events_count)
+        x = list(events_count.keys())
+        y = list(events_count.values())
+        fig, ax = plt.subplots()
+        ax.pie(y, labels=x, autopct='%1.1f%%', wedgeprops=dict(width=0.7))
+        ax.set_title(self.metric_name)
+        self.canvas.figure = fig
+        self.canvas.draw()
 
     def plot_scatter_plot(self, events_count):
         if self.type_of_measurement == TypeOfMeasurement.PERCENTAGES:
@@ -193,7 +205,11 @@ class Plotter:
         x = list(events_count.keys())
         y = list(events_count.values())
         fig, ax = self._setup_plot(x, y)
-        ax.hist(y, bins=len(x), edgecolor=TypeOfMeasurement.PERCENTAGES)
+        if self.orientation == Orientation.HORIZONTAL:
+            ax.bar(x, y, edgecolor="black")
+        elif self.orientation == Orientation.VERTICAL:
+            ax.barh(x, width=y, edgecolor="black")
+
         self.canvas.figure = fig
         self.canvas.draw()
 
@@ -220,10 +236,19 @@ class Plotter:
         self.canvas.draw()
 
     def plot_funnel(self, events_count):
-        self.plot_bar_chart(events_count)
+        if self.type_of_measurement == TypeOfMeasurement.PERCENTAGES:
+            events_count = self._convert_to_percentage(events_count)
+        x = list(events_count.keys())
+        y = list(events_count.values())
+        fig, ax = self._setup_plot(x, y)
+        if self.orientation == Orientation.HORIZONTAL:
+            ax.bar(x, y)
+        elif self.orientation == Orientation.VERTICAL:
+            ax.barh(x, width=y)
+        self.canvas.figure = fig
+        self.canvas.draw()
 
     def plot(self, chart_type, events_count):
-        print(self.type_of_measurement)
         if chart_type == GraphType.LINE.value:
             self.plot_line_chart(events_count)
         elif chart_type == GraphType.BAR.value:
