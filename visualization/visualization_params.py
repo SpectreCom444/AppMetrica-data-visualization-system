@@ -1,10 +1,11 @@
 from datetime import datetime
 import config.constants as constants
-from enums.enums import DisplayMode,HistogramType,Orientation,GraphType
+from enums.enums import DisplayMode,HistogramType,Orientation,GraphType,TypeOfMeasurement
 class VisualizationParams:
     def __init__(self):
         self.time_limits= False
         self.type_data=constants.EVENTS
+        self.type_of_measurement =TypeOfMeasurement.UNITS
         self.selected_chart_type= GraphType.LINE
         self.display_mode = DisplayMode.TOTAL
         self.histogram_type = HistogramType.SUMMATION
@@ -18,6 +19,9 @@ class VisualizationParams:
     
     def set_histogram_type(self,histogram_type):
         self.histogram_type=histogram_type
+
+    def set_type_of_measurement(self,type_of_measurement):
+        self.type_of_measurement=type_of_measurement
 
     def set_orientation(self,orientation):
         self.orientation=orientation

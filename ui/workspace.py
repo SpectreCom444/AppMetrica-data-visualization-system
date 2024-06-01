@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from PyQt5 import QtWidgets
-from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData,GraphType
+from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData,GraphType,TypeOfMeasurement
 
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
@@ -79,6 +79,9 @@ class WorkspaceWindow(QMainWindow):
 
         self.button_horizontally.clicked.connect(lambda:  self.visualization_params.set_orientation(Orientation.HORIZONTAL))
         self.button_vertically.clicked.connect(lambda:  self.visualization_params.set_orientation(Orientation.VERTICAL))
+
+        self.button_units.clicked.connect(lambda:  self.visualization_params.set_type_of_measurement(TypeOfMeasurement.UNITS))
+        self.button_percentages.clicked.connect(lambda:  self.visualization_params.set_type_of_measurement(TypeOfMeasurement.PERCENTAGES))
 
         if constants.EVENT_DATATIME in shared_state.names:
             self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    

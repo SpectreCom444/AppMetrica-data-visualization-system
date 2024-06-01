@@ -17,6 +17,10 @@ class TypeOfData(Enum):
     FIELD_NAME = 1
     TREE = 2
 
+class TypeOfMeasurement(Enum):
+    UNITS = 1
+    PERCENTAGES = 2
+
 class GraphType(Enum):
     LINE = 'line'
     BAR = 'bar'
