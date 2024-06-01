@@ -36,6 +36,7 @@ class WorkspaceWindow(QMainWindow):
         canvas_container.setLayout(layout)
         canvas = MatplotlibCanvas(canvas_container)
         layout.addWidget(canvas)
+        canvas.setFixedSize(1000, 1000)
         self.canvas_container_layout.addWidget(canvas_container, row_count, 0)
 
         return canvas
@@ -46,6 +47,7 @@ class WorkspaceWindow(QMainWindow):
         layout = QVBoxLayout(canvas_container)
         canvas_container.setLayout(layout)
         canvas = MatplotlibCanvas(canvas_container)
+        canvas.setFixedSize(1000, 1000)
         layout.addWidget(canvas)
         self.canvas_container_layout.addWidget(canvas_container, 0, column_count)
 

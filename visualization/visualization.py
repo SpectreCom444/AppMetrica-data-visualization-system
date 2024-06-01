@@ -35,7 +35,7 @@ class DataVisualizer:
     def counter_users(self,elements, metric_name, visualization_params, count, filters):
         for user in elements:
             user_count = {}
-            self.self.counter_sessions(user.get_sessions(), metric_name, visualization_params, user_count, filters)
+            self.counter_sessions(user.get_sessions(), metric_name, visualization_params, user_count, filters)
             for key in user_count.keys():
                 if key in count:
                     count[key] += 1
@@ -164,7 +164,6 @@ class Plotter:
         x = list(events_count.keys())
         y = list(events_count.values())
         self.ax.plot(x, y, marker='o')
-        self.ax.legend()
         self.canvas.figure = self.fig
         self.canvas.draw()
 
@@ -175,12 +174,11 @@ class Plotter:
         events_count = self._sort_x_axis(events_count)
         x = list(events_count.keys())
         y = list(events_count.values())
-        fig, ax = self._setup_plot(x, y)
         if self.orientation == Orientation.HORIZONTAL:
-            ax.bar(x, y)
+            self.ax.bar(x, y)
         elif self.orientation == Orientation.VERTICAL:
-            ax.barh(x, width=y)
-        self.canvas.figure = fig
+            self.ax.barh(x, width=y)
+        self.canvas.figure = self.fig
         self.canvas.draw()
 
     def plot_pie_chart(self, events_count):
@@ -190,10 +188,10 @@ class Plotter:
         events_count = self._sort_x_axis(events_count)
         x = list(events_count.keys())
         y = list(events_count.values())
-        fig, ax = plt.subplots()
-        ax.pie(y, labels=x, autopct='%1.1f%%')
-        ax.set_title(self.metric_name)
-        self.canvas.figure = fig
+        self.ax.pie(y, labels=x, autopct='%1.1f%%')
+        self.ax.set_title(self.metric_name)
+
+        self.canvas.figure = self.fig
         self.canvas.draw()
 
     def plot_ring_chart(self, events_count):
@@ -203,10 +201,10 @@ class Plotter:
         events_count = self._sort_x_axis(events_count)
         x = list(events_count.keys())
         y = list(events_count.values())
-        fig, ax = plt.subplots()
-        ax.pie(y, labels=x, autopct='%1.1f%%', wedgeprops=dict(width=0.65))
-        ax.set_title(self.metric_name)
-        self.canvas.figure = fig
+        self.ax.pie(y, labels=x, autopct='%1.1f%%', wedgeprops=dict(width=0.65))
+        self.ax.set_title(self.metric_name)
+
+        self.canvas.figure = self.fig
         self.canvas.draw()
 
     def plot_scatter_plot(self, events_count):
@@ -216,9 +214,9 @@ class Plotter:
         events_count = self._sort_x_axis(events_count)
         x = list(events_count.keys())
         y = list(events_count.values())
-        fig, ax = self._setup_plot(x, y)
-        ax.scatter(x, y)
-        self.canvas.figure = fig
+        self.ax.scatter(x, y)
+
+        self.canvas.figure = self.fig
         self.canvas.draw()
 
     def plot_histogram(self, events_count):
@@ -228,13 +226,12 @@ class Plotter:
         events_count = self._sort_x_axis(events_count)
         x = list(events_count.keys())
         y = list(events_count.values())
-        fig, ax = self._setup_plot(x, y)
         if self.orientation == Orientation.HORIZONTAL:
-            ax.bar(x, y, edgecolor="black")
+            self.ax.bar(x, y, edgecolor="black")
         elif self.orientation == Orientation.VERTICAL:
-            ax.barh(x, width=y, edgecolor="black")
+            self.ax.barh(x, width=y, edgecolor="black")
 
-        self.canvas.figure = fig
+        self.canvas.figure = self.fig
         self.canvas.draw()
 
     def plot_bubble_chart(self, events_count):
@@ -245,9 +242,8 @@ class Plotter:
         x = list(events_count.keys())
         y = list(events_count.values())
         sizes = y
-        fig, ax = self._setup_plot(x, y)
-        ax.scatter(x, y, sizes)
-        self.canvas.figure = fig
+        self.ax.scatter(x, y, sizes)
+        self.canvas.figure = self.fig
         self.canvas.draw()
 
     def plot_area_chart(self, events_count):
@@ -257,10 +253,9 @@ class Plotter:
         events_count = self._sort_x_axis(events_count)
         x = list(events_count.keys())
         y = list(events_count.values())
-        fig, ax = self._setup_plot(x, y)
-        ax.fill_between(x, y, color="skyblue", alpha=0.4)
-        ax.plot(x, y, color="Slateblue", alpha=0.6)
-        self.canvas.figure = fig
+        self.ax.fill_between(x, y, color="skyblue", alpha=0.4)
+        self.ax.plot(x, y, color="Slateblue", alpha=0.6)
+        self.canvas.figure = self.fig
         self.canvas.draw()
 
     def plot_funnel(self, events_count):
@@ -270,12 +265,11 @@ class Plotter:
         events_count = self._sort_x_axis(events_count)
         x = list(events_count.keys())
         y = list(events_count.values())
-        fig, ax = self._setup_plot(x, y)
         if self.orientation == Orientation.HORIZONTAL:
-            ax.bar(x, y)
+            self.ax.bar(x, y)
         elif self.orientation == Orientation.VERTICAL:
-            ax.barh(x, width=y)
-        self.canvas.figure = fig
+            self.ax.barh(x, width=y)
+        self.canvas.figure = self.fig
         self.canvas.draw()
 
     def plot(self, chart_type, events_count):
