@@ -1,23 +1,65 @@
 
 import matplotlib.pyplot as plt
-import numpy as np
 from shared import shared_state, TypeOfData
 from filters import data_filter
 import constants
 
 
+def counter(elements,metric_name,visualization_params):
+    count = {}
+    if visualization_params.type_data == constants.EVENTS:
+        counter_events(elements,metric_name,visualization_params,count)   
+    elif visualization_params.type_data == constants.SESSIONS:
+       counter_sessions(elements,metric_name,visualization_params,count)   
+    elif visualization_params.type_data == constants.USERS:
+        counter_users(elements,metric_name,visualization_params,count) 
+            
+    return count
 
-def counter_events(events, metric_name):
-    events_count = {}
-    for event in events:
-        value = event.get_value(metric_name)
-        if value in events_count:
-            events_count[value] += 1
-        else:
-            events_count[value] = 1
-    return events_count
+def counter_sessions(elements,metric_name,visualization_params, count):
+    for sessions in elements:
+        sessions_count={}       
+        counter_events(sessions.get_events() ,metric_name, visualization_params, sessions_count) 
+        for key in sessions_count.keys():
+            if key in count:
+                count[key] += 1
+            else:
+                count[key] = 1
 
-def counter_events_list(events, metric_names):      
+def counter_users(elements,metric_name,visualization_params, count):
+    for user in elements:
+        user_count= {}
+        counter_sessions(user.get_sessions(),metric_name,visualization_params,user_count)                 
+        for key in user_count.keys():
+            if key in count:
+                count[key] += 1
+            else:
+                count[key] = 1
+
+def counter_events(elements,metric_name,visualization_params, count):
+    for event in elements:
+        if TypeOfData.FIELD_NAME == visualization_params.type_of_data:
+            value = event.get_value(metric_name)
+            if value in count:
+                count[value] += 1
+            else:
+                count[value] = 1
+        elif TypeOfData.TREE == visualization_params.type_of_data:
+            value = counter_events_list(event,metric_name)
+            if isinstance(value,str):
+                if value in count:
+                    count[value] += 1
+                else:
+                    count[value] = 1             
+            else:
+                for name in value:
+                    if name in count:
+                        count[name] += 1
+                    else:
+                        count[name] = 1
+    return count
+
+def counter_events_list(event, metric_names):      
 
     def check_event(tree, metric_names):
         
@@ -33,37 +75,46 @@ def counter_events_list(events, metric_names):
             return None
         
     events_count = {}
-    for event in events:
-        names = check_event(event.__dict__[constants.EVENT_JSON], metric_names)
-        if names is not None :
-            if isinstance(names,str):
-                if names in events_count:
-                    events_count[names] += 1
-                else:
-                    events_count[names] = 1             
-            else:
-                for name in names:
-                    if name in events_count:
-                        events_count[name] += 1
-                    else:
-                        events_count[name] = 1
+    names = check_event(event.__dict__[constants.EVENT_JSON], metric_names)
+    if names is not None :
+        return names     
               
         
     
     return events_count
 
+def counting_other(data, other_threshold):
+    total = sum(data.values())
+    other_sum = 0
+
+    keys_to_remove = [key for key, value in data.items() if (value / total)*100 < other_threshold]
+
+    for key in keys_to_remove:
+        other_sum += data.pop(key)
+
+    if other_sum >0:
+        if 'other' in data:
+            data['other'] += other_sum
+        else:
+            data['other'] = other_sum
+
+    return data
+            
 
 def create_chart(visualization_params):
+    if visualization_params.type_data == constants.EVENTS:
+        data = shared_state.events_result
+    elif visualization_params.type_data == constants.SESSIONS:
+        data = shared_state.sessions_result
+    elif visualization_params.type_data == constants.USERS:
+        data = shared_state.users_result
 
-    data = shared_state.events_result
+    # if visualization_params.get_time_limits:
+    #     data= data_filter(data,visualization_params.start_date_entry,visualization_params.end_date_entry)
 
-    if visualization_params.get_time_limits:
-        data= data_filter(data,visualization_params.start_date_entry,visualization_params.end_date_entry)
+    events_count=counter(data,visualization_params.selected_data,visualization_params)
 
-    if TypeOfData.TREE == visualization_params.type_of_data:
-        events_count=counter_events_list(data,visualization_params.selected_data)
-    elif TypeOfData.FIELD_NAME == visualization_params.type_of_data:
-        events_count=counter_events(data,visualization_params.selected_data)
+    events_count = counting_other(events_count,visualization_params.other_reference )
 
     visualization_params.selected_chart_type(visualization_params.canvas, events_count,visualization_params.selected_data)
 
@@ -90,6 +141,15 @@ def plot_bar_chart(canvas,events_count,metric_name):
     canvas.draw()
 
 def plot_pie_chart(canvas,events_count,metric_name):
+    x = list(events_count.keys())
+    y = list(events_count.values())
+    fig, ax = plt.subplots()
+    ax.pie(y, labels=x, autopct='%1.1f%%')
+    ax.set_title(metric_name)
+    canvas.figure = fig 
+    canvas.draw()
+
+def plot_ring_chart(canvas,events_count,metric_name):
     x = list(events_count.keys())
     y = list(events_count.values())
     fig, ax = plt.subplots()

@@ -1,4 +1,3 @@
-import tkinter as tk
 from matplotlib.figure import Figure
 from shared import shared_state, TypeOfData
 from visualization import create_chart
@@ -26,6 +25,7 @@ class WorkspaceWindow(QMainWindow):
     def __init__(self):
         super(WorkspaceWindow, self).__init__()
         loadUi('ui/workspace.ui', self)
+        self.visualization_params=VisualizationParams()
         self.create_vizualization_button()
         self.custom_event_menu =CustomEventMenu(self)
         self.showMaximized() 
@@ -37,7 +37,6 @@ class WorkspaceWindow(QMainWindow):
         canvas_container.setLayout(layout)
         canvas = MatplotlibCanvas(canvas_container)
         layout.addWidget(canvas)
-
         self.canvas_container_layout.addWidget(canvas_container, row_count, 0)
 
         return canvas
@@ -49,7 +48,6 @@ class WorkspaceWindow(QMainWindow):
         canvas_container.setLayout(layout)
         canvas = MatplotlibCanvas(canvas_container)
         layout.addWidget(canvas)
-
         self.canvas_container_layout.addWidget(canvas_container, 0, column_count)
 
         return canvas
@@ -71,6 +69,10 @@ class WorkspaceWindow(QMainWindow):
         self.clear_button.clicked.connect(self.clear_all)
         
 
+        self.set_type_data_events.clicked.connect(lambda: self.visualization_params.set_type_data(constants.EVENTS))
+        self.set_type_data_sessions.clicked.connect(lambda:  self.visualization_params.set_type_data(constants.SESSIONS))
+        self.set_type_data_users.clicked.connect(lambda:  self.visualization_params.set_type_data(constants.USERS))
+
         if constants.EVENT_DATATIME in shared_state.names:
             self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    
         self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
@@ -89,18 +91,18 @@ class WorkspaceWindow(QMainWindow):
 
         if self.dropdown_selected_data.currentText() == constants.EVENT_JSON:
             if len(self.custom_event_menu.get_selected_options())>0:
-                visualization_params=VisualizationParams(TypeOfData.TREE,canvas,self.custom_event_menu.get_selected_options(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
+                self.visualization_params.set_data_to_display(TypeOfData.TREE,canvas,self.custom_event_menu.get_selected_options(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()],self.other_reference_slider.value() )
             else:
                 if constants.EVENT_NAME in shared_state.names :
-                    visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,canvas,constants.EVENT_NAME,type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
+                    self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,canvas,constants.EVENT_NAME,type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()],self.other_reference_slider.value() )
         else:
-            visualization_params=VisualizationParams(TypeOfData.FIELD_NAME,canvas,self.dropdown_selected_data.currentText(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()] )
+            self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,canvas,self.dropdown_selected_data.currentText(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()],self.other_reference_slider.value() )
 
 
         if constants.EVENT_DATATIME in shared_state.names:
-            visualization_params.set_data_time( self.start_date_entry.date(), self.end_date_entry.date())
+            self.visualization_params.set_data_time( self.start_date_entry.date(), self.end_date_entry.date())
 
-        create_chart(visualization_params)
+        create_chart(self.visualization_params)
 
     def set_date_selector(self, enable: bool):
         self.start_date_entry.setDisplayFormat("yyyy-MM-dd")
