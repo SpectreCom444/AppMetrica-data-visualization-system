@@ -1,9 +1,22 @@
 from datetime import datetime
 import constants
+from enums import DisplayMode,HistogramType,Orientation
 class VisualizationParams:
     def __init__(self):
         self.time_limits= False
         self.type_data=constants.EVENTS
+        self.display_mode = DisplayMode.TOTAL
+        self.histogram_type = HistogramType.SUMMATION
+        self.orientation = Orientation.HORIZONTAL
+
+    def set_display_mode(self,display_mode):
+        self.display_mode=display_mode
+    
+    def set_histogram_type(self,histogram_type):
+        self.histogram_type=histogram_type
+
+    def set_orientation(self,orientation):
+        self.orientation=orientation
 
     def set_data_to_display(self, type_of_data, fig_canvas, selected_data,selected_chart_type,other_reference ):
         self.type_of_data=type_of_data
@@ -12,7 +25,6 @@ class VisualizationParams:
         self.selected_chart_type=selected_chart_type   
         self.other_reference=other_reference
         
-
     def set_data_time(self, start_date_entry, end_date_entry):
         if isinstance(start_date_entry, str) and len(start_date_entry) == 10:
             start_date_entry += ' 00:00:00'

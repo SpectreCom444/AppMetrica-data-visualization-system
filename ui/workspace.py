@@ -1,5 +1,5 @@
 from matplotlib.figure import Figure
-from shared import shared_state, TypeOfData
+from shared import shared_state
 from visualization import create_chart
 from tkcalendar import DateEntry
 import type_graphs
@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from PyQt5 import QtWidgets
+from enums import DisplayMode,HistogramType,Orientation,TypeOfData
 
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
@@ -69,9 +70,15 @@ class WorkspaceWindow(QMainWindow):
         self.clear_button.clicked.connect(self.clear_all)
         
 
-        self.set_type_data_events.clicked.connect(lambda: self.visualization_params.set_type_data(constants.EVENTS))
-        self.set_type_data_sessions.clicked.connect(lambda:  self.visualization_params.set_type_data(constants.SESSIONS))
-        self.set_type_data_users.clicked.connect(lambda:  self.visualization_params.set_type_data(constants.USERS))
+        self.button_split_by_total.clicked.connect(lambda: self.visualization_params.set_display_mode(DisplayMode.TOTAL))
+        self.button_split_bu_day.clicked.connect(lambda:  self.visualization_params.set_display_mode(DisplayMode.DAY))
+        self.button_split_by_hourse.clicked.connect(lambda:  self.visualization_params.set_display_mode(DisplayMode.HOURSE))
+
+        self.button_summation.clicked.connect(lambda: self.visualization_params.set_histogram_type(HistogramType.SUMMATION))
+        self.button_comparison.clicked.connect(lambda:  self.visualization_params.set_histogram_type(HistogramType.COMPARISON))
+
+        self.button_horizontally.clicked.connect(lambda:  self.visualization_params.set_orientation(Orientation.HORIZONTAL))
+        self.button_vertically.clicked.connect(lambda:  self.visualization_params.set_orientation(Orientation.VERTICAL))
 
         if constants.EVENT_DATATIME in shared_state.names:
             self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    

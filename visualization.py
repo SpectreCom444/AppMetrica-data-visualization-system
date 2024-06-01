@@ -1,6 +1,7 @@
 
 import matplotlib.pyplot as plt
-from shared import shared_state, TypeOfData
+from shared import shared_state
+from enums import TypeOfData
 from filters import Filters
 import constants
 
@@ -208,4 +209,16 @@ def plot_area_chart(canvas,events_count,metric_name):
     ax.set_xlabel("X-axis")
     ax.set_ylabel("Y-axis")
     canvas.figure = fig 
+    canvas.draw()
+
+
+def plot_funnel(canvas,events_count,metric_name):
+    x = list(events_count.keys())
+    y = list(events_count.values())
+    fig, ax = plt.subplots()
+    ax.bar(x, y)
+    ax.set_title(metric_name)
+    ax.set_xlabel("Categories")
+    ax.set_ylabel("Values")
+    canvas.figure = fig  
     canvas.draw()

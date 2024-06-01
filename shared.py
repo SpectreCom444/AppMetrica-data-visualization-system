@@ -1,4 +1,4 @@
-from enum import Enum
+
 
 class SharedState:
     def __init__(self):
@@ -34,6 +34,4 @@ class SharedState:
 
 shared_state= SharedState()
 
-class TypeOfData(Enum):
-    FIELD_NAME = 1
-    TREE = 2
+
