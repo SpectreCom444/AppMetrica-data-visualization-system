@@ -135,14 +135,14 @@
          </layout>
         </widget>
        </item>
-       <item row="10" column="0">
+       <item row="11" column="0">
         <widget class="QLabel" name="label_5">
          <property name="text">
           <string>to other everything less </string>
          </property>
         </widget>
        </item>
-       <item row="10" column="1">
+       <item row="11" column="1">
         <widget class="QSlider" name="other_reference_slider">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -192,7 +192,7 @@
          </layout>
         </widget>
        </item>
-       <item row="9" column="0">
+       <item row="10" column="0">
         <widget class="QPushButton" name="clear_button">
          <property name="text">
           <string>Clear all</string>
@@ -200,16 +200,9 @@
         </widget>
        </item>
        <item row="8" column="0">
-        <widget class="QPushButton" name="plot_button">
+        <widget class="QPushButton" name="plot_button_down">
          <property name="text">
           <string>Plot chart down</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QPushButton" name="plot_button_right">
-         <property name="text">
-          <string>Plot chart right</string>
          </property>
         </widget>
        </item>
@@ -251,6 +244,27 @@
            </layout>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QPushButton" name="plot_button_right">
+         <property name="text">
+          <string>Plot chart right</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QPushButton" name="plot_button">
+         <property name="text">
+          <string>Plot chart</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QPushButton" name="add_chart_button">
+         <property name="text">
+          <string>add_chart</string>
+         </property>
         </widget>
        </item>
       </layout>

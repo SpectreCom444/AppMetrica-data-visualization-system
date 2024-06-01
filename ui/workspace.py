@@ -1,6 +1,6 @@
 from matplotlib.figure import Figure
 from core.shared import shared_state
-from visualization.visualization import create_chart
+from visualization.visualization import DataVisualizer
 import config.constants as constants
 from visualization.visualization_params import VisualizationParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -14,7 +14,6 @@ from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData,GraphTy
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
     def __init__(self, parent):
-        fig = Figure()
         self.fig = Figure()
         super(MatplotlibCanvas, self).__init__(self.fig)
         self.setParent(parent)
@@ -23,10 +22,12 @@ class WorkspaceWindow(QMainWindow):
     def __init__(self):
         super(WorkspaceWindow, self).__init__()
         loadUi('ui/workspace.ui', self)
+        self.data_visualizer =DataVisualizer()
         self.visualization_params=VisualizationParams()
         self.create_vizualization_button()
         self.custom_event_menu =CustomEventMenu(self)
         self.showMaximized() 
+        self.canvas = None
 
     def create_canvas_ptl_down(self):
         row_count = self.canvas_container_layout.rowCount()
@@ -62,8 +63,10 @@ class WorkspaceWindow(QMainWindow):
         self.selected_chart_type.setCurrentText(next(iter( [graph_type.value for graph_type in GraphType])))
         self.selected_chart_type.currentTextChanged.connect(on_selected_data_change)
 
-        self.plot_button.clicked.connect(lambda: self.data_for_chart("down"))
+        self.plot_button.clicked.connect(lambda: self.data_for_chart("replot"))
+        self.plot_button_down.clicked.connect(lambda: self.data_for_chart("down"))
         self.plot_button_right.clicked.connect(lambda: self.data_for_chart("right"))
+        self.add_chart_button.clicked.connect(lambda: self.data_for_chart("add"))
         self.clear_button.clicked.connect(self.clear_all)
         
         self.set_type_data_events.clicked.connect(lambda: self.visualization_params.set_type_data(constants.EVENTS))
@@ -94,25 +97,43 @@ class WorkspaceWindow(QMainWindow):
             widget.deleteLater()
 
     def data_for_chart(self,direction):
-        if direction == "down":
-            canvas = self.create_canvas_ptl_down()
+        if direction == "down":   
+            self.canvas = self.create_canvas_ptl_down()
         elif direction == "right":
-            canvas = self.create_canvas_ptl_right()
+            self.canvas = self.create_canvas_ptl_right()
+        elif direction =="replot":
+            if self.canvas == None:
+                self.canvas = self.create_canvas_ptl_down()
+        elif direction == "add":
+            if self.canvas == None:
+                 self.canvas = self.create_canvas_ptl_down()
+
 
         if self.dropdown_selected_data.currentText() == constants.EVENT_JSON:
             if len(self.custom_event_menu.get_selected_options())>0:
-                self.visualization_params.set_data_to_display(TypeOfData.TREE,canvas,self.custom_event_menu.get_selected_options(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+                self.visualization_params.set_data_to_display(TypeOfData.TREE,self.canvas,self.custom_event_menu.get_selected_options(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
             else:
                 if constants.EVENT_NAME in shared_state.names :
-                    self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,canvas,constants.EVENT_NAME,[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+                    self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,self.canvas,constants.EVENT_NAME,[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
         else:
-            self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,canvas,self.dropdown_selected_data.currentText(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+            self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,self.canvas,self.dropdown_selected_data.currentText(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
 
 
         if constants.EVENT_DATATIME in shared_state.names:
             self.visualization_params.set_data_time( self.start_date_entry.date(), self.end_date_entry.date())
 
-        create_chart(self.visualization_params)
+
+        if direction == "down":   
+            self.data_visualizer.create_new_plotter(self.visualization_params)
+        elif direction == "right":
+            self.data_visualizer.create_new_plotter(self.visualization_params)
+        elif direction =="replot":      
+            self.data_visualizer.create_new_plotter(self.visualization_params)
+        elif direction == "add":
+            pass
+
+        self.data_visualizer.add_chart(self.visualization_params)
+        self.canvas.draw()
 
     def set_date_selector(self, enable: bool):
         self.start_date_entry.setDisplayFormat("yyyy-MM-dd")
