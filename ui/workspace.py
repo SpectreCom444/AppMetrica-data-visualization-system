@@ -1,18 +1,15 @@
 from matplotlib.figure import Figure
 from core.shared import shared_state
 from visualization.visualization import create_chart
-from tkcalendar import DateEntry
-import visualization.type_graphs as type_graphs
 import config.constants as constants
 from visualization.visualization_params import VisualizationParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from PyQt5.QtWidgets import QMainWindow, QApplication, QCheckBox, QPushButton, QVBoxLayout, QWidget, QFrame
-from PyQt5.QtCore import Qt, QMimeData
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from PyQt5 import QtWidgets
-from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData
+from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData,GraphType
 
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
@@ -61,14 +58,17 @@ class WorkspaceWindow(QMainWindow):
         self.dropdown_selected_data.setCurrentText(shared_state.names[0])
         self.dropdown_selected_data.currentTextChanged.connect(on_selected_data_change)
 
-        self.selected_chart_type.addItems(type_graphs.TYPES_GRAPHS.keys())
-        self.selected_chart_type.setCurrentText(next(iter(type_graphs.TYPES_GRAPHS)))
+        self.selected_chart_type.addItems([graph_type.value for graph_type in GraphType])
+        self.selected_chart_type.setCurrentText(next(iter( [graph_type.value for graph_type in GraphType])))
         self.selected_chart_type.currentTextChanged.connect(on_selected_data_change)
 
         self.plot_button.clicked.connect(lambda: self.data_for_chart("down"))
         self.plot_button_right.clicked.connect(lambda: self.data_for_chart("right"))
         self.clear_button.clicked.connect(self.clear_all)
         
+        self.set_type_data_events.clicked.connect(lambda: self.visualization_params.set_type_data(constants.EVENTS))
+        self.set_type_data_sessions.clicked.connect(lambda:  self.visualization_params.set_type_data(constants.SESSIONS))
+        self.set_type_data_users.clicked.connect(lambda:  self.visualization_params.set_type_data(constants.USERS))
 
         self.button_split_by_total.clicked.connect(lambda: self.visualization_params.set_display_mode(DisplayMode.TOTAL))
         self.button_split_bu_day.clicked.connect(lambda:  self.visualization_params.set_display_mode(DisplayMode.DAY))
@@ -98,12 +98,12 @@ class WorkspaceWindow(QMainWindow):
 
         if self.dropdown_selected_data.currentText() == constants.EVENT_JSON:
             if len(self.custom_event_menu.get_selected_options())>0:
-                self.visualization_params.set_data_to_display(TypeOfData.TREE,canvas,self.custom_event_menu.get_selected_options(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()],self.other_reference_slider.value() )
+                self.visualization_params.set_data_to_display(TypeOfData.TREE,canvas,self.custom_event_menu.get_selected_options(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
             else:
                 if constants.EVENT_NAME in shared_state.names :
-                    self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,canvas,constants.EVENT_NAME,type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()],self.other_reference_slider.value() )
+                    self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,canvas,constants.EVENT_NAME,[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
         else:
-            self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,canvas,self.dropdown_selected_data.currentText(),type_graphs.TYPES_GRAPHS[self.selected_chart_type.currentText()],self.other_reference_slider.value() )
+            self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,canvas,self.dropdown_selected_data.currentText(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
 
 
         if constants.EVENT_DATATIME in shared_state.names:

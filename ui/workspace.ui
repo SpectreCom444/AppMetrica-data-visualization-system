@@ -361,6 +361,33 @@
            </layout>
           </widget>
          </item>
+         <item>
+          <widget class="QGroupBox" name="type_of_measurement">
+           <property name="title">
+            <string>type of measurement</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <item>
+               <widget class="QPushButton" name="button_percentages">
+                <property name="text">
+                 <string>percentages</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="button_units">
+                <property name="text">
+                 <string>units</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>

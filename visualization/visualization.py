@@ -1,7 +1,7 @@
 
 import matplotlib.pyplot as plt
 from core.shared import shared_state
-from enums.enums import TypeOfData
+from enums.enums import TypeOfData,GraphType
 from filters.filters import Filters
 import config.constants as constants
 
@@ -104,6 +104,7 @@ def counting_other(data, other_threshold):
             
 
 def create_chart(visualization_params):
+    print(visualization_params.type_data)
     if visualization_params.type_data == constants.EVENTS:
         data = shared_state.events_result
     elif visualization_params.type_data == constants.SESSIONS:
@@ -120,105 +121,104 @@ def create_chart(visualization_params):
 
     events_count = counting_other(events_count,visualization_params.other_reference )
 
-    visualization_params.selected_chart_type(visualization_params.canvas, events_count,visualization_params.selected_data)
+    plotter = Plotter(visualization_params.canvas,visualization_params.selected_data)
+    plotter.plot(visualization_params.selected_chart_type,events_count)
 
-def plot_line_chart(canvas,events_count,metric_name):
-    x = list(events_count.keys())
-    y = list(events_count.values())
-    fig, ax = plt.subplots()
-    ax.plot(x, y, marker='o')
-    ax.set_title(metric_name)
-    ax.set_xlabel("X-axis")
-    ax.set_ylabel("Y-axis")
-    canvas.figure = fig  
-    canvas.draw()
-
-def plot_bar_chart(canvas,events_count,metric_name):
-    x = list(events_count.keys())
-    y = list(events_count.values())
-    fig, ax = plt.subplots()
-    ax.bar(x, y)
-    ax.set_title(metric_name)
-    ax.set_xlabel("Categories")
-    ax.set_ylabel("Values")
-    canvas.figure = fig  
-    canvas.draw()
-
-def plot_pie_chart(canvas,events_count,metric_name):
-    x = list(events_count.keys())
-    y = list(events_count.values())
-    fig, ax = plt.subplots()
-    ax.pie(y, labels=x, autopct='%1.1f%%')
-    ax.set_title(metric_name)
-    canvas.figure = fig 
-    canvas.draw()
-
-def plot_ring_chart(canvas,events_count,metric_name):
-    x = list(events_count.keys())
-    y = list(events_count.values())
-    fig, ax = plt.subplots()
-    ax.pie(y, labels=x, autopct='%1.1f%%')
-    ax.set_title(metric_name)
-    canvas.figure = fig 
-    canvas.draw()
-
-def plot_scatter_plot(canvas,events_count,metric_name):
-    x = list(events_count.keys())
-    y = list(events_count.values())
-    fig, ax = plt.subplots()
-    ax.scatter(x, y)
-    ax.set_title(metric_name)
-    ax.set_xlabel("X-axis")
-    ax.set_ylabel("Y-axis")
-    canvas.figure = fig 
-    canvas.draw()
-
-
-def plot_histogram(canvas,events_count,metric_name):
-    x = list(events_count.keys())
-    y = list(events_count.values())
+class Plotter:
+    def __init__(self, canvas, metric_name, x_label="X-axis", y_label="Y-axis"):
+        self.canvas = canvas
+        self.metric_name = metric_name
+        self.x_label = x_label
+        self.y_label = y_label
     
-    fig, ax = plt.subplots()
-    ax.hist(y, bins=len(x), edgecolor='black')
-    ax.set_title(metric_name)
-    ax.set_xlabel("Value")
-    ax.set_ylabel("Frequency")
-    canvas.figure = fig
-    canvas.draw()
-
-def plot_bubble_chart(canvas,events_count,metric_name):
-    x = list(events_count.keys())
-    y = list(events_count.values())
-    sizes = y
-    fig, ax = plt.subplots()
-    ax.scatter(x, y,sizes)
-    ax.set_title(metric_name)
-    ax.set_xlabel("X-axis")
-    ax.set_ylabel("Y-axis")
-    canvas.figure = fig 
-    canvas.draw()
-
-def plot_area_chart(canvas,events_count,metric_name):
+    def _setup_plot(self, x, y):
+        fig, ax = plt.subplots()
+        ax.set_title(self.metric_name)
+        ax.set_xlabel(self.x_label)
+        ax.set_ylabel(self.y_label)
+        return fig, ax
     
-    x = list(events_count.keys())
-    y = list(events_count.values())
-    fig, ax = plt.subplots()
-    ax.fill_between(x, y, color="skyblue", alpha=0.4)
-    ax.plot(x, y, color="Slateblue", alpha=0.6)
-    ax.set_title(metric_name)
-    ax.set_xlabel("X-axis")
-    ax.set_ylabel("Y-axis")
-    canvas.figure = fig 
-    canvas.draw()
+    def plot_line_chart(self, events_count):
+        x = list(events_count.keys())
+        y = list(events_count.values())
+        fig, ax = self._setup_plot(x, y)
+        ax.plot(x, y, marker='o')
+        self.canvas.figure = fig  
+        self.canvas.draw()
 
+    def plot_bar_chart(self, events_count):
+        x = list(events_count.keys())
+        y = list(events_count.values())
+        fig, ax = self._setup_plot(x, y)
+        ax.bar(x, y)
+        self.canvas.figure = fig  
+        self.canvas.draw()
 
-def plot_funnel(canvas,events_count,metric_name):
-    x = list(events_count.keys())
-    y = list(events_count.values())
-    fig, ax = plt.subplots()
-    ax.bar(x, y)
-    ax.set_title(metric_name)
-    ax.set_xlabel("Categories")
-    ax.set_ylabel("Values")
-    canvas.figure = fig  
-    canvas.draw()
+    def plot_pie_chart(self, events_count):
+        x = list(events_count.keys())
+        y = list(events_count.values())
+        fig, ax = plt.subplots()
+        ax.pie(y, labels=x, autopct='%1.1f%%')
+        ax.set_title(self.metric_name)
+        self.canvas.figure = fig 
+        self.canvas.draw()
+
+    def plot_ring_chart(self, events_count):
+        self.plot_pie_chart(events_count)
+
+    def plot_scatter_plot(self, events_count):
+        x = list(events_count.keys())
+        y = list(events_count.values())
+        fig, ax = self._setup_plot(x, y)
+        ax.scatter(x, y)
+        self.canvas.figure = fig 
+        self.canvas.draw()
+
+    def plot_histogram(self, events_count):
+        x = list(events_count.keys())
+        y = list(events_count.values())
+        fig, ax = self._setup_plot(x, y)
+        ax.hist(y, bins=len(x), edgecolor='black')
+        self.canvas.figure = fig
+        self.canvas.draw()
+
+    def plot_bubble_chart(self, events_count):
+        x = list(events_count.keys())
+        y = list(events_count.values())
+        sizes = y
+        fig, ax = self._setup_plot(x, y)
+        ax.scatter(x, y, sizes)
+        self.canvas.figure = fig 
+        self.canvas.draw()
+
+    def plot_area_chart(self, events_count):
+        x = list(events_count.keys())
+        y = list(events_count.values())
+        fig, ax = self._setup_plot(x, y)
+        ax.fill_between(x, y, color="skyblue", alpha=0.4)
+        ax.plot(x, y, color="Slateblue", alpha=0.6)
+        self.canvas.figure = fig 
+        self.canvas.draw()
+
+    def plot_funnel(self, events_count):
+        self.plot_bar_chart(events_count)
+
+    def plot(self, chart_type, events_count):
+        if chart_type == GraphType.LINE.value:
+            self.plot_line_chart(events_count)
+        elif chart_type == GraphType.BAR.value:
+            self.plot_bar_chart(events_count)
+        elif chart_type == GraphType.PIE.value:
+            self.plot_pie_chart(events_count)
+        elif chart_type == GraphType.RING.value:
+            self.plot_ring_chart(events_count)
+        elif chart_type == GraphType.SCATTER.value:
+            self.plot_scatter_plot(events_count)
+        elif chart_type == GraphType.HISTOGRAM.value:
+            self.plot_histogram(events_count)
+        elif chart_type == GraphType.BUBBLE.value:
+            self.plot_bubble_chart(events_count)
+        elif chart_type == GraphType.AREA.value:
+            self.plot_area_chart(events_count)
+        elif chart_type == GraphType.FUNNEL.value:
+            self.plot_funnel(events_count)

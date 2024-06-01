@@ -16,3 +16,14 @@ class Orientation(Enum):
 class TypeOfData(Enum):
     FIELD_NAME = 1
     TREE = 2
+
+class GraphType(Enum):
+    LINE = 'line'
+    BAR = 'bar'
+    PIE = 'pie'
+    RING = 'ring'
+    SCATTER = 'scatter'
+    HISTOGRAM = 'histogram'
+    BUBBLE = 'bubble'
+    AREA = 'area'
+    FUNNEL = 'funnel'
