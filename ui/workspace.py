@@ -121,6 +121,7 @@ class WorkspaceWindow(QMainWindow):
     def __init__(self):
         super(WorkspaceWindow, self).__init__()
         loadUi('ui/workspace.ui', self)
+        self.setWindowTitle("Data visualization system:  Workspace")
         self.data_visualizer =DataVisualizer()
         self.grid_matrix = GridMatrix(self)
 

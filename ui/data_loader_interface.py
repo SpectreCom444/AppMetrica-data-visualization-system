@@ -13,6 +13,7 @@ class DataLoaderWindow(QMainWindow):
     def __init__(self):
         super(DataLoaderWindow, self).__init__()
         loadUi('ui/data-loader.ui', self)
+        self.setWindowTitle("Data visualization system")
 
         self.drop_frame.setAcceptDrops(True)
         self.drop_frame.dragEnterEvent = self.drag_enter_event
