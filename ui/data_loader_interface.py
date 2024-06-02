@@ -1,5 +1,5 @@
 
-from core.data import load_data, data_processing, create_session, create_users
+from core.data_loader import load_data, data_processing, create_session, create_users
 from core.shared import shared_state
 import config.constants as constants
 

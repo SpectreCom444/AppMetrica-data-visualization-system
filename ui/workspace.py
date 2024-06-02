@@ -2,7 +2,6 @@ from matplotlib.figure import Figure
 from core.shared import shared_state
 from visualization.data_visualizer import DataVisualizer
 import config.constants as constants
-from visualization.visualization_params import VisualizationParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from PyQt5.QtWidgets import QMainWindow, QApplication, QCheckBox, QPushButton, QVBoxLayout, QWidget, QFrame
 from PyQt5.QtWidgets import QMainWindow
@@ -111,7 +110,6 @@ class WorkspaceWindow(QMainWindow):
         super(WorkspaceWindow, self).__init__()
         loadUi('ui/workspace.ui', self)
         self.data_visualizer =DataVisualizer()
-        self.visualization_params=VisualizationParams()
         self.grid_matrix = GridMatrix(self)
 
         self.create_vizualization_button()
@@ -138,22 +136,22 @@ class WorkspaceWindow(QMainWindow):
         self.overlay_button.clicked.connect(lambda: self.data_for_chart("add"))
         self.delete_all_button.clicked.connect(self.grid_matrix.remove_all)
         
-        self.set_type_data_events.clicked.connect(lambda: self.visualization_params.set_type_data(constants.EVENTS))
-        self.set_type_data_sessions.clicked.connect(lambda:  self.visualization_params.set_type_data(constants.SESSIONS))
-        self.set_type_data_users.clicked.connect(lambda:  self.visualization_params.set_type_data(constants.USERS))
+        self.set_type_data_events.clicked.connect(lambda: self.data_visualizer.set_type_data(constants.EVENTS))
+        self.set_type_data_sessions.clicked.connect(lambda:  self.data_visualizer.set_type_data(constants.SESSIONS))
+        self.set_type_data_users.clicked.connect(lambda:  self.data_visualizer.set_type_data(constants.USERS))
 
-        self.button_split_by_total.clicked.connect(lambda: self.visualization_params.set_display_mode(DisplayMode.TOTAL))
-        self.button_split_bu_day.clicked.connect(lambda:  self.visualization_params.set_display_mode(DisplayMode.DAY))
-        self.button_split_by_hourse.clicked.connect(lambda:  self.visualization_params.set_display_mode(DisplayMode.HOURSE))
+        self.button_split_by_total.clicked.connect(lambda: self.data_visualizer.set_display_mode(DisplayMode.TOTAL))
+        self.button_split_bu_day.clicked.connect(lambda:  self.data_visualizer.set_display_mode(DisplayMode.DAY))
+        self.button_split_by_hourse.clicked.connect(lambda:  self.data_visualizer.set_display_mode(DisplayMode.HOURSE))
 
-        self.button_summation.clicked.connect(lambda: self.visualization_params.set_histogram_type(HistogramType.SUMMATION))
-        self.button_comparison.clicked.connect(lambda:  self.visualization_params.set_histogram_type(HistogramType.COMPARISON))
+        self.button_summation.clicked.connect(lambda: self.data_visualizer.set_histogram_type(HistogramType.SUMMATION))
+        self.button_comparison.clicked.connect(lambda:  self.data_visualizer.set_histogram_type(HistogramType.COMPARISON))
 
-        self.button_horizontally.clicked.connect(lambda:  self.visualization_params.set_orientation(Orientation.HORIZONTAL))
-        self.button_vertically.clicked.connect(lambda:  self.visualization_params.set_orientation(Orientation.VERTICAL))
+        self.button_horizontally.clicked.connect(lambda:  self.data_visualizer.set_orientation(Orientation.HORIZONTAL))
+        self.button_vertically.clicked.connect(lambda:  self.data_visualizer.set_orientation(Orientation.VERTICAL))
 
-        self.button_units.clicked.connect(lambda:  self.visualization_params.set_type_of_measurement(TypeOfMeasurement.UNITS))
-        self.button_percentages.clicked.connect(lambda:  self.visualization_params.set_type_of_measurement(TypeOfMeasurement.PERCENTAGES))
+        self.button_units.clicked.connect(lambda:  self.data_visualizer.set_type_of_measurement(TypeOfMeasurement.UNITS))
+        self.button_percentages.clicked.connect(lambda:  self.data_visualizer.set_type_of_measurement(TypeOfMeasurement.PERCENTAGES))
 
         self.clear_all_button.clicked.connect(self.grid_matrix.clear_all_canvases)
         self.clear_button.clicked.connect(self.grid_matrix.clear_selected_canvas)
@@ -168,24 +166,24 @@ class WorkspaceWindow(QMainWindow):
     def data_for_chart(self,direction):
         if self.dropdown_selected_data.currentText() == constants.EVENT_JSON:
             if len(self.custom_event_menu.get_selected_options())>0:
-                self.visualization_params.set_data_to_display(TypeOfData.TREE,self.grid_matrix.selected_canvas,self.custom_event_menu.get_selected_options(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+                self.data_visualizer.set_data_to_display(TypeOfData.TREE,self.grid_matrix.selected_canvas,self.custom_event_menu.get_selected_options(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
             else:
                 if constants.EVENT_NAME in shared_state.names :
-                    self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,self.grid_matrix.selected_canvas,constants.EVENT_NAME,[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+                    self.data_visualizer.set_data_to_display(TypeOfData.FIELD_NAME,self.grid_matrix.selected_canvas,constants.EVENT_NAME,[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
         else:
-            self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,self.grid_matrix.selected_canvas,self.dropdown_selected_data.currentText(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+            self.data_visualizer.set_data_to_display(TypeOfData.FIELD_NAME,self.grid_matrix.selected_canvas,self.dropdown_selected_data.currentText(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
 
 
         if constants.EVENT_DATATIME in shared_state.names:
-            self.visualization_params.set_data_time( self.start_date_entry.date(), self.end_date_entry.date())
+            self.data_visualizer.set_data_time( self.start_date_entry.date(), self.end_date_entry.date())
 
 
         if direction =="replot":      
-            self.data_visualizer.create_new_plotter(self.visualization_params)
+            self.data_visualizer.create_new_plotter(self.data_visualizer)
         elif direction == "add":
             pass
 
-        self.data_visualizer.add_chart(self.visualization_params)
+        self.data_visualizer.add_chart(self.data_visualizer)
         self.grid_matrix.selected_canvas.draw()
 
     def set_date_selector(self, enable: bool):
