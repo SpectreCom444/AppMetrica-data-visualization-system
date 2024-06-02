@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 
 class Plotter:
     def __init__(self, visualization_config, x_label="X-axis", y_label="Y-axis"):
-        print(visualization_config.selected_chart_type)
         self.canvas = visualization_config.canvas
         self.selected_data = visualization_config.selected_data
         self.type_of_measurement = visualization_config.type_of_measurement

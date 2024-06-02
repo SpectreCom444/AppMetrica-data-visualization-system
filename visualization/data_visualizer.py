@@ -111,9 +111,7 @@ class DataVisualizer:
         return data
 
     def plot_copy_chart(self,visualization_config):
-        print(visualization_config.selected_chart_type)
         self.visualization_config.copy(visualization_config)
-        print(self.visualization_config.selected_chart_type)
         self.create_new_plotter()
         self.add_chart()
 
@@ -138,7 +136,6 @@ class DataVisualizer:
 
 
     def create_new_plotter(self):
-        print(self.visualization_config.selected_chart_type)
         self.plotter = Plotter(self.visualization_config)
 
 
