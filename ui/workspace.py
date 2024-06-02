@@ -9,6 +9,7 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from PyQt5 import QtWidgets
 from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData,GraphType,TypeOfMeasurement
+from config.visualization_config import VisualizationConfig
 
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
@@ -18,14 +19,21 @@ class MatplotlibCanvas(FigureCanvasQTAgg):
         self.setParent(parent)
         self.on_click_callback = on_click_callback
         self.mpl_connect("button_press_event", self.on_click)
-        self.is_graph_displayed = False
+        self.visualization_config = VisualizationConfig()
         self.pos_x=pos_x
         self.pos_y = pos_y
+
+    def set_visualization_parameters(self,visualization_config):
+        self.visualization_config.copy(visualization_config)
+    
+    def get_visualization_parameters(self):
+        return self.visualization_config
 
     def get_position(self):
         return (self.pos_x,self.pos_y)
     
     def on_click(self, event):
+        print(self.pos_x, self.pos_y)
         self.on_click_callback(self)
     
 
@@ -36,7 +44,7 @@ class GridMatrix:
         self.workspace_window = workspace_window
         self.matrix = [[self.create_canvas_ptl(0, 0)]]
         self.selected_canvas = self.get_canvas(0, 0)
-        self.clipboard_canvas = None 
+        self.clipboard_visualization_config = None 
 
     def update_matrix_size(self, size_x, size_y):
         if self.size_x < size_x:
@@ -108,10 +116,19 @@ class GridMatrix:
                 self.matrix[x][y] = self.create_canvas_ptl(x, y)
 
     def copy_canvas(self):
-        self.clipboard_canvas = self.selected_canvas
+        self.clipboard_visualization_config= self.selected_canvas.get_visualization_parameters()
+        print("copy")
 
     def paste_canvas(self):
-        pass
+       
+        self.clear_selected_canvas()
+        self.selected_canvas.set_visualization_parameters(self.clipboard_visualization_config)
+        print("1",self.clipboard_visualization_config.selected_chart_type)
+        self.selected_canvas.visualization_config.canvas = self.selected_canvas
+        print("2",self.selected_canvas.visualization_config.selected_chart_type)
+        self.workspace_window.data_visualizer.plot_copy_chart(self.selected_canvas.visualization_config)
+
+        print("past")
 
     def cut_canvas(self):
         self.copy_canvas()
@@ -177,17 +194,23 @@ class WorkspaceWindow(QMainWindow):
             self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    
         self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
 
-    
-
     def data_for_chart(self,direction):
+        
+        self.data_visualizer.set_canvas(self.grid_matrix.selected_canvas)
+        self.data_visualizer.set_chart_type([graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()])
+        self.data_visualizer.set_other_reference(self.other_reference_slider.value())
+
         if self.dropdown_selected_data.currentText() == constants.EVENT_JSON:
             if len(self.custom_event_menu.get_selected_options())>0:
-                self.data_visualizer.set_data_to_display(TypeOfData.TREE,self.grid_matrix.selected_canvas,self.custom_event_menu.get_selected_options(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+                self.data_visualizer.set_type_of_data(TypeOfData.TREE)
+                self.data_visualizer.set_selected_data(self.custom_event_menu.get_selected_options() )
             else:
                 if constants.EVENT_NAME in shared_state.names :
-                    self.data_visualizer.set_data_to_display(TypeOfData.FIELD_NAME,self.grid_matrix.selected_canvas,constants.EVENT_NAME,[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+                   self.data_visualizer.set_type_of_data(TypeOfData.FIELD_NAME)
+                   self.data_visualizer.set_selected_data(constants.EVENT_NAME)
         else:
-            self.data_visualizer.set_data_to_display(TypeOfData.FIELD_NAME,self.grid_matrix.selected_canvas,self.dropdown_selected_data.currentText(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+            self.data_visualizer.set_type_of_data(TypeOfData.FIELD_NAME)
+            self.data_visualizer.set_selected_data(self.dropdown_selected_data.currentText() )
 
 
         if constants.EVENT_DATATIME in shared_state.names:
@@ -195,12 +218,12 @@ class WorkspaceWindow(QMainWindow):
 
 
         if direction =="replot":      
-            self.data_visualizer.create_new_plotter(self.data_visualizer)
+            self.data_visualizer.create_new_plotter()
         elif direction == "add":
             pass
 
-        self.data_visualizer.add_chart(self.data_visualizer)
-        self.grid_matrix.selected_canvas.draw()
+        self.data_visualizer.add_chart()
+    
 
     def set_date_selector(self, enable: bool):
         self.start_date_entry.setDisplayFormat("yyyy-MM-dd")
@@ -227,10 +250,6 @@ class WorkspaceWindow(QMainWindow):
     def set_time_period(self,start_date):
         self.start_date_entry.setDate(start_date)
         self.end_date_entry.setDate(QDate.currentDate())
-
-            
-
-   
 
 class CustomEventMenu:
     def __init__(self,workspace_window):

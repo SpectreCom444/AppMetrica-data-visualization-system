@@ -2,17 +2,19 @@ from enums.enums import GraphType, TypeOfMeasurement,Orientation,HistogramType,D
 import matplotlib.pyplot as plt
 
 class Plotter:
-    def __init__(self, canvas, metric_name, type_of_measurement,orientation, x_label="X-axis", y_label="Y-axis"):
-        self.canvas = canvas
-        self.metric_name = metric_name
-        self.type_of_measurement = type_of_measurement
-        self.orientation = orientation
+    def __init__(self, visualization_config, x_label="X-axis", y_label="Y-axis"):
+        print(visualization_config.selected_chart_type)
+        self.canvas = visualization_config.canvas
+        self.selected_data = visualization_config.selected_data
+        self.type_of_measurement = visualization_config.type_of_measurement
+        self.selected_chart_type=visualization_config.selected_chart_type
+        self.orientation = visualization_config.orientation
         self.x_label = x_label
         self.y_label = y_label
         self.fig, self.ax = plt.subplots()
         
     def _setup_plot(self, x, y):
-        self.ax.set_title(self.metric_name)
+        self.ax.set_title(self.selected_data)
         self.ax.set_xlabel(self.x_label)
         self.ax.set_ylabel(self.y_label)
 
@@ -58,7 +60,7 @@ class Plotter:
         x = list(events_count.keys())
         y = list(events_count.values())
         self.ax.pie(y, labels=x, autopct='%1.1f%%')
-        self.ax.set_title(self.metric_name)
+        self.ax.set_title(self.selected_data)
 
         self.canvas.figure = self.fig
         self.canvas.draw()
@@ -71,7 +73,7 @@ class Plotter:
         x = list(events_count.keys())
         y = list(events_count.values())
         self.ax.pie(y, labels=x, autopct='%1.1f%%', wedgeprops=dict(width=0.65))
-        self.ax.set_title(self.metric_name)
+        self.ax.set_title(self.selected_data)
 
         self.canvas.figure = self.fig
         self.canvas.draw()
@@ -141,22 +143,22 @@ class Plotter:
         self.canvas.figure = self.fig
         self.canvas.draw()
 
-    def plot(self, chart_type, events_count):
-        if chart_type == GraphType.LINE.value:
+    def plot(self, events_count):
+        if self.selected_chart_type == GraphType.LINE.value:
             self.plot_line_chart(events_count)
-        elif chart_type == GraphType.BAR.value:
+        elif self.selected_chart_type == GraphType.BAR.value:
             self.plot_bar_chart(events_count)
-        elif chart_type == GraphType.PIE.value:
+        elif self.selected_chart_type == GraphType.PIE.value:
             self.plot_pie_chart(events_count)
-        elif chart_type == GraphType.RING.value:
+        elif self.selected_chart_type == GraphType.RING.value:
             self.plot_ring_chart(events_count)
-        elif chart_type == GraphType.SCATTER.value:
+        elif self.selected_chart_type == GraphType.SCATTER.value:
             self.plot_scatter_plot(events_count)
-        elif chart_type == GraphType.HISTOGRAM.value:
+        elif self.selected_chart_type == GraphType.HISTOGRAM.value:
             self.plot_histogram(events_count)
-        elif chart_type == GraphType.BUBBLE.value:
+        elif self.selected_chart_type == GraphType.BUBBLE.value:
             self.plot_bubble_chart(events_count)
-        elif chart_type == GraphType.AREA.value:
+        elif self.selected_chart_type == GraphType.AREA.value:
             self.plot_area_chart(events_count)
-        elif chart_type == GraphType.FUNNEL.value:
+        elif self.selected_chart_type == GraphType.FUNNEL.value:
             self.plot_funnel(events_count)

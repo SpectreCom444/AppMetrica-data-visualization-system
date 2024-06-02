@@ -5,35 +5,29 @@ import config.constants as constants
 from visualization.plotter import Plotter
 from datetime import datetime
 import config.constants as constants
-from enums.enums import DisplayMode,HistogramType,Orientation,GraphType,TypeOfMeasurement
+from config.visualization_config import VisualizationConfig
 
 class DataVisualizer:
 
     def __init__(self):
         self.plotter = None
-        self.time_limits= False
-        self.type_data=constants.EVENTS
-        self.type_of_measurement =TypeOfMeasurement.UNITS
-        self.selected_chart_type= GraphType.LINE
-        self.display_mode = DisplayMode.TOTAL
-        self.histogram_type = HistogramType.SUMMATION
-        self.orientation = Orientation.HORIZONTAL
-
-    def counter(self,elements, metric_name, visualization_params, filters):
+        self.visualization_config = VisualizationConfig()
+       
+    def counter(self,elements, filters):
         count = {}
-        if visualization_params.type_data == constants.EVENTS:
-            self.counter_events(elements, metric_name, visualization_params, count, filters)
-        elif visualization_params.type_data == constants.SESSIONS:
-            self.counter_sessions(elements, metric_name, visualization_params, count, filters)
-        elif visualization_params.type_data == constants.USERS:
-            self.counter_users(elements, metric_name, visualization_params, count, filters)
+        if  self.visualization_config.type_data == constants.EVENTS:
+            self.counter_events(elements, count, filters)
+        elif  self.visualization_config.type_data == constants.SESSIONS:
+            self.counter_sessions(elements, count, filters)
+        elif  self.visualization_config.type_data == constants.USERS:
+            self.counter_users(elements, count, filters)
         return count
 
 
-    def counter_sessions(self,elements, metric_name, visualization_params, count, filters):
+    def counter_sessions(self,elements, count, filters):
         for sessions in elements:
             sessions_count = {}
-            self.counter_events(sessions.get_events(), metric_name, visualization_params, sessions_count, filters)
+            self.counter_events(sessions.get_events(), sessions_count, filters)
             for key in sessions_count.keys():
                 if key in count:
                     count[key] += 1
@@ -41,10 +35,10 @@ class DataVisualizer:
                     count[key] = 1
 
 
-    def counter_users(self,elements, metric_name, visualization_params, count, filters):
+    def counter_users(self,elements, count, filters):
         for user in elements:
             user_count = {}
-            self.counter_sessions(user.get_sessions(), metric_name, visualization_params, user_count, filters)
+            self.counter_sessions(user.get_sessions(), user_count, filters)
             for key in user_count.keys():
                 if key in count:
                     count[key] += 1
@@ -52,17 +46,17 @@ class DataVisualizer:
                     count[key] = 1
 
 
-    def counter_events(self,elements, metric_name, visualization_params, count, filters):
+    def counter_events(self,elements, count, filters):
         for event in elements:
             if filters.event_verification(event):
-                if TypeOfData.FIELD_NAME == visualization_params.type_of_data:
-                    value = event.get_value(metric_name)
+                if TypeOfData.FIELD_NAME ==  self.visualization_config.type_of_data:
+                    value = event.get_value(self.visualization_config.selected_data)
                     if value in count:
                         count[value] += 1
                     else:
                         count[value] = 1
-                elif TypeOfData.TREE == visualization_params.type_of_data:
-                    value = self.counter_events_list(event, metric_name)
+                elif TypeOfData.TREE ==  self.visualization_config.type_of_data:
+                    value = self.counter_events_list(event, self.visualization_config.selected_data)
                     if isinstance(value, str):
                         if value in count:
                             count[value] += 1
@@ -116,50 +110,65 @@ class DataVisualizer:
 
         return data
 
-    def create_new_plotter(self,visualization_params):
-        self.plotter = Plotter(visualization_params.canvas, visualization_params.selected_data, visualization_params.type_of_measurement,visualization_params.orientation)
+    def plot_copy_chart(self,visualization_config):
+        print(visualization_config.selected_chart_type)
+        self.visualization_config.copy(visualization_config)
+        print(self.visualization_config.selected_chart_type)
+        self.create_new_plotter()
+        self.add_chart()
 
-    def add_chart(self, visualization_params):
-        if visualization_params.type_data == constants.EVENTS:
+    def add_chart(self):
+        if self.visualization_config.type_data == constants.EVENTS:
             data = shared_state.events_result
-        elif visualization_params.type_data == constants.SESSIONS:
+        elif self.visualization_config.type_data == constants.SESSIONS:
             data = shared_state.sessions_result
-        elif visualization_params.type_data == constants.USERS:
+        elif self.visualization_config.type_data == constants.USERS:
             data = shared_state.users_result
 
-        filters = Filters(visualization_params)
-
-        if visualization_params.get_time_limits:
-            filters.add_filter(filters.data_filter)
-
-        events_count = self.counter(data, visualization_params.selected_data, visualization_params, filters)
+        filters = Filters(self.visualization_config)
+        filters.add_filter(filters.data_filter)
+        events_count = self.counter(data, filters)
 
         if events_count:
-            events_count = self.counting_other(events_count, visualization_params.other_reference) 
-            self.plotter.plot(visualization_params.selected_chart_type, events_count)
+            events_count = self.counting_other(events_count,self.visualization_config.other_reference) 
+            self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)
+            self.plotter.plot(events_count)
+
+        self.visualization_config.canvas.draw()
 
 
-    def set_chart_type(self, chart_type):
-        self.chart_type=chart_type
+    def create_new_plotter(self):
+        print(self.visualization_config.selected_chart_type)
+        self.plotter = Plotter(self.visualization_config)
 
-    def set_display_mode(self,display_mode):
-        self.display_mode=display_mode
-    
-    def set_histogram_type(self,histogram_type):
-        self.histogram_type=histogram_type
 
-    def set_type_of_measurement(self,type_of_measurement):
-        self.type_of_measurement=type_of_measurement
 
     def set_orientation(self,orientation):
-        self.orientation=orientation
+        self.visualization_config.orientation=orientation
+    
+    def set_other_reference(self,other_reference):
+        self.visualization_config.other_reference=other_reference
 
-    def set_data_to_display(self, type_of_data, fig_canvas, selected_data,selected_chart_type,other_reference ):
-        self.type_of_data=type_of_data
-        self.canvas=fig_canvas
-        self.selected_data=selected_data
-        self.selected_chart_type=selected_chart_type   
-        self.other_reference=other_reference
+    def set_selected_data(self,selected_data):
+        self.visualization_config.selected_data=selected_data
+
+    def set_canvas(self,canvas):
+        self.visualization_config.canvas=canvas
+
+    def set_type_of_data(self,type_of_data):
+        self.visualization_config.type_of_data=type_of_data
+
+    def set_chart_type(self, selected_chart_type):
+        self.visualization_config.selected_chart_type=selected_chart_type
+
+    def set_display_mode(self,display_mode):
+        self.visualization_config.display_mode=display_mode
+    
+    def set_histogram_type(self,histogram_type):
+        self.visualization_config.histogram_type=histogram_type
+
+    def set_type_of_measurement(self,type_of_measurement):
+        self.visualization_config.type_of_measurement=type_of_measurement
         
     def set_data_time(self, start_date_entry, end_date_entry):
         if isinstance(start_date_entry, str) and len(start_date_entry) == 10:
@@ -167,14 +176,11 @@ class DataVisualizer:
         if isinstance(end_date_entry, str) and len(end_date_entry) == 10:
             end_date_entry += ' 23:59:59'
 
-        self.start_date_entry = start_date_entry
-        self.end_date_entry = end_date_entry
+        self.visualization_config.start_date_entry = start_date_entry
+        self.visualization_config.end_date_entry = end_date_entry
     
     def set_type_data(self, type_data):
-        self.type_data=type_data
-
-    def get_time_limits(self):
-        return self.time_limits
+        self.visualization_config.type_data=type_data
     
 
 
