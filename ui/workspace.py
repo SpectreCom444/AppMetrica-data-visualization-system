@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from PyQt5 import QtWidgets
-from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData,GraphType,TypeOfMeasurement
+from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData,GraphType,TypeOfMeasurement,TypeOfCreatingGraph
 
 class WorkspaceWindow(QMainWindow):
     def __init__(self):
@@ -39,8 +39,8 @@ class WorkspaceWindow(QMainWindow):
 
         self.set_grid_size.clicked.connect(self.set_matrix)
 
-        self.plot_button.clicked.connect(lambda: self.data_for_chart("replot"))
-        self.overlay_button.clicked.connect(lambda: self.data_for_chart("add"))
+        self.plot_button.clicked.connect(lambda: self.data_for_chart(TypeOfCreatingGraph.REPLOAT))
+        self.overlay_button.clicked.connect(lambda: self.data_for_chart(TypeOfCreatingGraph.ADD))
         self.delete_all_button.clicked.connect(self.grid_matrix.remove_all)
         self.clear_all_button.clicked.connect(self.grid_matrix.clear_all_canvases)
         self.clear_button.clicked.connect(self.grid_matrix.clear_selected_canvas)
@@ -94,9 +94,9 @@ class WorkspaceWindow(QMainWindow):
             self.data_visualizer.set_data_time( self.start_date_entry.date(), self.end_date_entry.date())
 
 
-        if direction =="replot":      
+        if direction ==TypeOfCreatingGraph.REPLOAT:      
             self.data_visualizer.create_new_plotter()
-        elif direction == "add":
+        elif direction == TypeOfCreatingGraph.ADD:
             pass
 
         self.data_visualizer.add_chart()
