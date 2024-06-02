@@ -27,15 +27,17 @@ class MatplotlibCanvas(FigureCanvasQTAgg):
     
     def on_click(self, event):
         self.on_click_callback(self)
+    
 
 class GridMatrix:
-    def __init__(self,workspace_window, size_x = 1,size_y = 1):
+    def __init__(self, workspace_window, size_x=1, size_y=1):
         self.size_x = size_x
         self.size_y = size_y
-        self.workspace_window=workspace_window
-        self.matrix = [[self.create_canvas_ptl(0,0)]]
-        self.selected_canvas=self.get_canvas(0,0)
-    
+        self.workspace_window = workspace_window
+        self.matrix = [[self.create_canvas_ptl(0, 0)]]
+        self.selected_canvas = self.get_canvas(0, 0)
+        self.clipboard_canvas = None 
+
     def update_matrix_size(self, size_x, size_y):
         if self.size_x < size_x:
             for x in range(self.size_x, size_x):
@@ -65,7 +67,7 @@ class GridMatrix:
         canvas_container = QWidget()
         layout = QVBoxLayout(canvas_container)
         canvas_container.setLayout(layout)
-        canvas = MatplotlibCanvas(canvas_container, self.set_selected_canvas,pos_x, pos_y)
+        canvas = MatplotlibCanvas(canvas_container, self.set_selected_canvas, pos_x, pos_y)
         layout.addWidget(canvas)
         canvas.setFixedSize(800, 600)
         self.workspace_window.canvas_container_layout.addWidget(canvas_container, pos_x, pos_y)
@@ -75,26 +77,26 @@ class GridMatrix:
         canvas_container = self.workspace_window.canvas_container_layout.itemAtPosition(pos_x, pos_y).widget()
         self.workspace_window.canvas_container_layout.removeWidget(canvas_container)
         canvas_container.deleteLater()
-    
+
     def remove_all(self):
         for x in range(self.size_x):
             for y in range(self.size_y):
                 self.remove_canvas_ptl(x, y)
         self.matrix = [[self.create_canvas_ptl(0, 0)]]
-        self.selected_canvas =self.get_canvas(0,0)
+        self.selected_canvas = self.get_canvas(0, 0)
         self.size_x = 1
         self.size_y = 1
         self.workspace_window.combo_box_height_matrix.setCurrentIndex(0)
         self.workspace_window.combo_box_width_matrix.setCurrentIndex(0)
-    
+
     def get_canvas(self, pos_x, pos_y):
         return self.matrix[pos_x][pos_y]
-    
+
     def set_selected_canvas(self, canvas):
         self.selected_canvas = canvas
 
     def clear_selected_canvas(self):
-        pos_x,pos_y =self.selected_canvas.get_position()
+        pos_x, pos_y = self.selected_canvas.get_position()
         self.remove_canvas_ptl(pos_x, pos_y)
         self.matrix[pos_x][pos_y] = self.create_canvas_ptl(pos_x, pos_y)
         self.selected_canvas = self.matrix[pos_x][pos_y]
@@ -104,6 +106,16 @@ class GridMatrix:
             for y, canvas in enumerate(row):
                 self.remove_canvas_ptl(x, y)
                 self.matrix[x][y] = self.create_canvas_ptl(x, y)
+
+    def copy_canvas(self):
+        self.clipboard_canvas = self.selected_canvas
+
+    def paste_canvas(self):
+        pass
+
+    def cut_canvas(self):
+        self.copy_canvas()
+        self.clear_selected_canvas()
 
 class WorkspaceWindow(QMainWindow):
     def __init__(self):
@@ -135,6 +147,11 @@ class WorkspaceWindow(QMainWindow):
         self.plot_button.clicked.connect(lambda: self.data_for_chart("replot"))
         self.overlay_button.clicked.connect(lambda: self.data_for_chart("add"))
         self.delete_all_button.clicked.connect(self.grid_matrix.remove_all)
+        self.clear_all_button.clicked.connect(self.grid_matrix.clear_all_canvases)
+        self.clear_button.clicked.connect(self.grid_matrix.clear_selected_canvas)
+        self.copy_button.clicked.connect(self.grid_matrix.copy_canvas)
+        self.insert_button.clicked.connect(self.grid_matrix.paste_canvas)
+        self.cut_button.clicked.connect(self.grid_matrix.cut_canvas)
         
         self.set_type_data_events.clicked.connect(lambda: self.data_visualizer.set_type_data(constants.EVENTS))
         self.set_type_data_sessions.clicked.connect(lambda:  self.data_visualizer.set_type_data(constants.SESSIONS))
@@ -153,9 +170,7 @@ class WorkspaceWindow(QMainWindow):
         self.button_units.clicked.connect(lambda:  self.data_visualizer.set_type_of_measurement(TypeOfMeasurement.UNITS))
         self.button_percentages.clicked.connect(lambda:  self.data_visualizer.set_type_of_measurement(TypeOfMeasurement.PERCENTAGES))
 
-        self.clear_all_button.clicked.connect(self.grid_matrix.clear_all_canvases)
-        self.clear_button.clicked.connect(self.grid_matrix.clear_selected_canvas)
-
+    
        
         if constants.EVENT_DATATIME in shared_state.names:
             self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    

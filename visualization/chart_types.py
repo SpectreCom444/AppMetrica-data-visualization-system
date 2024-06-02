@@ -1,4 +1,4 @@
-from visualization.visualization import Plotter
+from visualization.data_visualizer import Plotter
 
 TYPES_GRAPHS= {
     'line': Plotter.plot_line_chart,
