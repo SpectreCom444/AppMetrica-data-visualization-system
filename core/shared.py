@@ -6,6 +6,7 @@ class SharedState:
         self.users_result = None
         self.names = None
         self.json_tree = {}
+        self.ui_names =None
     
     def is_session_create(self):
         return self.sessions_result!=None

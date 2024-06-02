@@ -23,15 +23,19 @@ class DataLoaderWindow(QMainWindow):
 
     def load_data_done(self):
         self.load_data_checkbox.setChecked(True)
+        self.update()
 
     def create_events_done(self):
         self.create_events_checkbox.setChecked(True)
+        self.update()
 
     def create_session_done(self):
         self.create_sessions_checkbox.setChecked(True)
+        self.update()
 
     def create_user_done(self):
         self.create_users_checkbox.setChecked(True)
+        self.update()
 
     def uploading_and_processing(self, path):
         load_data(path,self.load_data_done)

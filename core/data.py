@@ -10,7 +10,9 @@ def load_data(path,load_data_done):
     with open(path, mode='r', encoding='utf-8') as file:
         reader = csv.reader(file)
         shared_state.names = next(reader)
-        shared_state.data_result = [list(map(str.strip, line)) for line in reader][0:10000]
+        shared_state.data_result = [list(map(str.strip, line)) for line in reader][0:15000]
+    
+    shared_state.ui_names= list(filter(lambda x: x not in constants.HIDDEN_ITEMS, shared_state.names))
     print(f"> data is loaded in {time.time() - start_time:.2f} seconds")
     load_data_done()
   

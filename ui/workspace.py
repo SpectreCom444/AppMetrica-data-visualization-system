@@ -1,6 +1,6 @@
 from matplotlib.figure import Figure
 from core.shared import shared_state
-from visualization.visualization import DataVisualizer
+from visualization.data_visualizer import DataVisualizer
 import config.constants as constants
 from visualization.visualization_params import VisualizationParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -13,10 +13,98 @@ from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData,GraphTy
 
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
-    def __init__(self, parent):
+    def __init__(self, parent, on_click_callback,pos_x,pos_y):
         self.fig = Figure()
         super(MatplotlibCanvas, self).__init__(self.fig)
         self.setParent(parent)
+        self.on_click_callback = on_click_callback
+        self.mpl_connect("button_press_event", self.on_click)
+        self.is_graph_displayed = False
+        self.pos_x=pos_x
+        self.pos_y = pos_y
+
+    def get_position(self):
+        return (self.pos_x,self.pos_y)
+    
+    def on_click(self, event):
+        self.on_click_callback(self)
+
+class GridMatrix:
+    def __init__(self,workspace_window, size_x = 1,size_y = 1):
+        self.size_x = size_x
+        self.size_y = size_y
+        self.workspace_window=workspace_window
+        self.matrix = [[self.create_canvas_ptl(0,0)]]
+        self.selected_canvas=self.get_canvas(0,0)
+    
+    def update_matrix_size(self, size_x, size_y):
+        if self.size_x < size_x:
+            for x in range(self.size_x, size_x):
+                self.matrix.append([self.create_canvas_ptl(x, y) for y in range(self.size_y)])
+        elif self.size_x > size_x:
+            for x in range(size_x, self.size_x):
+                for y in range(self.size_y):
+                    self.remove_canvas_ptl(x, y)
+            self.matrix = self.matrix[:size_x]
+
+        if self.size_y < size_y:
+            for x in range(size_x):
+                for y in range(self.size_y, size_y):
+                    if x >= len(self.matrix):
+                        self.matrix.append([])
+                    self.matrix[x].append(self.create_canvas_ptl(x, y))
+        elif self.size_y > size_y:
+            for x in range(size_x):
+                for y in range(size_y, self.size_y):
+                    self.remove_canvas_ptl(x, y)
+                self.matrix[x] = self.matrix[x][:size_y]
+
+        self.size_x = size_x
+        self.size_y = size_y
+
+    def create_canvas_ptl(self, pos_x, pos_y):
+        canvas_container = QWidget()
+        layout = QVBoxLayout(canvas_container)
+        canvas_container.setLayout(layout)
+        canvas = MatplotlibCanvas(canvas_container, self.set_selected_canvas,pos_x, pos_y)
+        layout.addWidget(canvas)
+        canvas.setFixedSize(800, 600)
+        self.workspace_window.canvas_container_layout.addWidget(canvas_container, pos_x, pos_y)
+        return canvas
+
+    def remove_canvas_ptl(self, pos_x, pos_y):
+        canvas_container = self.workspace_window.canvas_container_layout.itemAtPosition(pos_x, pos_y).widget()
+        self.workspace_window.canvas_container_layout.removeWidget(canvas_container)
+        canvas_container.deleteLater()
+    
+    def remove_all(self):
+        for x in range(self.size_x):
+            for y in range(self.size_y):
+                self.remove_canvas_ptl(x, y)
+        self.matrix = [[self.create_canvas_ptl(0, 0)]]
+        self.selected_canvas =self.get_canvas(0,0)
+        self.size_x = 1
+        self.size_y = 1
+        self.workspace_window.combo_box_height_matrix.setCurrentIndex(0)
+        self.workspace_window.combo_box_width_matrix.setCurrentIndex(0)
+    
+    def get_canvas(self, pos_x, pos_y):
+        return self.matrix[pos_x][pos_y]
+    
+    def set_selected_canvas(self, canvas):
+        self.selected_canvas = canvas
+
+    def clear_selected_canvas(self):
+        pos_x,pos_y =self.selected_canvas.get_position()
+        self.remove_canvas_ptl(pos_x, pos_y)
+        self.matrix[pos_x][pos_y] = self.create_canvas_ptl(pos_x, pos_y)
+        self.selected_canvas = self.matrix[pos_x][pos_y]
+
+    def clear_all_canvases(self):
+        for x, row in enumerate(self.matrix):
+            for y, canvas in enumerate(row):
+                self.remove_canvas_ptl(x, y)
+                self.matrix[x][y] = self.create_canvas_ptl(x, y)
 
 class WorkspaceWindow(QMainWindow):
     def __init__(self):
@@ -24,52 +112,31 @@ class WorkspaceWindow(QMainWindow):
         loadUi('ui/workspace.ui', self)
         self.data_visualizer =DataVisualizer()
         self.visualization_params=VisualizationParams()
+        self.grid_matrix = GridMatrix(self)
+
         self.create_vizualization_button()
         self.custom_event_menu =CustomEventMenu(self)
         self.showMaximized() 
-        self.canvas = None
-
-    def create_canvas_ptl_down(self):
-        row_count = self.canvas_container_layout.rowCount()
-        canvas_container = QWidget()
-        layout = QVBoxLayout(canvas_container)
-        canvas_container.setLayout(layout)
-        canvas = MatplotlibCanvas(canvas_container)
-        layout.addWidget(canvas)
-        canvas.setFixedSize(1000, 1000)
-        self.canvas_container_layout.addWidget(canvas_container, row_count, 0)
-
-        return canvas
-
-    def create_canvas_ptl_right(self):
-        column_count = self.canvas_container_layout.columnCount()
-        canvas_container = QWidget()
-        layout = QVBoxLayout(canvas_container)
-        canvas_container.setLayout(layout)
-        canvas = MatplotlibCanvas(canvas_container)
-        canvas.setFixedSize(1000, 1000)
-        layout.addWidget(canvas)
-        self.canvas_container_layout.addWidget(canvas_container, 0, column_count)
-
-        return canvas
+    
+    def set_matrix(self):
+        self.grid_matrix.update_matrix_size(int(self.combo_box_height_matrix.currentText()),int(self.combo_box_width_matrix.currentText()))
 
     def create_vizualization_button(self):
         def on_selected_data_change(*args):
             self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
 
-        self.dropdown_selected_data.addItems(shared_state.names)
-        self.dropdown_selected_data.setCurrentText(shared_state.names[0])
+        self.dropdown_selected_data.addItems(shared_state.ui_names)
+        self.dropdown_selected_data.setCurrentText(shared_state.ui_names[0])
         self.dropdown_selected_data.currentTextChanged.connect(on_selected_data_change)
 
         self.selected_chart_type.addItems([graph_type.value for graph_type in GraphType])
         self.selected_chart_type.setCurrentText(next(iter( [graph_type.value for graph_type in GraphType])))
-        self.selected_chart_type.currentTextChanged.connect(on_selected_data_change)
+
+        self.set_grid_size.clicked.connect(self.set_matrix)
 
         self.plot_button.clicked.connect(lambda: self.data_for_chart("replot"))
-        self.plot_button_down.clicked.connect(lambda: self.data_for_chart("down"))
-        self.plot_button_right.clicked.connect(lambda: self.data_for_chart("right"))
-        self.add_chart_button.clicked.connect(lambda: self.data_for_chart("add"))
-        self.clear_button.clicked.connect(self.clear_all)
+        self.overlay_button.clicked.connect(lambda: self.data_for_chart("add"))
+        self.delete_all_button.clicked.connect(self.grid_matrix.remove_all)
         
         self.set_type_data_events.clicked.connect(lambda: self.visualization_params.set_type_data(constants.EVENTS))
         self.set_type_data_sessions.clicked.connect(lambda:  self.visualization_params.set_type_data(constants.SESSIONS))
@@ -88,54 +155,38 @@ class WorkspaceWindow(QMainWindow):
         self.button_units.clicked.connect(lambda:  self.visualization_params.set_type_of_measurement(TypeOfMeasurement.UNITS))
         self.button_percentages.clicked.connect(lambda:  self.visualization_params.set_type_of_measurement(TypeOfMeasurement.PERCENTAGES))
 
+        self.clear_all_button.clicked.connect(self.grid_matrix.clear_all_canvases)
+        self.clear_button.clicked.connect(self.grid_matrix.clear_selected_canvas)
+
+       
         if constants.EVENT_DATATIME in shared_state.names:
             self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    
         self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
 
-    def clear_all(self):
-        for i in reversed(range(self.canvas_container_layout.count())):
-            widget = self.canvas_container_layout.itemAt(i).widget()
-            self.canvas_container_layout.removeWidget(widget)
-            widget.deleteLater()
+    
 
     def data_for_chart(self,direction):
-        if direction == "down":   
-            self.canvas = self.create_canvas_ptl_down()
-        elif direction == "right":
-            self.canvas = self.create_canvas_ptl_right()
-        elif direction =="replot":
-            if self.canvas == None:
-                self.canvas = self.create_canvas_ptl_down()
-        elif direction == "add":
-            if self.canvas == None:
-                 self.canvas = self.create_canvas_ptl_down()
-
-
         if self.dropdown_selected_data.currentText() == constants.EVENT_JSON:
             if len(self.custom_event_menu.get_selected_options())>0:
-                self.visualization_params.set_data_to_display(TypeOfData.TREE,self.canvas,self.custom_event_menu.get_selected_options(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+                self.visualization_params.set_data_to_display(TypeOfData.TREE,self.grid_matrix.selected_canvas,self.custom_event_menu.get_selected_options(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
             else:
                 if constants.EVENT_NAME in shared_state.names :
-                    self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,self.canvas,constants.EVENT_NAME,[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+                    self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,self.grid_matrix.selected_canvas,constants.EVENT_NAME,[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
         else:
-            self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,self.canvas,self.dropdown_selected_data.currentText(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
+            self.visualization_params.set_data_to_display(TypeOfData.FIELD_NAME,self.grid_matrix.selected_canvas,self.dropdown_selected_data.currentText(),[graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()],self.other_reference_slider.value() )
 
 
         if constants.EVENT_DATATIME in shared_state.names:
             self.visualization_params.set_data_time( self.start_date_entry.date(), self.end_date_entry.date())
 
 
-        if direction == "down":   
-            self.data_visualizer.create_new_plotter(self.visualization_params)
-        elif direction == "right":
-            self.data_visualizer.create_new_plotter(self.visualization_params)
-        elif direction =="replot":      
+        if direction =="replot":      
             self.data_visualizer.create_new_plotter(self.visualization_params)
         elif direction == "add":
             pass
 
         self.data_visualizer.add_chart(self.visualization_params)
-        self.canvas.draw()
+        self.grid_matrix.selected_canvas.draw()
 
     def set_date_selector(self, enable: bool):
         self.start_date_entry.setDisplayFormat("yyyy-MM-dd")

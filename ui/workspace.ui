@@ -14,607 +14,689 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="3,3,9">
+   <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
     <item>
-     <widget class="QFrame" name="frame">
-      <property name="minimumSize">
-       <size>
-        <width>100</width>
-        <height>0</height>
-       </size>
-      </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="8,1">
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QSlider" name="processing_slider">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QFrame" name="frame_5">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QFormLayout" name="formLayout">
-       <property name="horizontalSpacing">
-        <number>2</number>
-       </property>
-       <property name="verticalSpacing">
-        <number>8</number>
-       </property>
-       <property name="leftMargin">
-        <number>2</number>
-       </property>
-       <property name="topMargin">
-        <number>2</number>
-       </property>
-       <property name="rightMargin">
-        <number>2</number>
-       </property>
-       <property name="bottomMargin">
-        <number>2</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>choosing a metric:</string>
-         </property>
-        </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_17" stretch="1,1,4">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_16">
+         <item>
+          <widget class="QFrame" name="frame">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QFormLayout" name="formLayout">
+            <property name="horizontalSpacing">
+             <number>0</number>
+            </property>
+            <property name="verticalSpacing">
+             <number>8</number>
+            </property>
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
+             <number>2</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>choosing a metric:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="dropdown_selected_data"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>type of chart:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="selected_chart_type"/>
+            </item>
+            <item row="2" column="0" colspan="2">
+             <widget class="QGroupBox" name="groupBox_2">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>50</height>
+               </size>
+              </property>
+              <property name="title">
+               <string>GroupBox</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <item>
+                  <widget class="QPushButton" name="set_type_data_events">
+                   <property name="text">
+                    <string>events</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="set_type_data_sessions">
+                   <property name="text">
+                    <string>sessions</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="set_type_data_users">
+                   <property name="text">
+                    <string>users</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="3" column="0" colspan="2">
+             <widget class="QGroupBox" name="groupBox">
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>60</height>
+               </size>
+              </property>
+              <property name="title">
+               <string/>
+              </property>
+              <layout class="QGridLayout" name="gridLayout">
+               <item row="0" column="0">
+                <widget class="QPushButton" name="today_button">
+                 <property name="text">
+                  <string>today</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QPushButton" name="last_3_days_button">
+                 <property name="text">
+                  <string>last 3 days</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QPushButton" name="last_week_button">
+                 <property name="text">
+                  <string>last week</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QPushButton" name="last_month_button">
+                 <property name="text">
+                  <string>last month</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>start date:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QDateEdit" name="start_date_entry"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>end date:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QDateEdit" name="end_date_entry"/>
+            </item>
+            <item row="7" column="0" colspan="2">
+             <widget class="QGroupBox" name="group_box_json_buttons">
+              <property name="minimumSize">
+               <size>
+                <width>100</width>
+                <height>100</height>
+               </size>
+              </property>
+              <property name="title">
+               <string>custom events</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,1">
+               <item>
+                <widget class="QLineEdit" name="dictionary_path">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="undo_button">
+                 <property name="styleSheet">
+                  <string notr="true">background-color: rgb(222, 0, 0);</string>
+                 </property>
+                 <property name="text">
+                  <string>Undo</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QFrame" name="matrix_of_buttons">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
+                  <item>
+                   <layout class="QGridLayout" name="matrix_of_buttons_grid"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="9" column="0">
+             <widget class="QPushButton" name="plot_button">
+              <property name="text">
+               <string>plot</string>
+              </property>
+             </widget>
+            </item>
+            <item row="9" column="1">
+             <widget class="QPushButton" name="overlay_button">
+              <property name="text">
+               <string>overlay</string>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="0">
+             <widget class="QPushButton" name="delete_all_button">
+              <property name="text">
+               <string>delete all</string>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="1">
+             <widget class="QPushButton" name="clear_all_button">
+              <property name="text">
+               <string>clear all</string>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="0">
+             <widget class="QPushButton" name="clear_button">
+              <property name="text">
+               <string>clear</string>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="1">
+             <widget class="QPushButton" name="copy_button">
+              <property name="text">
+               <string>copy</string>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="0">
+             <widget class="QPushButton" name="insert_button">
+              <property name="text">
+               <string>insert</string>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="1">
+             <widget class="QPushButton" name="cut_button">
+              <property name="text">
+               <string>cut</string>
+              </property>
+             </widget>
+            </item>
+            <item row="14" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>to other everything less </string>
+              </property>
+             </widget>
+            </item>
+            <item row="14" column="1">
+             <widget class="QSlider" name="other_reference_slider">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="dropdown_selected_data"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>type of chart:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="selected_chart_type"/>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>start date:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QDateEdit" name="start_date_entry"/>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>end date:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QDateEdit" name="end_date_entry"/>
-       </item>
-       <item row="7" column="0" colspan="2">
-        <widget class="QGroupBox" name="group_box_json_buttons">
+       <item>
+        <widget class="QFrame" name="frame_2">
          <property name="minimumSize">
           <size>
            <width>100</width>
-           <height>100</height>
+           <height>0</height>
           </size>
          </property>
-         <property name="title">
-          <string>custom events</string>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,1">
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QLineEdit" name="dictionary_path">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="QGroupBox" name="display_mode">
+              <property name="title">
+               <string>display mode </string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_4">
+                 <item>
+                  <widget class="QPushButton" name="button_split_by_total">
+                   <property name="text">
+                    <string>total</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_split_bu_day">
+                   <property name="text">
+                    <string>split by day</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_split_by_hourse">
+                   <property name="text">
+                    <string>split by hours</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="histogram_type">
+              <property name="title">
+               <string>histogram type </string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <item>
+                  <widget class="QPushButton" name="button_summation">
+                   <property name="text">
+                    <string>summation</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_comparison">
+                   <property name="text">
+                    <string>comparison</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="orientation">
+              <property name="title">
+               <string>orientation</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                 <item>
+                  <widget class="QPushButton" name="button_vertically">
+                   <property name="text">
+                    <string>vertically</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_horizontally">
+                   <property name="text">
+                    <string>horizontally</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="type_of_measurement">
+              <property name="title">
+               <string>type of measurement</string>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_10">
+                 <item>
+                  <widget class="QPushButton" name="button_percentages">
+                   <property name="text">
+                    <string>percentages</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="button_units">
+                   <property name="text">
+                    <string>units</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="frame_3">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7" stretch="100,1">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <item>
+             <widget class="QScrollArea" name="canvas_graphs">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_2">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>566</width>
+                 <height>582</height>
+                </rect>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_4">
+                <item row="1" column="0">
+                 <widget class="QScrollArea" name="scrollArea">
+                  <property name="minimumSize">
+                   <size>
+                    <width>500</width>
+                    <height>500</height>
+                   </size>
+                  </property>
+                  <property name="widgetResizable">
+                   <bool>true</bool>
+                  </property>
+                  <widget class="QWidget" name="scrollAreaWidgetContents_4">
+                   <property name="geometry">
+                    <rect>
+                     <x>0</x>
+                     <y>0</y>
+                     <width>546</width>
+                     <height>498</height>
+                    </rect>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_5">
+                    <item row="0" column="0">
+                     <widget class="QWidget" name="widget" native="true">
+                      <layout class="QGridLayout" name="gridLayout_6">
+                       <item row="0" column="0">
+                        <layout class="QGridLayout" name="canvas_container_layout">
+                         <property name="sizeConstraint">
+                          <enum>QLayout::SetMaximumSize</enum>
+                         </property>
+                        </layout>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QGroupBox" name="groupBox_3">
+                  <property name="title">
+                   <string>GroupBox</string>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_13">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_12">
+                     <item>
+                      <widget class="QLabel" name="label_6">
+                       <property name="text">
+                        <string>TextLabel</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="combo_box_height_matrix">
+                       <item>
+                        <property name="text">
+                         <string>1</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>2</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>3</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>4</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>5</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>6</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>7</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>8</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>9</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>10</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QComboBox" name="combo_box_width_matrix">
+                       <item>
+                        <property name="text">
+                         <string>1</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>2</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>3</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>4</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>5</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>6</string>
+                        </property>
+                       </item>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="set_grid_size">
+                       <property name="text">
+                        <string>set size</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QPushButton" name="undo_button">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(222, 0, 0);</string>
-            </property>
-            <property name="text">
-             <string>Undo</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="matrix_of_buttons">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
+           <widget class="QFrame" name="frame_4">
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
-             <item>
-              <layout class="QGridLayout" name="matrix_of_buttons_grid"/>
-             </item>
-            </layout>
+            <layout class="QHBoxLayout" name="horizontalLayout_15"/>
            </widget>
           </item>
          </layout>
         </widget>
-       </item>
-       <item row="11" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>to other everything less </string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="1">
-        <widget class="QSlider" name="other_reference_slider">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0" colspan="2">
-        <widget class="QGroupBox" name="groupBox">
-         <property name="minimumSize">
-          <size>
-           <width>40</width>
-           <height>60</height>
-          </size>
-         </property>
-         <property name="title">
-          <string/>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QPushButton" name="today_button">
-            <property name="text">
-             <string>today</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="last_3_days_button">
-            <property name="text">
-             <string>last 3 days</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="last_week_button">
-            <property name="text">
-             <string>last week</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="last_month_button">
-            <property name="text">
-             <string>last month</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="10" column="0">
-        <widget class="QPushButton" name="clear_button">
-         <property name="text">
-          <string>Clear all</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QPushButton" name="plot_button_down">
-         <property name="text">
-          <string>Plot chart down</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>GroupBox</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QPushButton" name="set_type_data_events">
-              <property name="text">
-               <string>events</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="set_type_data_sessions">
-              <property name="text">
-               <string>sessions</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="set_type_data_users">
-              <property name="text">
-               <string>users</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="9" column="0">
-        <widget class="QPushButton" name="plot_button_right">
-         <property name="text">
-          <string>Plot chart right</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QPushButton" name="plot_button">
-         <property name="text">
-          <string>Plot chart</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="1">
-        <widget class="QPushButton" name="add_chart_button">
-         <property name="text">
-          <string>add_chart</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QFrame" name="frame_2">
-      <property name="minimumSize">
-       <size>
-        <width>100</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <widget class="QGroupBox" name="display_mode">
-           <property name="title">
-            <string>display mode </string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
-              <item>
-               <widget class="QPushButton" name="button_split_by_total">
-                <property name="text">
-                 <string>total</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="button_split_bu_day">
-                <property name="text">
-                 <string>split by day</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="button_split_by_hourse">
-                <property name="text">
-                 <string>split by hours</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="histogram_type">
-           <property name="title">
-            <string>histogram type </string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_5">
-              <item>
-               <widget class="QPushButton" name="button_summation">
-                <property name="text">
-                 <string>summation</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="button_comparison">
-                <property name="text">
-                 <string>comparison</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="orientation">
-           <property name="title">
-            <string>orientation</string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_7">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
-              <item>
-               <widget class="QPushButton" name="button_vertically">
-                <property name="text">
-                 <string>vertically</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="button_horizontally">
-                <property name="text">
-                 <string>horizontally</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="type_of_measurement">
-           <property name="title">
-            <string>type of measurement</string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_11">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_10">
-              <item>
-               <widget class="QPushButton" name="button_percentages">
-                <property name="text">
-                 <string>percentages</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="button_units">
-                <property name="text">
-                 <string>units</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QFrame" name="frame_3">
-      <property name="minimumSize">
-       <size>
-        <width>100</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_6">
-         <item>
-          <widget class="QScrollArea" name="canvas_graphs">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="widgetResizable">
-            <bool>true</bool>
-           </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents_2">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>518</width>
-              <height>579</height>
-             </rect>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_4">
-             <item row="1" column="0">
-              <widget class="QScrollArea" name="scrollArea">
-               <property name="minimumSize">
-                <size>
-                 <width>500</width>
-                 <height>500</height>
-                </size>
-               </property>
-               <property name="widgetResizable">
-                <bool>true</bool>
-               </property>
-               <widget class="QWidget" name="scrollAreaWidgetContents_4">
-                <property name="geometry">
-                 <rect>
-                  <x>0</x>
-                  <y>0</y>
-                  <width>498</width>
-                  <height>498</height>
-                 </rect>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_5">
-                 <item row="0" column="0">
-                  <widget class="QWidget" name="widget" native="true">
-                   <layout class="QGridLayout" name="gridLayout_6">
-                    <item row="0" column="0">
-                     <layout class="QGridLayout" name="canvas_container_layout">
-                      <property name="sizeConstraint">
-                       <enum>QLayout::SetMaximumSize</enum>
-                      </property>
-                     </layout>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QGroupBox" name="groupBox_3">
-               <property name="title">
-                <string>GroupBox</string>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_13">
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_12">
-                  <item>
-                   <widget class="QLabel" name="label_6">
-                    <property name="text">
-                     <string>TextLabel</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QComboBox" name="comboBox_2">
-                    <item>
-                     <property name="text">
-                      <string>1</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>2</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>3</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>4</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>5</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>6</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>7</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>8</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>9</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>10</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QComboBox" name="comboBox">
-                    <item>
-                     <property name="text">
-                      <string>1</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>2</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>3</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>4</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>5</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>6</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer name="horizontalSpacer">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </widget>
-         </item>
-        </layout>
        </item>
       </layout>
      </widget>
