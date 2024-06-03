@@ -176,6 +176,34 @@ class DataVisualizer:
                 data['other'] = other_sum
 
         return data 
+    
+    @classmethod
+    def counting_other_split_time(cls, data, other_threshold):
+        total = 0
+        event_sums = {}
+
+        for date, events in data.items():
+            for event, count in events.items():
+                total += count
+                if event in event_sums:
+                    event_sums[event] += count
+                else:
+                    event_sums[event] = count
+
+        keys_to_remove = [key for key, value in event_sums.items() if (value / total) * 100 < other_threshold]
+
+        for date, events in data.items():
+            other_sum = 0
+            for key in keys_to_remove:
+                if key in events:
+                    other_sum += events.pop(key)
+            if other_sum > 0:
+                if 'other' in events:
+                    events['other'] += other_sum
+                else:
+                    events['other'] = other_sum
+
+        return data
 
     def plot_copy_chart(self, visualization_config):
         self.visualization_config.copy(visualization_config)
@@ -205,6 +233,7 @@ class DataVisualizer:
             events_count = self.counter_split_time(data, filters,"%Y-%m-%d")
             if events_count:
                 self.plotter.plot_split_date(events_count)
+                events_count = self.counting_other_split_time(events_count, self.visualization_config.other_reference)
             print(events_count)
 
         
@@ -212,6 +241,7 @@ class DataVisualizer:
             events_count = self.counter_split_time(data, filters,"%Y-%m-%d %H")
             if events_count:
                 self.plotter.plot_split_hour(events_count)
+                events_count = self.counting_other_split_time(events_count, self.visualization_config.other_reference)
             print(events_count)
  
 
