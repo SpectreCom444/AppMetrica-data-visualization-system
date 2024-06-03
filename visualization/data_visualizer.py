@@ -1,9 +1,9 @@
 from core.shared import shared_state
-from enums.enums import TypeOfData
+from enums.enums import TypeOfData,DisplayMode
 from filters.filters import Filters
 import config.constants as constants
 from visualization.plotter import Plotter
-from datetime import datetime
+from datetime import datetime, timedelta
 import config.constants as constants
 from config.visualization_config import VisualizationConfig
 
@@ -13,18 +13,17 @@ class DataVisualizer:
         self.plotter = None
         self.visualization_config = VisualizationConfig()
        
-    def counter(self,elements, filters):
+    def counter(self, elements, filters):
         count = {}
-        if  self.visualization_config.type_data == constants.EVENTS:
+        if self.visualization_config.type_data == constants.EVENTS:
             self.counter_events(elements, count, filters)
-        elif  self.visualization_config.type_data == constants.SESSIONS:
+        elif self.visualization_config.type_data == constants.SESSIONS:
             self.counter_sessions(elements, count, filters)
-        elif  self.visualization_config.type_data == constants.USERS:
+        elif self.visualization_config.type_data == constants.USERS:
             self.counter_users(elements, count, filters)
         return count
 
-
-    def counter_sessions(self,elements, count, filters):
+    def counter_sessions(self, elements, count, filters):
         for sessions in elements:
             sessions_count = {}
             self.counter_events(sessions.get_events(), sessions_count, filters)
@@ -34,8 +33,7 @@ class DataVisualizer:
                 else:
                     count[key] = 1
 
-
-    def counter_users(self,elements, count, filters):
+    def counter_users(self, elements, count, filters):
         for user in elements:
             user_count = {}
             self.counter_sessions(user.get_sessions(), user_count, filters)
@@ -45,17 +43,16 @@ class DataVisualizer:
                 else:
                     count[key] = 1
 
-
-    def counter_events(self,elements, count, filters):
+    def counter_events(self, elements, count, filters):
         for event in elements:
             if filters.event_verification(event):
-                if TypeOfData.FIELD_NAME ==  self.visualization_config.type_of_data:
+                if TypeOfData.FIELD_NAME == self.visualization_config.type_of_data:
                     value = event.get_value(self.visualization_config.selected_data)
                     if value in count:
                         count[value] += 1
                     else:
                         count[value] = 1
-                elif TypeOfData.TREE ==  self.visualization_config.type_of_data:
+                elif TypeOfData.TREE == self.visualization_config.type_of_data:
                     value = self.counter_events_list(event, self.visualization_config.selected_data)
                     if isinstance(value, str):
                         if value in count:
@@ -71,7 +68,7 @@ class DataVisualizer:
         return count
 
     @classmethod
-    def counter_events_list(cls,event, metric_names):
+    def counter_events_list(cls, event, metric_names):
 
         def check_event(tree, metric_names):
             if metric_names[0] in tree:
@@ -110,7 +107,29 @@ class DataVisualizer:
 
         return data
 
-    def plot_copy_chart(self,visualization_config):
+    def count_events_per_day(self, elements, filters):
+        count = {}
+        for event in elements:
+            if filters.event_verification(event):
+                event_date = event.get_value("event_datetime").strftime("%Y-%m-%d")
+                if event_date in count:
+                    count[event_date] += 1
+                else:
+                    count[event_date] = 1
+        return count
+
+    def count_events_per_hour(self, elements, filters):
+        count = {}
+        for event in elements:
+            if filters.event_verification(event):
+                event_hour = event.get_value("event_datetime").strftime("%Y-%m-%d %H")
+                if event_hour in count:
+                    count[event_hour] += 1
+                else:
+                    count[event_hour] = 1
+        return count
+
+    def plot_copy_chart(self, visualization_config):
         self.visualization_config.copy(visualization_config)
         self.create_new_plotter()
         self.add_chart()
@@ -125,47 +144,55 @@ class DataVisualizer:
 
         filters = Filters(self.visualization_config)
         filters.add_filter(filters.data_filter)
-        events_count = self.counter(data, filters)
+
+        if self.visualization_config.display_mode == DisplayMode.DAY:
+            events_count = self.count_events_per_day(data, filters)
+        elif self.visualization_config.display_mode == DisplayMode.HOURSE:
+            events_count = self.count_events_per_hour(data, filters)
+        elif self.visualization_config.display_mode == DisplayMode.TOTAL:
+            events_count = self.counter(data, filters)
 
         if events_count:
-            events_count = self.counting_other(events_count,self.visualization_config.other_reference) 
+            events_count = self.counting_other(events_count, self.visualization_config.other_reference)
             self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)
-            self.plotter.plot(events_count)
+            if self.visualization_config.display_mode == DisplayMode.DAY:
+                self.plotter.plot_split_date(events_count)
+            elif self.visualization_config.display_mode == DisplayMode.HOURSE:
+                self.plotter.plot_split_hour(events_count)
+            elif self.visualization_config.display_mode == DisplayMode.TOTAL:
+                self.plotter.plot(events_count)
 
         self.visualization_config.canvas.draw()
-
 
     def create_new_plotter(self):
         self.plotter = Plotter(self.visualization_config)
 
-
-
-    def set_orientation(self,orientation):
-        self.visualization_config.orientation=orientation
+    def set_orientation(self, orientation):
+        self.visualization_config.orientation = orientation
     
-    def set_other_reference(self,other_reference):
-        self.visualization_config.other_reference=other_reference
+    def set_other_reference(self, other_reference):
+        self.visualization_config.other_reference = other_reference
 
-    def set_selected_data(self,selected_data):
-        self.visualization_config.selected_data=selected_data
+    def set_selected_data(self, selected_data):
+        self.visualization_config.selected_data = selected_data
 
-    def set_canvas(self,canvas):
-        self.visualization_config.canvas=canvas
+    def set_canvas(self, canvas):
+        self.visualization_config.canvas = canvas
 
-    def set_type_of_data(self,type_of_data):
-        self.visualization_config.type_of_data=type_of_data
+    def set_type_of_data(self, type_of_data):
+        self.visualization_config.type_of_data = type_of_data
 
     def set_chart_type(self, selected_chart_type):
-        self.visualization_config.selected_chart_type=selected_chart_type
+        self.visualization_config.selected_chart_type = selected_chart_type
 
-    def set_display_mode(self,display_mode):
-        self.visualization_config.display_mode=display_mode
+    def set_display_mode(self, display_mode):
+        self.visualization_config.display_mode = display_mode
     
-    def set_histogram_type(self,histogram_type):
-        self.visualization_config.histogram_type=histogram_type
+    def set_histogram_type(self, histogram_type):
+        self.visualization_config.histogram_type = histogram_type
 
-    def set_type_of_measurement(self,type_of_measurement):
-        self.visualization_config.type_of_measurement=type_of_measurement
+    def set_type_of_measurement(self, type_of_measurement):
+        self.visualization_config.type_of_measurement = type_of_measurement
         
     def set_data_time(self, start_date_entry, end_date_entry):
         if isinstance(start_date_entry, str) and len(start_date_entry) == 10:
@@ -177,9 +204,4 @@ class DataVisualizer:
         self.visualization_config.end_date_entry = end_date_entry
     
     def set_type_data(self, type_data):
-        self.visualization_config.type_data=type_data
-    
-
-
-
-
+        self.visualization_config.type_data = type_data

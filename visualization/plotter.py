@@ -161,3 +161,9 @@ class Plotter:
             self.plot_area_chart(events_count)
         elif self.selected_chart_type == GraphType.FUNNEL.value:
             self.plot_funnel(events_count)
+
+    def plot_split_date(self, events_count):
+        print(events_count)
+
+    def plot_split_hour(self, events_count):
+        print(events_count)
