@@ -74,7 +74,7 @@ border-radius: 15px;
               <string notr="true">color: rgb(255, 255, 255);</string>
              </property>
              <property name="text">
-              <string>drag and drop the csv file</string>
+              <string>drag and drop the .CSV file</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>

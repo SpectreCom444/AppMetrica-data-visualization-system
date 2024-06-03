@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>961</width>
-    <height>652</height>
+    <width>1523</width>
+    <height>843</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,60 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_17" stretch="1,1,4">
+      <layout class="QHBoxLayout" name="horizontalLayout_17" stretch="0,1,4">
+       <item>
+        <widget class="QGroupBox" name="group_box_json_buttons">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>100</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>custom events</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,1">
+          <item>
+           <widget class="QLineEdit" name="dictionary_path">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="undo_button">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(222, 0, 0);</string>
+            </property>
+            <property name="text">
+             <string>Undo</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="matrix_of_buttons">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
+             <item>
+              <layout class="QGridLayout" name="matrix_of_buttons_grid"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_16">
          <item>
@@ -182,59 +235,6 @@
             <item row="5" column="1">
              <widget class="QDateEdit" name="end_date_entry"/>
             </item>
-            <item row="7" column="0" colspan="2">
-             <widget class="QGroupBox" name="group_box_json_buttons">
-              <property name="minimumSize">
-               <size>
-                <width>100</width>
-                <height>100</height>
-               </size>
-              </property>
-              <property name="title">
-               <string>custom events</string>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,1">
-               <item>
-                <widget class="QLineEdit" name="dictionary_path">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="undo_button">
-                 <property name="styleSheet">
-                  <string notr="true">background-color: rgb(222, 0, 0);</string>
-                 </property>
-                 <property name="text">
-                  <string>Undo</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QFrame" name="matrix_of_buttons">
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
-                  <item>
-                   <layout class="QGridLayout" name="matrix_of_buttons_grid"/>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
             <item row="9" column="0">
              <widget class="QPushButton" name="plot_button">
               <property name="text">
@@ -305,29 +305,7 @@
               </property>
              </widget>
             </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QFrame" name="frame_2">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item>
+            <item row="15" column="0" colspan="2">
              <widget class="QGroupBox" name="display_mode">
               <property name="title">
                <string>display mode </string>
@@ -361,7 +339,7 @@
               </layout>
              </widget>
             </item>
-            <item>
+            <item row="16" column="0" colspan="2">
              <widget class="QGroupBox" name="histogram_type">
               <property name="title">
                <string>histogram type </string>
@@ -388,7 +366,7 @@
               </layout>
              </widget>
             </item>
-            <item>
+            <item row="17" column="0" colspan="2">
              <widget class="QGroupBox" name="orientation">
               <property name="title">
                <string>orientation</string>
@@ -415,7 +393,7 @@
               </layout>
              </widget>
             </item>
-            <item>
+            <item row="18" column="0" colspan="2">
              <widget class="QGroupBox" name="type_of_measurement">
               <property name="title">
                <string>type of measurement</string>
@@ -443,9 +421,9 @@
              </widget>
             </item>
            </layout>
-          </item>
-         </layout>
-        </widget>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QFrame" name="frame_3">
@@ -480,8 +458,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>566</width>
-                 <height>582</height>
+                 <width>1032</width>
+                 <height>714</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_4">
@@ -501,8 +479,8 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>546</width>
-                     <height>498</height>
+                     <width>1012</width>
+                     <height>630</height>
                     </rect>
                    </property>
                    <layout class="QGridLayout" name="gridLayout_5">
@@ -681,7 +659,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>961</width>
+     <width>1523</width>
      <height>21</height>
     </rect>
    </property>

@@ -1,12 +1,14 @@
 from enums.enums import GraphType, TypeOfMeasurement,Orientation,HistogramType,DisplayMode
 import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
+
 class Plotter:
     def __init__(self, visualization_config, x_label="X-axis", y_label="Y-axis"):
         self.canvas = visualization_config.canvas
         self.selected_data = visualization_config.selected_data
         self.type_of_measurement = visualization_config.type_of_measurement
-        self.selected_chart_type=visualization_config.selected_chart_type
+        self.selected_chart_type = visualization_config.selected_chart_type
         self.orientation = visualization_config.orientation
         self.x_label = x_label
         self.y_label = y_label
@@ -142,6 +144,95 @@ class Plotter:
         self.canvas.figure = self.fig
         self.canvas.draw()
 
+    def plot_histogram_chart_split(self, events_count, x_label):
+        element = list(events_count.keys())
+        event_types = list({event for events in events_count.values() for event in events})
+        data = {event: [events.get(event, 0) for events in events_count.values()] for event in event_types}
+
+        bottom = [0] * len(element)
+        for event in event_types:
+            self.ax.bar(element, data[event], bottom=bottom, label=event)
+            bottom = [i + j for i, j in zip(bottom, data[event])]
+
+        self.ax.set_ylabel('Counts')
+        self.ax.set_xlabel(x_label)  
+        self.ax.set_title(self.selected_data)  
+        self.ax.legend()
+        
+        self.canvas.figure = self.fig
+        self.canvas.draw()
+
+    def plot_line_chart_split(self, events_count, x_label):
+        element = list(events_count.keys())
+        event_types = list({event for events in events_count.values() for event in events})
+        data = {event: [events.get(event, 0) for events in events_count.values()] for event in event_types}
+
+        for event in event_types:
+            self.ax.plot(element, data[event], label=event)
+
+        self.ax.set_ylabel('Counts')
+        self.ax.set_xlabel(x_label)
+        self.ax.set_title(self.selected_data)
+        self.ax.legend()
+
+        self.canvas.figure = self.fig
+        self.canvas.draw()
+
+    def plot_scatter_chart_split(self, events_count, x_label):
+        element = list(events_count.keys())
+        event_types = list({event for events in events_count.values() for event in events})
+        data = {event: [events.get(event, 0) for events in events_count.values()] for event in event_types}
+
+        for event in event_types:
+            self.ax.scatter(element, data[event], label=event)
+
+        self.ax.set_ylabel('Counts')
+        self.ax.set_xlabel(x_label)
+        self.ax.set_title(self.selected_data)
+        self.ax.legend()
+
+        self.canvas.figure = self.fig
+        self.canvas.draw()
+
+    def plot_area_chart_split(self, events_count, x_label):
+        element = list(events_count.keys())
+        event_types = list({event for events in events_count.values() for event in events})
+        data = {event: [events.get(event, 0) for events in events_count.values()] for event in event_types}
+
+        bottom = [0] * len(element)
+        for event in event_types:
+            self.ax.fill_between(element, bottom, [i + j for i, j in zip(bottom, data[event])], alpha=0.4, label=event)
+            bottom = [i + j for i, j in zip(bottom, data[event])]
+
+        self.ax.set_ylabel('Counts')
+        self.ax.set_xlabel(x_label)
+        self.ax.set_title(self.selected_data)
+        self.ax.legend()
+
+        self.canvas.figure = self.fig
+        self.canvas.draw()
+
+    def plot_split(self, events_count, x_label):
+
+        if self.selected_chart_type == GraphType.LINE.value:
+            self.plot_line_chart_split(events_count, x_label)
+        elif self.selected_chart_type == GraphType.SCATTER.value:
+            self.plot_scatter_chart_split(events_count, x_label)
+        elif self.selected_chart_type == GraphType.HISTOGRAM.value:
+            self.plot_histogram_chart_split(events_count, x_label)
+        elif self.selected_chart_type == GraphType.AREA.value:
+            self.plot_area_chart_split(events_count, x_label)
+        else:
+            print("Error chart type")
+
+        
+
+    def plot_split_date(self, events_count):
+        self.plot_split(events_count, 'Date')
+
+    def plot_split_hour(self, events_count):    
+        self.plot_split(events_count, 'Hours')
+
     def plot(self, events_count):
         if self.selected_chart_type == GraphType.LINE.value:
             self.plot_line_chart(events_count)
@@ -161,9 +252,5 @@ class Plotter:
             self.plot_area_chart(events_count)
         elif self.selected_chart_type == GraphType.FUNNEL.value:
             self.plot_funnel(events_count)
-
-    def plot_split_date(self, events_count):
-        print(events_count)
-
-    def plot_split_hour(self, events_count):
-        print(events_count)
+        elif self.selected_chart_type == GraphType.SPLIT.value:
+            self.plot_split(events_count)

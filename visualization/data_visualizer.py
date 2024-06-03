@@ -226,23 +226,25 @@ class DataVisualizer:
             events_count = self.counter(data, filters)
             if events_count:
                 events_count = self.counting_other(events_count, self.visualization_config.other_reference)
-                self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)
-                self.plotter.plot(events_count)              
+                self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)   
+                self.plotter.plot(events_count)      
 
         elif self.visualization_config.display_mode == DisplayMode.DAY:
             events_count = self.counter_split_time(data, filters,"%Y-%m-%d")
             if events_count:
-                self.plotter.plot_split_date(events_count)
+               
                 events_count = self.counting_other_split_time(events_count, self.visualization_config.other_reference)
-            print(events_count)
+                self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)  
+                self.plotter.plot_split_date(events_count)
 
         
         elif self.visualization_config.display_mode == DisplayMode.HOURSE:
             events_count = self.counter_split_time(data, filters,"%Y-%m-%d %H")
             if events_count:
-                self.plotter.plot_split_hour(events_count)
+               
                 events_count = self.counting_other_split_time(events_count, self.visualization_config.other_reference)
-            print(events_count)
+                self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)  
+                self.plotter.plot_split_hour(events_count)
  
 
         self.visualization_config.canvas.draw()
