@@ -23,6 +23,16 @@ class DataVisualizer:
             self.counter_users(elements, count, filters)
         return count
 
+    def counter_split_time(self, elements, filters,time_division_format):
+        count = {}
+        if self.visualization_config.type_data == constants.EVENTS:
+            self.counter_events_split_time(elements, count, filters,time_division_format)
+        elif self.visualization_config.type_data == constants.SESSIONS:
+            self.counter_sessions_split_time(elements, count, filters,time_division_format)
+        elif self.visualization_config.type_data == constants.USERS:
+            self.counter_users_split_time(elements, count, filters,time_division_format)
+        return count
+    
     def counter_sessions(self, elements, count, filters):
         for sessions in elements:
             sessions_count = {}
@@ -32,6 +42,19 @@ class DataVisualizer:
                     count[key] += 1
                 else:
                     count[key] = 1
+    
+    def counter_sessions_split_time(self, elements, count, filters,time_division_format):
+        for sessions in elements:
+            sessions_count = {}
+            self.counter_events_split_time(sessions.get_events(), sessions_count, filters,time_division_format)
+            for event_time in sessions_count.keys():
+                if event_time not in count:
+                    count[event_time] = {}
+                for key in sessions_count[event_time].keys():
+                    if key in count[event_time]:
+                        count[event_time][key] += 1
+                    else:
+                        count[event_time][key] = 1
 
     def counter_users(self, elements, count, filters):
         for user in elements:
@@ -42,6 +65,21 @@ class DataVisualizer:
                     count[key] += 1
                 else:
                     count[key] = 1
+
+    def counter_users_split_time(self, elements, count, filters, time_division_format):
+        for user in elements:
+            user_count = {}
+            self.counter_sessions_split_time(user.get_sessions(), user_count, filters,time_division_format)
+            for event_time in user_count.keys():
+                if event_time not in count:
+                    count[event_time] = {}
+                for key in user_count[event_time].keys():
+                    if key in count[event_time]:
+                        count[event_time][key] += 1
+                    else:
+                        count[event_time][key] = 1
+
+    
 
     def counter_events(self, elements, count, filters):
         for event in elements:
@@ -65,6 +103,38 @@ class DataVisualizer:
                                 count[name] += 1
                             else:
                                 count[name] = 1
+        return count
+    
+
+    
+    
+    def counter_events_split_time(self, elements, count, filters, time_division_format):
+        for event in elements:
+            if filters.event_verification(event):
+                event_time = event.get_value("event_datetime").strftime(time_division_format)
+
+                if event_time not in count:
+                    count[event_time] = {}
+
+                if TypeOfData.FIELD_NAME == self.visualization_config.type_of_data:
+                    value = event.get_value(self.visualization_config.selected_data)
+                    if value in count[event_time]:
+                        count[event_time][value] += 1
+                    else:
+                        count[event_time][value] = 1
+                elif TypeOfData.TREE == self.visualization_config.type_of_data:
+                    value = self.counter_events_list(event, self.visualization_config.selected_data)
+                    if isinstance(value, str):
+                        if value in count[event_time]:
+                            count[event_time][value] += 1
+                        else:
+                            count[event_time][value] = 1
+                    else:
+                        for name in value:
+                            if name in count[event_time]:
+                                count[event_time][name] += 1
+                            else:
+                                count[event_time][name] = 1
         return count
 
     @classmethod
@@ -105,29 +175,7 @@ class DataVisualizer:
             else:
                 data['other'] = other_sum
 
-        return data
-
-    def count_events_per_day(self, elements, filters):
-        count = {}
-        for event in elements:
-            if filters.event_verification(event):
-                event_date = event.get_value("event_datetime").strftime("%Y-%m-%d")
-                if event_date in count:
-                    count[event_date] += 1
-                else:
-                    count[event_date] = 1
-        return count
-
-    def count_events_per_hour(self, elements, filters):
-        count = {}
-        for event in elements:
-            if filters.event_verification(event):
-                event_hour = event.get_value("event_datetime").strftime("%Y-%m-%d %H")
-                if event_hour in count:
-                    count[event_hour] += 1
-                else:
-                    count[event_hour] = 1
-        return count
+        return data 
 
     def plot_copy_chart(self, visualization_config):
         self.visualization_config.copy(visualization_config)
@@ -145,22 +193,27 @@ class DataVisualizer:
         filters = Filters(self.visualization_config)
         filters.add_filter(filters.data_filter)
 
-        if self.visualization_config.display_mode == DisplayMode.DAY:
-            events_count = self.count_events_per_day(data, filters)
-        elif self.visualization_config.display_mode == DisplayMode.HOURSE:
-            events_count = self.count_events_per_hour(data, filters)
-        elif self.visualization_config.display_mode == DisplayMode.TOTAL:
+     
+        if self.visualization_config.display_mode == DisplayMode.TOTAL:
             events_count = self.counter(data, filters)
+            if events_count:
+                events_count = self.counting_other(events_count, self.visualization_config.other_reference)
+                self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)
+                self.plotter.plot(events_count)              
 
-        if events_count:
-            events_count = self.counting_other(events_count, self.visualization_config.other_reference)
-            self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)
-            if self.visualization_config.display_mode == DisplayMode.DAY:
+        elif self.visualization_config.display_mode == DisplayMode.DAY:
+            events_count = self.counter_split_time(data, filters,"%Y-%m-%d")
+            if events_count:
                 self.plotter.plot_split_date(events_count)
-            elif self.visualization_config.display_mode == DisplayMode.HOURSE:
+            print(events_count)
+
+        
+        elif self.visualization_config.display_mode == DisplayMode.HOURSE:
+            events_count = self.counter_split_time(data, filters,"%Y-%m-%d %H")
+            if events_count:
                 self.plotter.plot_split_hour(events_count)
-            elif self.visualization_config.display_mode == DisplayMode.TOTAL:
-                self.plotter.plot(events_count)
+            print(events_count)
+ 
 
         self.visualization_config.canvas.draw()
 
