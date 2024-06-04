@@ -1,6 +1,5 @@
 from enums.enums import GraphType, TypeOfMeasurement,Orientation,HistogramType,DisplayMode
-import matplotlib.pyplot as plt
-
+from PyQt5.QtWidgets import QMessageBox
 import matplotlib.pyplot as plt
 
 class Plotter:
@@ -214,7 +213,7 @@ class Plotter:
         elif self.selected_chart_type == GraphType.AREA.value:
             self.plot_area_chart_split(element,event_types,data, x_label)
         else:
-            print("Error chart type")
+            QMessageBox.critical(None,"Error", "test")
 
         
 
@@ -230,7 +229,7 @@ class Plotter:
 
         if self.selected_chart_type == GraphType.LINE.value:
             self.plot_line_chart(events_count)
-        elif self.selected_chart_type == GraphType.BAR.value:
+        elif self.selected_chart_type == GraphType.HISTOGRAM.value:
             self.plot_bar_chart(events_count)
         elif self.selected_chart_type == GraphType.PIE.value:
             self.plot_pie_chart(events_count)
@@ -242,7 +241,7 @@ class Plotter:
             self.plot_bubble_chart(events_count)
         elif self.selected_chart_type == GraphType.AREA.value:
             self.plot_area_chart(events_count)
-        elif self.selected_chart_type == GraphType.FUNNEL.value:
+        elif self.selected_chart_type == GraphType.FUNNEL.value:    
             self.plot_funnel(events_count)
         else:
-            pass
+            QMessageBox.critical(None,"Error", "test")

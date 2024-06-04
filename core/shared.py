@@ -10,12 +10,6 @@ class SharedState:
     
     def is_session_create(self):
         return self.sessions_result!=None
-
-    def is_users_create(self):
-        return self.users_result!=None
-
-    def is_events_create(self):
-        return  self.events_result!=None
     
     def add_to_json_tree(self, json_data):
         def update_tree(tree, data):

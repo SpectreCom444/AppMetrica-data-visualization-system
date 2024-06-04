@@ -3,9 +3,8 @@ from enums.enums import TypeOfData,DisplayMode
 from filters.filters import Filters
 import config.constants as constants
 from visualization.plotter import Plotter
-from datetime import datetime, timedelta
 import config.constants as constants
-from config.visualization_config import VisualizationConfig
+from core.visualization_config import VisualizationConfig
 
 class DataVisualizer:
 
@@ -241,7 +240,6 @@ class DataVisualizer:
         elif self.visualization_config.display_mode == DisplayMode.HOURSE:
             events_count = self.counter_split_time(data, filters,"%Y-%m-%d %H")
             if events_count:
-               
                 events_count = self.counting_other_split_time(events_count, self.visualization_config.other_reference)
                 self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)  
                 self.plotter.plot_split_hour(events_count)

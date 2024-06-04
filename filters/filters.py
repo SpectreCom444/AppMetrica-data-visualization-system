@@ -1,4 +1,3 @@
-from datetime import datetime
 import config.constants as constants
 
 class Filters:

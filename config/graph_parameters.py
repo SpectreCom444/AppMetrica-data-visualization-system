@@ -1,0 +1,13 @@
+from enums.enums import GraphType
+from config.constants import DISPLAY_MODE,TYPE_OF_MEASUREMENT,HISTOGRAM_TYPE,ORIENTATION
+
+graph_parameters = {
+    GraphType.LINE: [DISPLAY_MODE, TYPE_OF_MEASUREMENT],
+    GraphType.PIE: [],
+    GraphType.RING: [],
+    GraphType.SCATTER: [DISPLAY_MODE, TYPE_OF_MEASUREMENT],
+    GraphType.HISTOGRAM: [DISPLAY_MODE, HISTOGRAM_TYPE, ORIENTATION, TYPE_OF_MEASUREMENT],
+    GraphType.BUBBLE: [TYPE_OF_MEASUREMENT],
+    GraphType.AREA: [DISPLAY_MODE, TYPE_OF_MEASUREMENT],
+    GraphType.FUNNEL: [TYPE_OF_MEASUREMENT],
+}

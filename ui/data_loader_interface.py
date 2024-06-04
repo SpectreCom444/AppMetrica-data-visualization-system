@@ -4,7 +4,6 @@ from core.shared import shared_state
 import config.constants as constants
 
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QFileDialog
-from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from ui.workspace import WorkspaceWindow
 

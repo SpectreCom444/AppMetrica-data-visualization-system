@@ -41,7 +41,9 @@ class GridMatrix:
         canvas_container.setLayout(layout)
         canvas = MatplotlibCanvas(canvas_container, self.set_selected_canvas, pos_x, pos_y)
         layout.addWidget(canvas)
-        canvas.setFixedSize(800, 600)
+        canvas_container.setMinimumSize(360,360)
+        canvas_container.setMaximumSize(1080,1080)
+
         self.workspace_window.canvas_container_layout.addWidget(canvas_container, pos_x, pos_y)
         return canvas
 

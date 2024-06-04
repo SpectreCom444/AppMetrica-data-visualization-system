@@ -27,7 +27,6 @@ class TypeOfMeasurement(Enum):
 
 class GraphType(Enum):
     LINE = 'line'
-    BAR = 'bar'
     PIE = 'pie'
     RING = 'ring'
     SCATTER = 'scatter'

@@ -1,20 +1,25 @@
-from config.visualization_config import VisualizationConfig
+from core.visualization_config import VisualizationConfig
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from PyQt5.QtWidgets import QSizePolicy
+
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
-    def __init__(self, parent, on_click_callback,pos_x,pos_y):
+    def __init__(self, parent, on_click_callback, pos_x, pos_y):
         self.fig = Figure()
         super(MatplotlibCanvas, self).__init__(self.fig)
         self.setParent(parent)
         self.on_click_callback = on_click_callback
         self.mpl_connect("button_press_event", self.on_click)
         self.visualization_config = VisualizationConfig()
-        self.pos_x=pos_x
+        self.pos_x = pos_x
         self.pos_y = pos_y
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.updateGeometry()
 
     def set_visualization_parameters(self,visualization_config):
         self.visualization_config.copy(visualization_config)
+        self.updateGeometry()
     
     def get_visualization_parameters(self):
         return self.visualization_config
