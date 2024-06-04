@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QCheckBox, QPushButton, QVBoxLayout, QWidget, QFrame
 from ui.matplotlib_canvas import MatplotlibCanvas
 
+
 class GridMatrix:
     def __init__(self, workspace_window, size_x=1, size_y=1):
         self.size_x = size_x
@@ -8,12 +9,13 @@ class GridMatrix:
         self.workspace_window = workspace_window
         self.matrix = [[self.create_canvas_ptl(0, 0)]]
         self.selected_canvas = self.get_canvas(0, 0)
-        self.clipboard_visualization_config = None 
+        self.clipboard_visualization_config = None
 
     def update_matrix_size(self, size_x, size_y):
         if self.size_x < size_x:
             for x in range(self.size_x, size_x):
-                self.matrix.append([self.create_canvas_ptl(x, y) for y in range(self.size_y)])
+                self.matrix.append([self.create_canvas_ptl(x, y)
+                                   for y in range(self.size_y)])
         elif self.size_x > size_x:
             for x in range(size_x, self.size_x):
                 for y in range(self.size_y):
@@ -39,17 +41,21 @@ class GridMatrix:
         canvas_container = QWidget()
         layout = QVBoxLayout(canvas_container)
         canvas_container.setLayout(layout)
-        canvas = MatplotlibCanvas(canvas_container, self.set_selected_canvas, pos_x, pos_y)
+        canvas = MatplotlibCanvas(
+            canvas_container, self.set_selected_canvas, pos_x, pos_y)
         layout.addWidget(canvas)
-        canvas_container.setMinimumSize(360,360)
-        canvas_container.setMaximumSize(1080,1080)
+        canvas_container.setMinimumSize(360, 360)
+        canvas_container.setMaximumSize(1080, 1080)
 
-        self.workspace_window.canvas_container_layout.addWidget(canvas_container, pos_x, pos_y)
+        self.workspace_window.canvas_container_layout.addWidget(
+            canvas_container, pos_x, pos_y)
         return canvas
 
     def remove_canvas_ptl(self, pos_x, pos_y):
-        canvas_container = self.workspace_window.canvas_container_layout.itemAtPosition(pos_x, pos_y).widget()
-        self.workspace_window.canvas_container_layout.removeWidget(canvas_container)
+        canvas_container = self.workspace_window.canvas_container_layout.itemAtPosition(
+            pos_x, pos_y).widget()
+        self.workspace_window.canvas_container_layout.removeWidget(
+            canvas_container)
         canvas_container.deleteLater()
 
     def remove_all(self):
@@ -82,15 +88,17 @@ class GridMatrix:
                 self.matrix[x][y] = self.create_canvas_ptl(x, y)
 
     def copy_canvas(self):
-        self.clipboard_visualization_config= self.selected_canvas.get_visualization_parameters()
+        self.clipboard_visualization_config = self.selected_canvas.get_visualization_parameters()
         print("copy")
 
     def paste_canvas(self):
-       
+
         self.clear_selected_canvas()
-        self.selected_canvas.set_visualization_parameters(self.clipboard_visualization_config)
+        self.selected_canvas.set_visualization_parameters(
+            self.clipboard_visualization_config)
         self.selected_canvas.visualization_config.canvas = self.selected_canvas
-        self.workspace_window.data_visualizer.plot_copy_chart(self.selected_canvas.visualization_config)
+        self.workspace_window.data_visualizer.plot_copy_chart(
+            self.selected_canvas.visualization_config)
 
         print("past")
 

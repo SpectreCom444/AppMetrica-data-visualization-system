@@ -17,17 +17,16 @@ class MatplotlibCanvas(FigureCanvasQTAgg):
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.updateGeometry()
 
-    def set_visualization_parameters(self,visualization_config):
+    def set_visualization_parameters(self, visualization_config):
         self.visualization_config.copy(visualization_config)
         self.updateGeometry()
-    
+
     def get_visualization_parameters(self):
         return self.visualization_config
 
     def get_position(self):
-        return (self.pos_x,self.pos_y)
-    
+        return (self.pos_x, self.pos_y)
+
     def on_click(self, event):
         print(self.pos_x, self.pos_y)
         self.on_click_callback(self)
-    

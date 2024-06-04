@@ -4,6 +4,7 @@ from core.shared import shared_state
 from datetime import datetime
 import config.constants as constants
 
+
 class Event:
     def __init__(self, field_names: List[str], values: List[str]):
         if len(field_names) != len(values):
@@ -19,7 +20,8 @@ class Event:
                 self.__dict__[key] = json_dict
                 shared_state.add_to_json_tree(json_dict)
             elif key == constants.EVENT_DATATIME:
-                self.__dict__[key] = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+                self.__dict__[key] = datetime.strptime(
+                    value, '%Y-%m-%d %H:%M:%S')
             else:
                 self.__dict__[key] = value
 
@@ -71,4 +73,3 @@ class User:
 
     def get_id_user(self) -> str:
         return self.id_user
-

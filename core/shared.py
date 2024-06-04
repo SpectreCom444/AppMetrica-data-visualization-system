@@ -6,11 +6,11 @@ class SharedState:
         self.users_result = None
         self.names = None
         self.json_tree = {}
-        self.ui_names =None
-    
+        self.ui_names = None
+
     def is_session_create(self):
-        return self.sessions_result!=None
-    
+        return self.sessions_result != None
+
     def add_to_json_tree(self, json_data):
         def update_tree(tree, data):
             for key, value in data.items():
@@ -25,6 +25,5 @@ class SharedState:
 
         update_tree(self.json_tree, json_data)
 
-shared_state= SharedState()
 
-
+shared_state = SharedState()
