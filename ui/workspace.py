@@ -85,11 +85,23 @@ class WorkspaceWindow(QMainWindow):
         self.button_units.clicked.connect(lambda:  self.data_visualizer.set_type_of_measurement(TypeOfMeasurement.UNITS))
         self.button_percentages.clicked.connect(lambda:  self.data_visualizer.set_type_of_measurement(TypeOfMeasurement.PERCENTAGES))
 
+        self.loader_line.hide()
+
     
        
         if constants.EVENT_DATATIME in shared_state.names:
             self.set_date_selector(constants.EVENT_DATATIME in shared_state.names)    
         self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
+
+    def loading(self,text):
+        if text == constants.END_LOADING:
+            self.loader_line.hide()
+        else:
+            self.loader_line.setText(text)
+            if self.loader_line.isHidden():
+                self.loader_line.show()
+        self.repaint()
+
 
     def data_for_chart(self,direction):
         
@@ -119,7 +131,7 @@ class WorkspaceWindow(QMainWindow):
         elif direction == TypeOfCreatingGraph.ADD:
             pass
 
-        self.data_visualizer.add_chart()
+        self.data_visualizer.add_chart(self.loading)
     
 
     def set_date_selector(self, enable: bool):

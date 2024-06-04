@@ -217,13 +217,16 @@ class Plotter:
 
         
 
-    def plot_split_date(self, events_count):
+    def plot_split_date(self, events_count,loading):
+        loading("creating a chart")
         self.plot_split(events_count, 'Date')
 
-    def plot_split_hour(self, events_count):    
+    def plot_split_hour(self, events_count,loading):   
+        loading("creating a chart") 
         self.plot_split(events_count, 'Hours')
 
-    def plot(self, events_count):
+    def plot(self, events_count,loading):
+        loading("creating a chart")
         if self.type_of_measurement == TypeOfMeasurement.PERCENTAGES:
             events_count = self._convert_to_percentage(events_count)
 

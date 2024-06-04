@@ -439,7 +439,46 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_7" stretch="100,1">
+         <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0,100,1">
+          <item>
+           <widget class="QFrame" name="loader_panel">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_14">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="10,1">
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLineEdit" name="loader_line">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="text">
+                  <string>Loading...</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
@@ -459,7 +498,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>1032</width>
-                 <height>714</height>
+                 <height>666</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_4">
@@ -480,7 +519,7 @@
                      <x>0</x>
                      <y>0</y>
                      <width>1012</width>
-                     <height>630</height>
+                     <height>582</height>
                     </rect>
                    </property>
                    <layout class="QGridLayout" name="gridLayout_5">

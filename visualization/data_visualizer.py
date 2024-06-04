@@ -209,7 +209,8 @@ class DataVisualizer:
         self.create_new_plotter()
         self.add_chart()
 
-    def add_chart(self):
+    def add_chart(self,loading):
+        loading("data preparation")
         if self.visualization_config.type_data == constants.EVENTS:
             data = shared_state.events_result
         elif self.visualization_config.type_data == constants.SESSIONS:
@@ -226,7 +227,7 @@ class DataVisualizer:
             if events_count:
                 events_count = self.counting_other(events_count, self.visualization_config.other_reference)
                 self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)   
-                self.plotter.plot(events_count)      
+                self.plotter.plot(events_count,loading)      
 
         elif self.visualization_config.display_mode == DisplayMode.DAY:
             events_count = self.counter_split_time(data, filters,"%Y-%m-%d")
@@ -234,7 +235,7 @@ class DataVisualizer:
                
                 events_count = self.counting_other_split_time(events_count, self.visualization_config.other_reference)
                 self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)  
-                self.plotter.plot_split_date(events_count)
+                self.plotter.plot_split_date(events_count,loading)
 
         
         elif self.visualization_config.display_mode == DisplayMode.HOURSE:
@@ -242,10 +243,11 @@ class DataVisualizer:
             if events_count:
                 events_count = self.counting_other_split_time(events_count, self.visualization_config.other_reference)
                 self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)  
-                self.plotter.plot_split_hour(events_count)
+                self.plotter.plot_split_hour(events_count,loading)
  
 
         self.visualization_config.canvas.draw()
+        loading(constants.END_LOADING)
 
     def create_new_plotter(self):
         self.plotter = Plotter(self.visualization_config)
