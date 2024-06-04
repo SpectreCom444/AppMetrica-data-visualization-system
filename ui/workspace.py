@@ -3,14 +3,12 @@ from core.shared import shared_state
 from visualization.data_visualizer import DataVisualizer
 import config.constants as constants
 from ui.grid_matrix import GridMatrix
-from config.graph_parameters import graph_parameters
-
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
-from PyQt5 import QtWidgets
 from ui.custom_event_menu import CustomEventMenu
 from enums.enums import DisplayMode,HistogramType,Orientation,TypeOfData,GraphType,TypeOfMeasurement,TypeOfCreatingGraph
+from config.graph_parameters import graph_parameters
 
 class WorkspaceWindow(QMainWindow):
     def __init__(self):
@@ -27,38 +25,37 @@ class WorkspaceWindow(QMainWindow):
     def set_matrix(self):
         self.grid_matrix.update_matrix_size(int(self.combo_box_height_matrix.currentText()),int(self.combo_box_width_matrix.currentText()))
 
+    def hide_action_button(self):
+        self.display_mode.hide()
+        self.histogram_type.hide()
+        self.orientation.hide()
+        self.type_of_measurement.hide()
+
+    def update_action_buttons(self,*args):
+        self.hide_action_button()
+
+        for action in graph_parameters[GraphType(self.selected_chart_type.currentText())]:   
+            if action == constants.DISPLAY_MODE:
+                self.display_mode.show()
+            if action == constants.HISTOGRAM_TYPE:
+                self.histogram_type.show()
+            if action == constants.ORIENTATION:
+                self.orientation.show()
+            if action == constants.TYPE_OF_MEASUREMENT:
+                self.type_of_measurement.show()
+
+    def on_selected_data_change(self, *args):
+        self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
+
     def create_vizualization_button(self):
-        def on_selected_data_change(*args):
-            self.create_custom_event_menu(self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
-        
-        def update_action_buttons(*args):
-            pass
-            # for action in graph_parameters.values:
-            #     print(action)
-
-
-            # for action in graph_parameters[self.selected_chart_type.currentText()]:
-            #     self.display_mode.hide()
-            #     self.histogram_type.hide()
-            #     self.orientation.hide()
-            #     self.type_of_measurement.hide()
-            #     if action == constants.DISPLAY_MODE:
-            #         self.display_mode.show()
-            #     if action == constants.HISTOGRAM_TYPE:
-            #         self.histogram_type.show()
-            #     if action == constants.ORIENTATION:
-            #         self.orientation.show()
-            #     if action == constants.TYPE_OF_MEASUREMENT:
-            #         self.type_of_measurement.show()
-
-
         self.dropdown_selected_data.addItems(shared_state.ui_names)
         self.dropdown_selected_data.setCurrentText(shared_state.ui_names[0])
-        self.dropdown_selected_data.currentTextChanged.connect(on_selected_data_change)
+        self.dropdown_selected_data.currentTextChanged.connect(self.on_selected_data_change)
 
         self.selected_chart_type.addItems([graph_type.value for graph_type in GraphType])
         self.selected_chart_type.setCurrentText(next(iter( [graph_type.value for graph_type in GraphType])))
-        self.selected_chart_type.currentTextChanged.connect(update_action_buttons)
+        self.selected_chart_type.currentTextChanged.connect(self.update_action_buttons)
+        self.update_action_buttons()
 
         self.set_grid_size.clicked.connect(self.set_matrix)
 

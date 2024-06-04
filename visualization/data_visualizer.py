@@ -1,6 +1,6 @@
 from core.shared import shared_state
 from enums.enums import TypeOfData,DisplayMode
-from filters.filters import Filters
+from core.filters.filters import Filters
 import config.constants as constants
 from visualization.plotter import Plotter
 import config.constants as constants
