@@ -1,4 +1,3 @@
-from core.shared import shared_state
 from PyQt5 import QtWidgets
 
 
@@ -11,7 +10,8 @@ class CustomEventMenu:
         self.undo_button = workspace_window.undo_button
         self.undo_button.clicked.connect(self.undo_last_selection)
         self.selected_options = []
-        self.current_options = list(shared_state.json_tree.keys())
+        self.current_options = list(
+            self.workspace_window.data_storage.json_tree.keys())
         self.update_buttons()
         self.workspace_window.metric_name_set_button.clicked.connect(
             self.close_CEM_panel)
@@ -27,7 +27,7 @@ class CustomEventMenu:
             if isinstance(widget, QtWidgets.QPushButton) and widget != self.undo_button:
                 widget.deleteLater()
 
-        current_level = shared_state.json_tree
+        current_level = self.workspace_window.data_storage.json_tree
         for opt in self.selected_options:
             if isinstance(current_level, dict):
                 current_level = current_level.get(opt, {})
@@ -61,7 +61,7 @@ class CustomEventMenu:
             self.update_options()
 
     def update_options(self):
-        current_level = shared_state.json_tree
+        current_level = self.workspace_window.data_storage.json_tree
         for opt in self.selected_options:
             if isinstance(current_level, dict):
                 current_level = current_level.get(opt, {})

@@ -1,5 +1,3 @@
-
-from core.shared import shared_state
 from visualization.data_visualizer import DataVisualizer
 import config.constants as constants
 from ui.grid_matrix import GridMatrix
@@ -12,10 +10,11 @@ from config.graph_parameters import graph_parameters
 
 
 class WorkspaceWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, data_storage):
         super(WorkspaceWindow, self).__init__()
         loadUi('ui/workspace.ui', self)
         self.setWindowTitle("Data visualization system:  Workspace")
+        self.data_storage = data_storage
         self.data_visualizer = DataVisualizer()
         self.grid_matrix = GridMatrix(self)
         self.create_vizualization_button()
@@ -123,9 +122,9 @@ class WorkspaceWindow(QMainWindow):
 
         self.group_box_json_buttons.hide()
 
-        if constants.EVENT_DATATIME in shared_state.names:
+        if constants.EVENT_DATATIME in self.data_storage.names:
             self.set_date_selector(
-                constants.EVENT_DATATIME in shared_state.names)
+                constants.EVENT_DATATIME in self.data_storage.names)
 
     def loading(self, text):
         if text == constants.END_LOADING:
@@ -148,11 +147,17 @@ class WorkspaceWindow(QMainWindow):
             self.data_visualizer.set_selected_data(
                 self.custom_event_menu.get_selected_options())
 
-        if constants.EVENT_DATATIME in shared_state.names:
+        if constants.EVENT_DATATIME in self.data_storage.names:
             self.data_visualizer.set_data_time(
                 self.start_date_entry.date(), self.end_date_entry.date())
 
-        self.data_visualizer.add_chart(self.loading)
+        if self.data_visualizer.visualization_config.type_data == constants.EVENTS:
+            data = self.data_storage.events_result
+        elif self.data_visualizer.visualization_config.type_data == constants.SESSIONS:
+            data = self.data_storage.sessions_result
+        elif self.data_visualizer.visualization_config.type_data == constants.USERS:
+            data = self.data_storage.users_result
+        self.data_visualizer.add_chart(self.loading, data)
 
     def set_date_selector(self, enable: bool):
         self.start_date_entry.setDisplayFormat("yyyy-MM-dd")

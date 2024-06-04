@@ -1,6 +1,5 @@
 import json
 from typing import List, Union, Dict, Any
-from core.shared import shared_state
 from datetime import datetime
 import config.constants as constants
 
@@ -16,8 +15,6 @@ class Event:
                     value, '%Y-%m-%d %H:%M:%S')
             else:
                 self.json_dict[key] = value
-
-        shared_state.add_to_json_tree(self.json_dict)
 
     def get_value(self, key: str) -> Any:
         return self.json_dict.get(key)

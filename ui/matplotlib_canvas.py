@@ -1,4 +1,4 @@
-from core.visualization_config import VisualizationConfig
+from core.data_classes_visualization import VisualizationConfig
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from PyQt5.QtWidgets import QSizePolicy

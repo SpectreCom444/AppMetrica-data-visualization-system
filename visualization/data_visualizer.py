@@ -1,9 +1,8 @@
-from core.shared import shared_state
 from enums import DisplayMode, GraphType
 from core.filters.filters import Filters
 from config.constants import EVENTS, SESSIONS, USERS, EVENT_JSON, DISPLAY_MODE, END_LOADING
 from visualization.plotter import Plotter
-from core.visualization_config import VisualizationConfig
+from core.data_classes_visualization import VisualizationConfig
 from ui.messege import warning_dialog, warning
 from config.graph_parameters import graph_parameters
 
@@ -204,15 +203,8 @@ class DataVisualizer:
         self.plotter_set_visualization_config()
         self.add_chart(loading)
 
-    def add_chart(self, loading):
+    def add_chart(self, loading, data):
         loading("data preparation")
-        if self.visualization_config.type_data == EVENTS:
-            data = shared_state.events_result
-        elif self.visualization_config.type_data == SESSIONS:
-            data = shared_state.sessions_result
-        elif self.visualization_config.type_data == USERS:
-            data = shared_state.users_result
-
         filters = Filters(self.visualization_config)
         filters.add_filter(filters.data_filter)
 

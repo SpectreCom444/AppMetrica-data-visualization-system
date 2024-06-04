@@ -1,8 +1,10 @@
 import config.constants as constants
 from enums import DisplayMode, HistogramType, Orientation, GraphType, TypeOfMeasurement
 from PyQt5.QtCore import QDate
+from dataclasses import dataclass, field, fields
 
 
+# @dataclass
 class VisualizationConfig:
     def __init__(self):
         self.type_data = constants.EVENTS
