@@ -235,77 +235,28 @@
             <item row="5" column="1">
              <widget class="QDateEdit" name="end_date_entry"/>
             </item>
-            <item row="9" column="0">
-             <widget class="QPushButton" name="plot_button">
-              <property name="text">
-               <string>plot</string>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="1">
-             <widget class="QPushButton" name="overlay_button">
-              <property name="text">
-               <string>overlay</string>
-              </property>
-             </widget>
-            </item>
-            <item row="11" column="0">
-             <widget class="QPushButton" name="delete_all_button">
-              <property name="text">
-               <string>delete all</string>
-              </property>
-             </widget>
-            </item>
-            <item row="11" column="1">
+            <item row="12" column="1">
              <widget class="QPushButton" name="clear_all_button">
               <property name="text">
                <string>clear all</string>
               </property>
              </widget>
             </item>
-            <item row="12" column="0">
-             <widget class="QPushButton" name="clear_button">
-              <property name="text">
-               <string>clear</string>
-              </property>
-             </widget>
-            </item>
-            <item row="12" column="1">
-             <widget class="QPushButton" name="copy_button">
-              <property name="text">
-               <string>copy</string>
-              </property>
-             </widget>
-            </item>
-            <item row="13" column="0">
-             <widget class="QPushButton" name="insert_button">
-              <property name="text">
-               <string>insert</string>
-              </property>
-             </widget>
-            </item>
-            <item row="13" column="1">
-             <widget class="QPushButton" name="cut_button">
-              <property name="text">
-               <string>cut</string>
-              </property>
-             </widget>
-            </item>
-            <item row="14" column="0">
+            <item row="18" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
                <string>to other everything less </string>
               </property>
              </widget>
             </item>
-            <item row="14" column="1">
+            <item row="18" column="1">
              <widget class="QSlider" name="other_reference_slider">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
              </widget>
             </item>
-            <item row="15" column="0" colspan="2">
+            <item row="19" column="0" colspan="2">
              <widget class="QGroupBox" name="display_mode">
               <property name="title">
                <string>display mode </string>
@@ -339,7 +290,7 @@
               </layout>
              </widget>
             </item>
-            <item row="16" column="0" colspan="2">
+            <item row="20" column="0" colspan="2">
              <widget class="QGroupBox" name="histogram_type">
               <property name="title">
                <string>histogram type </string>
@@ -366,7 +317,7 @@
               </layout>
              </widget>
             </item>
-            <item row="17" column="0" colspan="2">
+            <item row="21" column="0" colspan="2">
              <widget class="QGroupBox" name="orientation">
               <property name="title">
                <string>orientation</string>
@@ -393,7 +344,7 @@
               </layout>
              </widget>
             </item>
-            <item row="18" column="0" colspan="2">
+            <item row="22" column="0" colspan="2">
              <widget class="QGroupBox" name="type_of_measurement">
               <property name="title">
                <string>type of measurement</string>
@@ -418,6 +369,48 @@
                 </layout>
                </item>
               </layout>
+             </widget>
+            </item>
+            <item row="9" column="0" colspan="2">
+             <widget class="QPushButton" name="plot_button">
+              <property name="text">
+               <string>plot</string>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="1">
+             <widget class="QPushButton" name="delete_all_button">
+              <property name="text">
+               <string>delete all</string>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="1">
+             <widget class="QPushButton" name="clear_button">
+              <property name="text">
+               <string>clear</string>
+              </property>
+             </widget>
+            </item>
+            <item row="11" column="0">
+             <widget class="QPushButton" name="copy_button">
+              <property name="text">
+               <string>copy</string>
+              </property>
+             </widget>
+            </item>
+            <item row="12" column="0">
+             <widget class="QPushButton" name="insert_button">
+              <property name="text">
+               <string>insert</string>
+              </property>
+             </widget>
+            </item>
+            <item row="13" column="0">
+             <widget class="QPushButton" name="cut_button">
+              <property name="text">
+               <string>cut</string>
+              </property>
              </widget>
             </item>
            </layout>

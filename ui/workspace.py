@@ -46,6 +46,21 @@ class WorkspaceWindow(QMainWindow):
             if action == constants.TYPE_OF_MEASUREMENT:
                 self.type_of_measurement.show()
 
+    def update_tools(self):
+        if self.grid_matrix.clipboard_visualization_config is None:
+            self.insert_button.hide()
+        else:
+            self.insert_button.show()
+
+        if self.grid_matrix.selected_canvas.ax is None:
+            self.copy_button.hide()
+            self.cut_button.hide()
+            self.clear_button.hide()
+        else:
+            self.copy_button.show()
+            self.cut_button.show()
+            self.clear_button.show()
+
     def on_selected_data_change(self, *args):
         self.create_custom_event_menu(
             self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
@@ -67,8 +82,6 @@ class WorkspaceWindow(QMainWindow):
         self.set_grid_size.clicked.connect(self.set_matrix)
 
         self.plot_button.clicked.connect(self.grid_matrix.plot_canvas)
-        self.overlay_button.clicked.connect(
-            lambda: self.data_for_chart())
         self.delete_all_button.clicked.connect(self.grid_matrix.remove_all)
         self.clear_all_button.clicked.connect(
             self.grid_matrix.clear_all_canvases)
@@ -108,6 +121,7 @@ class WorkspaceWindow(QMainWindow):
             lambda:  self.data_visualizer.set_type_of_measurement(TypeOfMeasurement.PERCENTAGES))
 
         self.loader_line.hide()
+        self.update_tools()
 
         if constants.EVENT_DATATIME in shared_state.names:
             self.set_date_selector(
