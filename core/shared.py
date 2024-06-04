@@ -1,3 +1,6 @@
+from config.constants import HIDDEN_ITEMS
+
+
 class SharedState:
     def __init__(self):
         self.data_result = None
@@ -14,14 +17,15 @@ class SharedState:
     def add_to_json_tree(self, json_data):
         def update_tree(tree, data):
             for key, value in data.items():
-                if isinstance(value, dict):
-                    if key not in tree:
-                        tree[key] = {}
-                    update_tree(tree[key], value)
-                else:
-                    if key not in tree:
-                        tree[key] = {}
-                    tree[key][value] = {}
+                if key not in HIDDEN_ITEMS:
+                    if isinstance(value, dict):
+                        if key not in tree:
+                            tree[key] = {}
+                        update_tree(tree[key], value)
+                    else:
+                        if key not in tree:
+                            tree[key] = {}
+                        tree[key][value] = {}
 
         update_tree(self.json_tree, json_data)
 

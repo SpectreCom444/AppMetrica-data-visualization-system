@@ -18,7 +18,6 @@ class WorkspaceWindow(QMainWindow):
         self.setWindowTitle("Data visualization system:  Workspace")
         self.data_visualizer = DataVisualizer()
         self.grid_matrix = GridMatrix(self)
-
         self.create_vizualization_button()
         self.custom_event_menu = CustomEventMenu(self)
         self.showMaximized()
@@ -61,15 +60,14 @@ class WorkspaceWindow(QMainWindow):
             self.cut_button.show()
             self.clear_button.show()
 
-    def on_selected_data_change(self, *args):
-        self.create_custom_event_menu(
-            self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
+    def create_CEM_for_set_metric(self):
+        self.general_frame.hide()
+        self.group_box_json_buttons.show()
 
     def create_vizualization_button(self):
-        self.dropdown_selected_data.addItems(shared_state.ui_names)
-        self.dropdown_selected_data.setCurrentText(shared_state.ui_names[0])
-        self.dropdown_selected_data.currentTextChanged.connect(
-            self.on_selected_data_change)
+
+        self.choose_metric_button.clicked.connect(
+            self.create_CEM_for_set_metric)
 
         self.selected_chart_type.addItems(
             [graph_type.value for graph_type in GraphType])
@@ -123,11 +121,11 @@ class WorkspaceWindow(QMainWindow):
         self.loader_line.hide()
         self.update_tools()
 
+        self.group_box_json_buttons.hide()
+
         if constants.EVENT_DATATIME in shared_state.names:
             self.set_date_selector(
                 constants.EVENT_DATATIME in shared_state.names)
-        self.create_custom_event_menu(
-            self.dropdown_selected_data.currentText() == constants.EVENT_JSON)
 
     def loading(self, text):
         if text == constants.END_LOADING:
@@ -186,12 +184,6 @@ class WorkspaceWindow(QMainWindow):
             lambda: self.set_time_period(QDate.currentDate().addDays(-7)))
         self.last_month_button.clicked.connect(
             lambda: self.set_time_period(QDate.currentDate().addMonths(-1)))
-
-    def create_custom_event_menu(self, show):
-        if show:
-            self.group_box_json_buttons.show()
-        else:
-            self.group_box_json_buttons.hide()
 
     def set_time_period(self, start_date):
         self.start_date_entry.setDate(start_date)

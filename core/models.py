@@ -13,20 +13,20 @@ class Event:
                              f"{len(field_names)}/{len(values)}\n"
                              f"{field_names}/{values}")
 
-        self.__dict__ = {}
+        self.json_dict = {}
         for key, value in zip(field_names, values):
             if key == constants.EVENT_JSON:
-                json_dict = self.convert_JSON_to_dict(value)
-                self.__dict__[key] = json_dict
-                shared_state.add_to_json_tree(json_dict)
+                self.json_dict[key] = self.convert_JSON_to_dict(value)
             elif key == constants.EVENT_DATATIME:
-                self.__dict__[key] = datetime.strptime(
+                self.json_dict[key] = datetime.strptime(
                     value, '%Y-%m-%d %H:%M:%S')
             else:
-                self.__dict__[key] = value
+                self.json_dict[key] = value
+
+        shared_state.add_to_json_tree(self.json_dict)
 
     def get_value(self, key: str) -> Any:
-        return self.__dict__.get(key)
+        return self.json_dict.get(key)
 
     @staticmethod
     def convert_JSON_to_dict(stringJSON: str) -> Union[str, Dict[str, Any]]:

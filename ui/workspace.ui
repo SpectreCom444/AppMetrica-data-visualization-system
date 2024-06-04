@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1523</width>
-    <height>843</height>
+    <height>982</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -112,27 +112,31 @@
             <property name="bottomMargin">
              <number>2</number>
             </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label">
+            <item row="1" column="0">
+             <widget class="QPushButton" name="choose_metric_button">
               <property name="text">
                <string>choosing a metric:</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="dropdown_selected_data"/>
+            <item row="1" column="1">
+             <widget class="QPlainTextEdit" name="plainTextEdit">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
             </item>
-            <item row="1" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="label_2">
               <property name="text">
                <string>type of chart:</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="4" column="1">
              <widget class="QComboBox" name="selected_chart_type"/>
             </item>
-            <item row="2" column="0" colspan="2">
+            <item row="5" column="0" colspan="2">
              <widget class="QGroupBox" name="groupBox_2">
               <property name="minimumSize">
                <size>
@@ -172,7 +176,7 @@
               </layout>
              </widget>
             </item>
-            <item row="3" column="0" colspan="2">
+            <item row="6" column="0" colspan="2">
              <widget class="QGroupBox" name="groupBox">
               <property name="minimumSize">
                <size>
@@ -215,48 +219,90 @@
               </layout>
              </widget>
             </item>
-            <item row="4" column="0">
+            <item row="7" column="0">
              <widget class="QLabel" name="label_3">
               <property name="text">
                <string>start date:</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="7" column="1">
              <widget class="QDateEdit" name="start_date_entry"/>
             </item>
-            <item row="5" column="0">
+            <item row="8" column="0">
              <widget class="QLabel" name="label_4">
               <property name="text">
                <string>end date:</string>
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
+            <item row="8" column="1">
              <widget class="QDateEdit" name="end_date_entry"/>
             </item>
-            <item row="12" column="1">
+            <item row="13" column="0" colspan="2">
+             <widget class="QPushButton" name="plot_button">
+              <property name="text">
+               <string>plot</string>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="0">
+             <widget class="QPushButton" name="copy_button">
+              <property name="text">
+               <string>copy</string>
+              </property>
+             </widget>
+            </item>
+            <item row="15" column="1">
+             <widget class="QPushButton" name="clear_button">
+              <property name="text">
+               <string>clear</string>
+              </property>
+             </widget>
+            </item>
+            <item row="16" column="0">
+             <widget class="QPushButton" name="insert_button">
+              <property name="text">
+               <string>insert</string>
+              </property>
+             </widget>
+            </item>
+            <item row="16" column="1">
              <widget class="QPushButton" name="clear_all_button">
               <property name="text">
                <string>clear all</string>
               </property>
              </widget>
             </item>
-            <item row="18" column="0">
+            <item row="17" column="0">
+             <widget class="QPushButton" name="cut_button">
+              <property name="text">
+               <string>cut</string>
+              </property>
+             </widget>
+            </item>
+            <item row="17" column="1">
+             <widget class="QPushButton" name="delete_all_button">
+              <property name="text">
+               <string>delete all</string>
+              </property>
+             </widget>
+            </item>
+            <item row="22" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
                <string>to other everything less </string>
               </property>
              </widget>
             </item>
-            <item row="18" column="1">
+            <item row="22" column="1">
              <widget class="QSlider" name="other_reference_slider">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
              </widget>
             </item>
-            <item row="19" column="0" colspan="2">
+            <item row="23" column="0" colspan="2">
              <widget class="QGroupBox" name="display_mode">
               <property name="title">
                <string>display mode </string>
@@ -290,7 +336,7 @@
               </layout>
              </widget>
             </item>
-            <item row="20" column="0" colspan="2">
+            <item row="24" column="0" colspan="2">
              <widget class="QGroupBox" name="histogram_type">
               <property name="title">
                <string>histogram type </string>
@@ -317,7 +363,7 @@
               </layout>
              </widget>
             </item>
-            <item row="21" column="0" colspan="2">
+            <item row="25" column="0" colspan="2">
              <widget class="QGroupBox" name="orientation">
               <property name="title">
                <string>orientation</string>
@@ -344,7 +390,7 @@
               </layout>
              </widget>
             </item>
-            <item row="22" column="0" colspan="2">
+            <item row="26" column="0" colspan="2">
              <widget class="QGroupBox" name="type_of_measurement">
               <property name="title">
                <string>type of measurement</string>
@@ -372,45 +418,51 @@
              </widget>
             </item>
             <item row="9" column="0" colspan="2">
-             <widget class="QPushButton" name="plot_button">
-              <property name="text">
-               <string>plot</string>
+             <widget class="QGroupBox" name="groupBox_4">
+              <property name="minimumSize">
+               <size>
+                <width>10</width>
+                <height>100</height>
+               </size>
               </property>
-             </widget>
-            </item>
-            <item row="13" column="1">
-             <widget class="QPushButton" name="delete_all_button">
-              <property name="text">
-               <string>delete all</string>
+              <property name="title">
+               <string>GroupBox</string>
               </property>
-             </widget>
-            </item>
-            <item row="11" column="1">
-             <widget class="QPushButton" name="clear_button">
-              <property name="text">
-               <string>clear</string>
-              </property>
-             </widget>
-            </item>
-            <item row="11" column="0">
-             <widget class="QPushButton" name="copy_button">
-              <property name="text">
-               <string>copy</string>
-              </property>
-             </widget>
-            </item>
-            <item row="12" column="0">
-             <widget class="QPushButton" name="insert_button">
-              <property name="text">
-               <string>insert</string>
-              </property>
-             </widget>
-            </item>
-            <item row="13" column="0">
-             <widget class="QPushButton" name="cut_button">
-              <property name="text">
-               <string>cut</string>
-              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_4">
+               <item>
+                <widget class="QScrollArea" name="scrollArea_2">
+                 <property name="widgetResizable">
+                  <bool>true</bool>
+                 </property>
+                 <widget class="QWidget" name="scrollAreaWidgetContents">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>234</width>
+                    <height>65</height>
+                   </rect>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_8">
+                   <item>
+                    <widget class="QPushButton" name="pushButton">
+                     <property name="text">
+                      <string>+</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QVBoxLayout" name="verticalLayout_3">
+                     <property name="sizeConstraint">
+                      <enum>QLayout::SetFixedSize</enum>
+                     </property>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </widget>
+               </item>
+              </layout>
              </widget>
             </item>
            </layout>
@@ -452,7 +504,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>1032</width>
-                 <height>714</height>
+                 <height>853</height>
                 </rect>
                </property>
                <layout class="QGridLayout" name="gridLayout_4">
@@ -473,7 +525,7 @@
                      <x>0</x>
                      <y>0</y>
                      <width>1012</width>
-                     <height>630</height>
+                     <height>769</height>
                     </rect>
                    </property>
                    <layout class="QGridLayout" name="gridLayout_5">
