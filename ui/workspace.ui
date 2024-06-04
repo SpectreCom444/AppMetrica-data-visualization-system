@@ -67,9 +67,16 @@
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
+            <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
              <item>
               <layout class="QGridLayout" name="matrix_of_buttons_grid"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="metric_name_set_button">
+               <property name="text">
+                <string>done</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -80,7 +87,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_16">
          <item>
-          <widget class="QFrame" name="frame">
+          <widget class="QFrame" name="general_frame">
            <property name="minimumSize">
             <size>
              <width>100</width>

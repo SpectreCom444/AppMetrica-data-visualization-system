@@ -56,8 +56,8 @@ class Session:
 
 class User:
     def __init__(self, session: Session):
-        self.sessions = [session]
-        self.id_user = session.get_id_user()
+        self._sessions = [session]
+        self._id_user = session.get_id_user()
 
     def get_events(self) -> List[Event]:
         events = []
@@ -65,11 +65,12 @@ class User:
             events.extend(session.get_events())
         return events
 
-    def get_sessions(self) -> List[Session]:
-        return self.sessions
+    @property
+    def sessions(self) -> List[Session]:
+        return self._sessions.copy()
 
     def add_session(self, session: Session):
         self.sessions.append(session)
 
     def get_id_user(self) -> str:
-        return self.id_user
+        return self._id_user

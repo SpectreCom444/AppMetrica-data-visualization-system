@@ -1,12 +1,15 @@
 from core.shared import shared_state
-from enums.enums import TypeOfData, DisplayMode
+from enums import DisplayMode, GraphType
 from core.filters.filters import Filters
 from config.constants import EVENTS, SESSIONS, USERS, EVENT_JSON, DISPLAY_MODE, END_LOADING
 from visualization.plotter import Plotter
 from core.visualization_config import VisualizationConfig
 from ui.messege import warning_dialog, warning
 from config.graph_parameters import graph_parameters
-from enums.enums import GraphType
+
+
+class Counter:
+    pass
 
 
 class DataVisualizer:
@@ -89,27 +92,19 @@ class DataVisualizer:
     def counter_events(self, elements, count, filters):
         for event in elements:
             if filters.event_verification(event):
-                if TypeOfData.FIELD_NAME == self.visualization_config.type_of_data:
-                    value = event.get_value(
-                        self.visualization_config.selected_data)
+                value = self.counter_events_list(
+                    event, self.visualization_config.selected_data)
+                if isinstance(value, str):
                     if value in count:
                         count[value] += 1
                     else:
                         count[value] = 1
-                elif TypeOfData.TREE == self.visualization_config.type_of_data:
-                    value = self.counter_events_list(
-                        event, self.visualization_config.selected_data)
-                    if isinstance(value, str):
-                        if value in count:
-                            count[value] += 1
+                else:
+                    for name in value:
+                        if name in count:
+                            count[name] += 1
                         else:
-                            count[value] = 1
-                    else:
-                        for name in value:
-                            if name in count:
-                                count[name] += 1
-                            else:
-                                count[name] = 1
+                            count[name] = 1
         return count
 
     def counter_events_split_time(self, elements, count, filters, time_division_format):
@@ -120,33 +115,23 @@ class DataVisualizer:
 
                 if event_time not in count:
                     count[event_time] = {}
-
-                if TypeOfData.FIELD_NAME == self.visualization_config.type_of_data:
-                    value = event.get_value(
-                        self.visualization_config.selected_data)
+                value = self.counter_events_list(
+                    event, self.visualization_config.selected_data)
+                if isinstance(value, str):
                     if value in count[event_time]:
                         count[event_time][value] += 1
                     else:
                         count[event_time][value] = 1
-                elif TypeOfData.TREE == self.visualization_config.type_of_data:
-                    value = self.counter_events_list(
-                        event, self.visualization_config.selected_data)
-                    if isinstance(value, str):
-                        if value in count[event_time]:
-                            count[event_time][value] += 1
+                else:
+                    for name in value:
+                        if name in count[event_time]:
+                            count[event_time][name] += 1
                         else:
-                            count[event_time][value] = 1
-                    else:
-                        for name in value:
-                            if name in count[event_time]:
-                                count[event_time][name] += 1
-                            else:
-                                count[event_time][name] = 1
+                            count[event_time][name] = 1
         return count
 
     @staticmethod
     def counter_events_list(event, metric_names):
-
         def check_event(tree, metric_names):
             if metric_names[0] in tree:
                 if len(metric_names) > 1:
@@ -160,7 +145,7 @@ class DataVisualizer:
                 return None
 
         events_count = {}
-        names = check_event(event.__dict__[EVENT_JSON], metric_names)
+        names = check_event(event.json_dict, metric_names)
         if names is not None:
             return names
 
@@ -278,7 +263,7 @@ class DataVisualizer:
         loading(END_LOADING)
 
     def plotter_set_visualization_config(self):
-        self.plotter.set_visualization_config(self.visualization_config)
+        self.plotter.visualization_config = self.visualization_config
 
     def set_orientation(self, orientation):
         self.visualization_config.orientation = orientation
@@ -291,9 +276,6 @@ class DataVisualizer:
 
     def set_canvas(self, canvas):
         self.visualization_config.canvas = canvas
-
-    def set_type_of_data(self, type_of_data):
-        self.visualization_config.type_of_data = type_of_data
 
     def set_chart_type(self, selected_chart_type):
         self.visualization_config.selected_chart_type = selected_chart_type

@@ -5,6 +5,7 @@ from PyQt5 import QtWidgets
 class CustomEventMenu:
     def __init__(self, workspace_window):
 
+        self.workspace_window = workspace_window
         self.matrix_of_buttons_grid = workspace_window.matrix_of_buttons_grid
         self.dictionary_path = workspace_window.dictionary_path
         self.undo_button = workspace_window.undo_button
@@ -12,6 +13,12 @@ class CustomEventMenu:
         self.selected_options = []
         self.current_options = list(shared_state.json_tree.keys())
         self.update_buttons()
+        self.workspace_window.metric_name_set_button.clicked.connect(
+            self.close_CEM_panel)
+
+    def close_CEM_panel(self):
+        self.workspace_window.general_frame.show()
+        self.workspace_window.group_box_json_buttons.hide()
 
     def update_buttons(self):
 

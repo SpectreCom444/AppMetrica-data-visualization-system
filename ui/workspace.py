@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from ui.custom_event_menu import CustomEventMenu
-from enums.enums import DisplayMode, HistogramType, Orientation, TypeOfData, GraphType, TypeOfMeasurement
+from enums import DisplayMode, HistogramType, Orientation, GraphType, TypeOfMeasurement
 from config.graph_parameters import graph_parameters
 
 
@@ -144,21 +144,9 @@ class WorkspaceWindow(QMainWindow):
         self.data_visualizer.set_other_reference(
             self.other_reference_slider.value())
 
-        if self.dropdown_selected_data.currentText() == constants.EVENT_JSON:
-            if len(self.custom_event_menu.get_selected_options()) > 0:
-                self.data_visualizer.set_type_of_data(TypeOfData.TREE)
-                self.data_visualizer.set_selected_data(
-                    self.custom_event_menu.get_selected_options())
-            else:
-                if constants.EVENT_NAME in shared_state.names:
-                    self.data_visualizer.set_type_of_data(
-                        TypeOfData.FIELD_NAME)
-                    self.data_visualizer.set_selected_data(
-                        constants.EVENT_NAME)
-        else:
-            self.data_visualizer.set_type_of_data(TypeOfData.FIELD_NAME)
+        if len(self.custom_event_menu.get_selected_options()) > 0:
             self.data_visualizer.set_selected_data(
-                self.dropdown_selected_data.currentText())
+                self.custom_event_menu.get_selected_options())
 
         if constants.EVENT_DATATIME in shared_state.names:
             self.data_visualizer.set_data_time(

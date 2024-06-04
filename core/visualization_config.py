@@ -1,5 +1,5 @@
 import config.constants as constants
-from enums.enums import DisplayMode, HistogramType, Orientation, GraphType, TypeOfMeasurement, TypeOfData
+from enums import DisplayMode, HistogramType, Orientation, GraphType, TypeOfMeasurement
 from PyQt5.QtCore import QDate
 
 
@@ -16,7 +16,6 @@ class VisualizationConfig:
         self.other_reference = 0
         self.selected_data = ""
         self.canvas = None
-        self.type_of_data = TypeOfData.FIELD_NAME
 
     def copy(self, reference):
         self.type_data = reference.type_data
@@ -30,4 +29,3 @@ class VisualizationConfig:
         self.other_reference = reference.other_reference
         self.selected_data = reference.selected_data
         self.canvas = reference.canvas
-        self.type_of_data = reference.type_of_data

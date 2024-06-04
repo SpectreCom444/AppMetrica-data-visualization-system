@@ -28,6 +28,7 @@ class GridMatrix:
                     if x >= len(self.matrix):
                         self.matrix.append([])
                     self.matrix[x].append(self._create_canvas_ptl(x, y))
+
         elif self.size_y > size_y:
             for x in range(size_x):
                 for y in range(size_y, self.size_y):

@@ -17,11 +17,6 @@ class Orientation(Enum):
     VERTICAL = 2
 
 
-class TypeOfData(Enum):
-    FIELD_NAME = 1
-    TREE = 2
-
-
 class TypeOfMeasurement(Enum):
     UNITS = 1
     PERCENTAGES = 2

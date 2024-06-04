@@ -1,13 +1,11 @@
-from enums.enums import GraphType, TypeOfMeasurement, Orientation, HistogramType, DisplayMode
+from enums import GraphType, TypeOfMeasurement, Orientation, HistogramType, DisplayMode
 from PyQt5.QtWidgets import QMessageBox
 from ui.messege import error
+from collections import OrderedDict
 
 
 class Plotter:
     def __init__(self, visualization_config):
-        self.visualization_config = visualization_config
-
-    def set_visualization_config(self, visualization_config):
         self.visualization_config = visualization_config
 
     def _convert_to_percentage(self, events_count):
@@ -99,7 +97,7 @@ class Plotter:
 
     def plot_funnel(self, events_count):
 
-        sorted_events_count = dict(
+        sorted_events_count = OrderedDict(
             reversed(sorted(events_count.items(), key=lambda item: item[1])))
 
         x = list(sorted_events_count.keys())

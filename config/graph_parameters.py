@@ -1,4 +1,4 @@
-from enums.enums import GraphType
+from enums import GraphType
 from config.constants import DISPLAY_MODE, TYPE_OF_MEASUREMENT, HISTOGRAM_TYPE, ORIENTATION
 
 graph_parameters = {
