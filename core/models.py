@@ -6,15 +6,9 @@ import config.constants as constants
 
 
 class Event:
-    def __init__(self, field_names: List[str], values: List[str]):
-        if len(field_names) != len(values):
-            raise ValueError(f"The data is corrupted!\n"
-                             f"The number of field names does not match the number of values.\n"
-                             f"{len(field_names)}/{len(values)}\n"
-                             f"{field_names}/{values}")
-
+    def __init__(self, data):
         self.json_dict = {}
-        for key, value in zip(field_names, values):
+        for key, value in data:
             if key == constants.EVENT_JSON:
                 self.json_dict[key] = self.convert_JSON_to_dict(value)
             elif key == constants.EVENT_DATATIME:

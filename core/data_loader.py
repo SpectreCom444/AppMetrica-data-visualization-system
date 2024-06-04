@@ -53,7 +53,7 @@ class DataProcessor:
         create_user_done()
 
     def create_events(self, data, names):
-        return [Event(names, row) for row in data]
+        return [Event(zip(names, row)) for row in data]
 
     def create_sessions(self, events):
         sessions = []
