@@ -2,6 +2,7 @@ from core.visualization_config import VisualizationConfig
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from PyQt5.QtWidgets import QSizePolicy
+import matplotlib.pyplot as plt
 
 
 class MatplotlibCanvas(FigureCanvasQTAgg):
@@ -16,6 +17,11 @@ class MatplotlibCanvas(FigureCanvasQTAgg):
         self.pos_y = pos_y
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.updateGeometry()
+        self.ax = None
+
+    def create_axes(self):
+        if self.ax is None:
+            self.ax = self.fig.add_subplot(111)
 
     def set_visualization_parameters(self, visualization_config):
         self.visualization_config.copy(visualization_config)

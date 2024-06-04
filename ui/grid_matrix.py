@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QCheckBox, QPushButton, QVBoxLayout, QWidget, QFrame
+from PyQt5.QtWidgets import QMainWindow, QApplication, QCheckBox, QPushButton, QVBoxLayout, QWidget, QFrame, QDesktopWidget
 from ui.matplotlib_canvas import MatplotlibCanvas
 
 
@@ -37,6 +37,10 @@ class GridMatrix:
         self.size_x = size_x
         self.size_y = size_y
 
+    def plot_canvas(self):
+        self.clear_selected_canvas()
+        self.workspace_window.data_for_chart()
+
     def create_canvas_ptl(self, pos_x, pos_y):
         canvas_container = QWidget()
         layout = QVBoxLayout(canvas_container)
@@ -44,8 +48,14 @@ class GridMatrix:
         canvas = MatplotlibCanvas(
             canvas_container, self.set_selected_canvas, pos_x, pos_y)
         layout.addWidget(canvas)
-        canvas_container.setMinimumSize(360, 360)
-        canvas_container.setMaximumSize(1080, 1080)
+
+        screen = QDesktopWidget().screenGeometry()
+        min_width = screen.width() // 4
+        min_height = screen.height() // 3
+        max_width = screen.width()
+        max_height = screen.height()
+        canvas_container.setMinimumSize(min_width, min_height)
+        canvas_container.setMaximumSize(max_width, max_height)
 
         self.workspace_window.canvas_container_layout.addWidget(
             canvas_container, pos_x, pos_y)
@@ -98,7 +108,7 @@ class GridMatrix:
             self.clipboard_visualization_config)
         self.selected_canvas.visualization_config.canvas = self.selected_canvas
         self.workspace_window.data_visualizer.plot_copy_chart(
-            self.selected_canvas.visualization_config)
+            self.selected_canvas.visualization_config, self.workspace_window.loading)
 
         print("past")
 

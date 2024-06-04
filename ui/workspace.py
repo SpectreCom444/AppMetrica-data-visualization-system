@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from ui.custom_event_menu import CustomEventMenu
-from enums.enums import DisplayMode, HistogramType, Orientation, TypeOfData, GraphType, TypeOfMeasurement, TypeOfCreatingGraph
+from enums.enums import DisplayMode, HistogramType, Orientation, TypeOfData, GraphType, TypeOfMeasurement
 from config.graph_parameters import graph_parameters
 
 
@@ -66,10 +66,9 @@ class WorkspaceWindow(QMainWindow):
 
         self.set_grid_size.clicked.connect(self.set_matrix)
 
-        self.plot_button.clicked.connect(
-            lambda: self.data_for_chart(TypeOfCreatingGraph.REPLOAT))
+        self.plot_button.clicked.connect(self.grid_matrix.plot_canvas)
         self.overlay_button.clicked.connect(
-            lambda: self.data_for_chart(TypeOfCreatingGraph.ADD))
+            lambda: self.data_for_chart())
         self.delete_all_button.clicked.connect(self.grid_matrix.remove_all)
         self.clear_all_button.clicked.connect(
             self.grid_matrix.clear_all_canvases)
@@ -125,7 +124,7 @@ class WorkspaceWindow(QMainWindow):
                 self.loader_line.show()
         self.repaint()
 
-    def data_for_chart(self, direction):
+    def data_for_chart(self):
 
         self.data_visualizer.set_canvas(self.grid_matrix.selected_canvas)
         self.data_visualizer.set_chart_type(
@@ -152,11 +151,6 @@ class WorkspaceWindow(QMainWindow):
         if constants.EVENT_DATATIME in shared_state.names:
             self.data_visualizer.set_data_time(
                 self.start_date_entry.date(), self.end_date_entry.date())
-
-        if direction == TypeOfCreatingGraph.REPLOAT:
-            self.data_visualizer.create_new_plotter()
-        elif direction == TypeOfCreatingGraph.ADD:
-            pass
 
         self.data_visualizer.add_chart(self.loading)
 

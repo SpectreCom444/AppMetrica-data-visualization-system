@@ -1,38 +1,39 @@
 from core.shared import shared_state
 from enums.enums import TypeOfData, DisplayMode
 from core.filters.filters import Filters
-import config.constants as constants
+from config.constants import EVENTS, SESSIONS, USERS, EVENT_JSON, DISPLAY_MODE, END_LOADING
 from visualization.plotter import Plotter
-import config.constants as constants
 from core.visualization_config import VisualizationConfig
-from ui.messege import warning
+from ui.messege import warning_dialog, warning
+from config.graph_parameters import graph_parameters
+from enums.enums import GraphType
 
 
 class DataVisualizer:
 
     def __init__(self):
-        self.plotter = None
         self.visualization_config = VisualizationConfig()
+        self.plotter = Plotter(self.visualization_config)
 
     def counter(self, elements, filters):
         count = {}
-        if self.visualization_config.type_data == constants.EVENTS:
+        if self.visualization_config.type_data == EVENTS:
             self.counter_events(elements, count, filters)
-        elif self.visualization_config.type_data == constants.SESSIONS:
+        elif self.visualization_config.type_data == SESSIONS:
             self.counter_sessions(elements, count, filters)
-        elif self.visualization_config.type_data == constants.USERS:
+        elif self.visualization_config.type_data == USERS:
             self.counter_users(elements, count, filters)
         return count
 
     def counter_split_time(self, elements, filters, time_division_format):
         count = {}
-        if self.visualization_config.type_data == constants.EVENTS:
+        if self.visualization_config.type_data == EVENTS:
             self.counter_events_split_time(
                 elements, count, filters, time_division_format)
-        elif self.visualization_config.type_data == constants.SESSIONS:
+        elif self.visualization_config.type_data == SESSIONS:
             self.counter_sessions_split_time(
                 elements, count, filters, time_division_format)
-        elif self.visualization_config.type_data == constants.USERS:
+        elif self.visualization_config.type_data == USERS:
             self.counter_users_split_time(
                 elements, count, filters, time_division_format)
         return count
@@ -144,7 +145,7 @@ class DataVisualizer:
         return count
 
     @staticmethod
-    def counter_events_list(cls, event, metric_names):
+    def counter_events_list(event, metric_names):
 
         def check_event(tree, metric_names):
             if metric_names[0] in tree:
@@ -159,14 +160,14 @@ class DataVisualizer:
                 return None
 
         events_count = {}
-        names = check_event(event.__dict__[constants.EVENT_JSON], metric_names)
+        names = check_event(event.__dict__[EVENT_JSON], metric_names)
         if names is not None:
             return names
 
         return events_count
 
     @staticmethod
-    def counting_other(cls, data, other_threshold):
+    def counting_other(data, other_threshold):
         total = sum(data.values())
         other_sum = 0
 
@@ -185,7 +186,7 @@ class DataVisualizer:
         return data
 
     @staticmethod
-    def counting_other_split_time(cls, data, other_threshold):
+    def counting_other_split_time(data, other_threshold):
         total = 0
         event_sums = {}
 
@@ -213,60 +214,71 @@ class DataVisualizer:
 
         return data
 
-    def plot_copy_chart(self, visualization_config):
+    def plot_copy_chart(self, visualization_config, loading):
         self.visualization_config.copy(visualization_config)
-        self.create_new_plotter()
-        self.add_chart()
+        self.plotter_set_visualization_config()
+        self.add_chart(loading)
 
     def add_chart(self, loading):
         loading("data preparation")
-        if self.visualization_config.type_data == constants.EVENTS:
+        if self.visualization_config.type_data == EVENTS:
             data = shared_state.events_result
-        elif self.visualization_config.type_data == constants.SESSIONS:
+        elif self.visualization_config.type_data == SESSIONS:
             data = shared_state.sessions_result
-        elif self.visualization_config.type_data == constants.USERS:
+        elif self.visualization_config.type_data == USERS:
             data = shared_state.users_result
 
         filters = Filters(self.visualization_config)
         filters.add_filter(filters.data_filter)
 
-        if self.visualization_config.display_mode == DisplayMode.TOTAL:
+        if self.visualization_config.display_mode == DisplayMode.TOTAL or DISPLAY_MODE not in graph_parameters[GraphType(self.visualization_config.selected_chart_type)]:
             events_count = self.counter(data, filters)
-            if events_count:
-                events_count = self.counting_other(
-                    events_count, self.visualization_config.other_reference)
-                self.visualization_config.canvas.set_visualization_parameters(
-                    self.visualization_config)
-                if len(events_count.keys()) > 15:
-                    if not warning(f"There will be more than 15 labels on this visualization. Increase the value of the other parameter to improve readability."):
-                        return
-                self.plotter.plot(events_count, loading)
+            if not events_count:
+                warning(
+                    "Elements that would satisfy the selected filters are 0. It is impossible to build a chart.")
+                return
+            events_count = self.counting_other(
+                events_count, self.visualization_config.other_reference)
+            self.visualization_config.canvas.set_visualization_parameters(
+                self.visualization_config)
+            if len(events_count.keys()) > 15:
+                if warning_dialog(f"There will be more than 15 labels on this visualization. Increase the value of the other parameter to improve readability."):
+                    return
+            self.plotter.plot(events_count, loading)
 
         elif self.visualization_config.display_mode == DisplayMode.DAY:
             events_count = self.counter_split_time(data, filters, "%Y-%m-%d")
-            if events_count:
+            if not events_count:
+                warning(
+                    "Elements that would satisfy the selected filters are 0. It is impossible to build a chart.")
+                return
 
-                events_count = self.counting_other_split_time(
-                    events_count, self.visualization_config.other_reference)
-                self.visualization_config.canvas.set_visualization_parameters(
-                    self.visualization_config)
-                self.plotter.plot_split_date(events_count, loading)
+            events_count = self.counting_other_split_time(
+                events_count, self.visualization_config.other_reference)
+            self.visualization_config.canvas.set_visualization_parameters(
+                self.visualization_config)
+            self.plotter.plot_split(events_count, 'Date', loading)
 
         elif self.visualization_config.display_mode == DisplayMode.HOURSE:
             events_count = self.counter_split_time(
                 data, filters, "%Y-%m-%d %H")
-            if events_count:
-                events_count = self.counting_other_split_time(
-                    events_count, self.visualization_config.other_reference)
-                self.visualization_config.canvas.set_visualization_parameters(
-                    self.visualization_config)
-                self.plotter.plot_split_hour(events_count, loading)
+
+            if not events_count:
+                warning(
+                    "Elements that would satisfy the selected filters are 0. It is impossible to build a chart.")
+                return
+
+            events_count = self.counting_other_split_time(
+                events_count, self.visualization_config.other_reference)
+            self.visualization_config.canvas.set_visualization_parameters(
+                self.visualization_config)
+            self.plotter.plot_split(events_count, 'Hours', loading)
 
         self.visualization_config.canvas.draw()
-        loading(constants.END_LOADING)
+        loading(END_LOADING)
 
-    def create_new_plotter(self):
-        self.plotter = Plotter(self.visualization_config)
+    def plotter_set_visualization_config(self):
+        self.plotter.set_visualization_config(self.visualization_config)
 
     def set_orientation(self, orientation):
         self.visualization_config.orientation = orientation
