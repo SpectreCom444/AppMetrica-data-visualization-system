@@ -5,6 +5,7 @@ import config.constants as constants
 from visualization.plotter import Plotter
 import config.constants as constants
 from core.visualization_config import VisualizationConfig
+from ui.messege import warning
 
 class DataVisualizer:
 
@@ -226,7 +227,10 @@ class DataVisualizer:
             events_count = self.counter(data, filters)
             if events_count:
                 events_count = self.counting_other(events_count, self.visualization_config.other_reference)
-                self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)   
+                self.visualization_config.canvas.set_visualization_parameters(self.visualization_config)  
+                if len(events_count.keys())>15:
+                    if not warning(f"There will be more than 15 labels on this visualization. Increase the value of the other parameter to improve readability."):
+                        return
                 self.plotter.plot(events_count,loading)      
 
         elif self.visualization_config.display_mode == DisplayMode.DAY:

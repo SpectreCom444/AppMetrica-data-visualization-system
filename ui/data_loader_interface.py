@@ -2,6 +2,7 @@
 from core.data_loader import DataProcessor
 from core.shared import shared_state
 import config.constants as constants
+from PyQt5.QtWidgets import QMessageBox
 
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QFileDialog
 from PyQt5.uic import loadUi

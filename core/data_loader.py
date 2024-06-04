@@ -4,21 +4,25 @@ import threading
 from core.shared import shared_state
 from core.models import Event, Session, User
 import config.constants as constants
+from ui.messege import error
 
 class DataProcessor:
     def __init__(self, path):
         self.path = path
 
     def load_data(self, load_data_done):
-        start_time = time.time()
-        with open(self.path, mode='r', encoding='utf-8') as file:
-            reader = csv.reader(file)
-            shared_state.names = next(reader)
-            shared_state.data_result = [list(map(str.strip, line)) for line in reader][:15000]
-        
-        shared_state.ui_names = list(filter(lambda x: x not in constants.HIDDEN_ITEMS, shared_state.names))
-        print(f"> Data loaded in {time.time() - start_time:.2f} seconds")
-        load_data_done()
+        try:
+            start_time = time.time()
+            with open(self.path, mode='r', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                shared_state.names = next(reader)
+                shared_state.data_result = [list(map(str.strip, line)) for line in reader][:15000]
+            
+            shared_state.ui_names = list(filter(lambda x: x not in constants.HIDDEN_ITEMS, shared_state.names))
+            print(f"> Data loaded in {time.time() - start_time:.2f} seconds")
+            load_data_done()
+        except Exception as e:
+            error(e)
 
     def processing_data(self, create_events_done):
         start_time = time.time()
