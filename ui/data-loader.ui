@@ -38,9 +38,9 @@
          <bool>true</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(236, 0, 0);
+         <string notr="true">background-color: rgb(220, 0, 0);
 border-radius: 15px;
-</string>
+selection-color: rgb(255, 255, 255);</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::WinPanel</enum>
@@ -71,7 +71,21 @@ border-radius: 15px;
               <cursorShape>ArrowCursor</cursorShape>
              </property>
              <property name="styleSheet">
-              <string notr="true">color: rgb(255, 255, 255);</string>
+              <string notr="true">color: rgb(255, 255, 255);
+selection-color: rgb(255, 255, 255);
+border-color: rgb(85, 0, 0);</string>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::Panel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <property name="lineWidth">
+              <number>20</number>
+             </property>
+             <property name="midLineWidth">
+              <number>20</number>
              </property>
              <property name="text">
               <string>drag and drop the .CSV file</string>
@@ -180,7 +194,7 @@ border-radius: 15px;
            </font>
           </property>
           <property name="text">
-           <string>upload your data in the format.csv so that the analytics system can get started</string>
+           <string>drag and drop the data file  .CSV or click on the button to specify the path</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>

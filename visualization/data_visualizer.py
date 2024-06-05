@@ -1,5 +1,5 @@
 from enums import DisplayMode, GraphType
-from core.filters.filters import Filters
+from core.filters import Filters
 from config.constants import EVENTS, SESSIONS, USERS, EVENT_JSON, DISPLAY_MODE, END_LOADING
 from visualization.plotter import Plotter
 from core.data_classes_visualization import VisualizationConfig
