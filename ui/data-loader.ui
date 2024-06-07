@@ -38,7 +38,7 @@
          <bool>true</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(220, 0, 0);
+         <string notr="true">background-color: rgb(243, 62, 62);
 border-radius: 15px;
 selection-color: rgb(255, 255, 255);</string>
         </property>
