@@ -204,7 +204,7 @@ class DataVisualizer:
         self.add_chart(loading)
 
     def add_chart(self, loading, data):
-        loading("data preparation")
+        loading("data  processed...")
         filters = Filters(self.visualization_config)
         filters.add_filter(filters.data_filter)
 
@@ -219,7 +219,7 @@ class DataVisualizer:
             self.visualization_config.canvas.set_visualization_parameters(
                 self.visualization_config)
             if len(events_count.keys()) > 15:
-                if warning_dialog(f"There will be more than 15 labels on this visualization. Increase the value of the other parameter to improve readability."):
+                if warning_dialog(f'There are too many parameters in this visualization. The names can be superimposed on each other. Increase the value of the "other" parameter to improve readability.'):
                     return
             self.plotter.plot(events_count, loading)
 
