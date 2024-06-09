@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1523</width>
-    <height>1455</height>
+    <width>1350</width>
+    <height>1329</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
        </font>
       </property>
       <property name="title">
-       <string>METRICS SELECTION</string>
+       <string>METRICS</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,2,20,2">
        <item>
@@ -76,7 +76,7 @@
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(243, 62, 62);</string>
+          <string notr="true">background-color: rgb(243, 130, 130);</string>
          </property>
          <property name="text">
           <string>Back</string>
@@ -101,8 +101,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>258</width>
-            <height>1207</height>
+            <width>226</width>
+            <height>1081</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -142,9 +142,9 @@
        </font>
       </property>
       <property name="title">
-       <string>VISUALISATION SETTINGS</string>
+       <string>VISUALISATION</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_9" stretch="1,10,1,2,5">
+      <layout class="QVBoxLayout" name="verticalLayout_9" stretch="1,0,1,2,5">
        <item>
         <widget class="QGroupBox" name="set_path_to_metrics_panel">
          <property name="font">
@@ -208,7 +208,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_6">
+        <widget class="QGroupBox" name="parametrs">
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -224,13 +224,13 @@
           </font>
          </property>
          <property name="title">
-          <string>GroupBox</string>
+          <string>Parameters</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_12">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <layout class="QHBoxLayout" name="chart_type_Layout" stretch="1,3">
             <item>
-             <widget class="QLabel" name="label_10">
+             <widget class="QLabel" name="chart_type_discription">
               <property name="font">
                <font>
                 <family>MS Shell Dlg 2</family>
@@ -240,12 +240,12 @@
                </font>
               </property>
               <property name="text">
-               <string>Type of chart:</string>
+               <string>Chart type</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="selected_chart_type">
+             <widget class="QComboBox" name="chart_type_combo_box">
               <property name="font">
                <font>
                 <family>MS Shell Dlg 2</family>
@@ -259,69 +259,37 @@
            </layout>
           </item>
           <item>
-           <widget class="QGroupBox" name="groupBox_2">
-            <property name="font">
-             <font>
-              <family>MS Shell Dlg 2</family>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="title">
-             <string>GroupBox</string>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_15">
-             <item>
-              <widget class="QPushButton" name="set_type_data_sessions">
-               <property name="font">
-                <font>
-                 <family>MS Shell Dlg 2</family>
-                 <weight>50</weight>
-                 <italic>false</italic>
-                 <bold>false</bold>
-                </font>
-               </property>
+           <layout class="QHBoxLayout" name="data_type_Layout" stretch="1,3">
+            <item>
+             <widget class="QLabel" name="data_type_discription_2">
+              <property name="text">
+               <string>Date type</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="data_type_combo_box">
+              <item>
                <property name="text">
-                <string>sessions</string>
+                <string>Events</string>
                </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="set_type_data_users">
-               <property name="font">
-                <font>
-                 <family>MS Shell Dlg 2</family>
-                 <weight>50</weight>
-                 <italic>false</italic>
-                 <bold>false</bold>
-                </font>
-               </property>
+              </item>
+              <item>
                <property name="text">
-                <string>users</string>
+                <string>Sessions</string>
                </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="set_type_data_events">
-               <property name="font">
-                <font>
-                 <family>MS Shell Dlg 2</family>
-                 <weight>50</weight>
-                 <italic>false</italic>
-                 <bold>false</bold>
-                </font>
-               </property>
+              </item>
+              <item>
                <property name="text">
-                <string>events</string>
+                <string>Users</string>
                </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
+              </item>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QGroupBox" name="groupBox_8">
+           <widget class="QGroupBox" name="time_spen">
             <property name="font">
              <font>
               <family>MS Shell Dlg 2</family>
@@ -331,7 +299,7 @@
              </font>
             </property>
             <property name="title">
-             <string>GroupBox</string>
+             <string>Time spen</string>
             </property>
             <layout class="QFormLayout" name="formLayout_2">
              <item row="0" column="0">
@@ -345,7 +313,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>today</string>
+                <string>Today</string>
                </property>
               </widget>
              </item>
@@ -360,7 +328,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>last 3 days</string>
+                <string>Last 3 days</string>
                </property>
               </widget>
              </item>
@@ -375,7 +343,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>last week</string>
+                <string>Last week</string>
                </property>
               </widget>
              </item>
@@ -390,12 +358,12 @@
                 </font>
                </property>
                <property name="text">
-                <string>last month</string>
+                <string>Last month</string>
                </property>
               </widget>
              </item>
              <item row="2" column="0">
-              <widget class="QLabel" name="label_3">
+              <widget class="QLabel" name="start_day_discription">
                <property name="font">
                 <font>
                  <family>MS Shell Dlg 2</family>
@@ -405,12 +373,12 @@
                 </font>
                </property>
                <property name="text">
-                <string>start date:</string>
+                <string>Start date:</string>
                </property>
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QDateEdit" name="start_date_entry">
+              <widget class="QDateEdit" name="start_date_combo_box">
                <property name="font">
                 <font>
                  <family>MS Shell Dlg 2</family>
@@ -422,7 +390,7 @@
               </widget>
              </item>
              <item row="3" column="0">
-              <widget class="QLabel" name="label_4">
+              <widget class="QLabel" name="end_day_discription">
                <property name="font">
                 <font>
                  <family>MS Shell Dlg 2</family>
@@ -432,12 +400,12 @@
                 </font>
                </property>
                <property name="text">
-                <string>end date:</string>
+                <string>End date:</string>
                </property>
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="QDateEdit" name="end_date_entry">
+              <widget class="QDateEdit" name="end_date_combo_box">
                <property name="font">
                 <font>
                  <family>MS Shell Dlg 2</family>
@@ -452,7 +420,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QGroupBox" name="groupBox_4">
+           <widget class="QGroupBox" name="filters">
             <property name="minimumSize">
              <size>
               <width>10</width>
@@ -468,11 +436,11 @@
              </font>
             </property>
             <property name="title">
-             <string>GroupBox</string>
+             <string>Filters</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
-              <widget class="QScrollArea" name="scrollArea_2">
+              <widget class="QScrollArea" name="filters_scroll_area">
                <property name="font">
                 <font>
                  <family>MS Shell Dlg 2</family>
@@ -489,20 +457,20 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>218</width>
-                  <height>357</height>
+                  <width>185</width>
+                  <height>69</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_8">
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_3">
+                  <layout class="QVBoxLayout" name="filters_layout">
                    <property name="sizeConstraint">
                     <enum>QLayout::SetFixedSize</enum>
                    </property>
                   </layout>
                  </item>
                  <item>
-                  <widget class="QPushButton" name="pushButton">
+                  <widget class="QPushButton" name="add_filter_button">
                    <property name="font">
                     <font>
                      <family>MS Shell Dlg 2</family>
@@ -524,50 +492,47 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="label_5">
-            <property name="font">
-             <font>
-              <family>MS Shell Dlg 2</family>
-              <weight>50</weight>
-              <italic>false</italic>
-              <bold>false</bold>
-             </font>
+           <widget class="QGroupBox" name="other_metrics_trashold">
+            <property name="title">
+             <string>Other metrics treshold</string>
             </property>
-            <property name="text">
-             <string>to other everything less </string>
-            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <layout class="QHBoxLayout" name="treshold_layout" stretch="1,3">
+               <item>
+                <widget class="QLineEdit" name="treshold_value">
+                 <property name="font">
+                  <font>
+                   <family>MS Shell Dlg 2</family>
+                   <weight>50</weight>
+                   <italic>false</italic>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>0%</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSlider" name="treshold_slider">
+                 <property name="font">
+                  <font>
+                   <family>MS Shell Dlg 2</family>
+                   <weight>50</weight>
+                   <italic>false</italic>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
            </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_18" stretch="1,10">
-            <item>
-             <widget class="QLineEdit" name="lineEdit">
-              <property name="font">
-               <font>
-                <family>MS Shell Dlg 2</family>
-                <weight>50</weight>
-                <italic>false</italic>
-                <bold>false</bold>
-               </font>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="other_reference_slider">
-              <property name="font">
-               <font>
-                <family>MS Shell Dlg 2</family>
-                <weight>50</weight>
-                <italic>false</italic>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-           </layout>
           </item>
          </layout>
         </widget>
@@ -883,7 +848,7 @@
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(243, 62, 62);</string>
+          <string notr="true">background-color: rgb(243, 130, 130);</string>
          </property>
          <property name="text">
           <string>Back to uploading data</string>
@@ -942,7 +907,7 @@
           </font>
          </property>
          <property name="title">
-          <string>GRID SETTINGS</string>
+          <string>GRID</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_13">
           <property name="spacing">
@@ -1167,8 +1132,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>929</width>
-            <height>1346</height>
+            <width>821</width>
+            <height>1220</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
@@ -1193,7 +1158,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1523</width>
+     <width>1350</width>
      <height>21</height>
     </rect>
    </property>
