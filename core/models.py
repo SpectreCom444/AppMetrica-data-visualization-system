@@ -1,67 +1,70 @@
 import json
 from typing import List, Union, Dict, Any
 from datetime import datetime
-import config.constants as constants
+from config.constants import EVENT_JSON, EVENT_DATETIME, SESSION_ID, DEVICE_ID
+from ui.message import error
 
 
 class Event:
-    def __init__(self, data):
-        self.json_dict = {}
-        for key, value in data:
-            if key == constants.EVENT_JSON:
-                self.json_dict[key] = self.convert_JSON_to_dict(value)
-            elif key == constants.EVENT_DATATIME:
-                self.json_dict[key] = datetime.strptime(
-                    value, '%Y-%m-%d %H:%M:%S')
-            else:
-                self.json_dict[key] = value
-
-    def get_value(self, key: str) -> Any:
-        return self.json_dict.get(key)
+    def __init__(self, data: List[tuple]):
+        self._data: Dict[str, Any] = {key: self._process_value(
+            key, value) for key, value in data.items()}
 
     @staticmethod
-    def convert_JSON_to_dict(stringJSON: str) -> Union[str, Dict[str, Any]]:
-        if not stringJSON:
-            return stringJSON
-        return json.loads(stringJSON)
+    def _process_value(key: str, value: str) -> Any:
+        if key == EVENT_JSON:
+            return Event._convert_json_to_dict(value)
+        elif key == EVENT_DATETIME:
+            return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+        return value
+
+    @staticmethod
+    def _convert_json_to_dict(json_string: str) -> Union[str, Dict[str, Any]]:
+        if not json_string:
+            return json_string
+        try:
+            return json.loads(json_string)
+        except json.JSONDecodeError:
+            error(f"Error decoding the json string: {json_string}")
+
+    def get_value(self, key: str) -> Any:
+        return self.data.get(key)
+
+    @property
+    def data(self) -> dict:
+        return self._data
 
 
 class Session:
     def __init__(self, event: Event):
-        self.events = [event]
-        self.id_session = event.get_value(constants.SESSION_ID)
-        self.id_user = event.get_value(constants.DEVICE_ID)
+        self._events: List[Event] = [event]
+        self._session_id: str = event.get_value(SESSION_ID)
+        self._user_id: str = event.get_value(DEVICE_ID)
 
     def add_event(self, event: Event):
-        self.events.append(event)
+        self._events.append(event)
 
-    def get_events(self) -> List[Event]:
-        return self.events
+    @property
+    def session_id(self) -> str:
+        return self._session_id
 
-    def get_id_session(self) -> str:
-        return self.id_session
-
-    def get_id_user(self) -> str:
-        return self.id_user
+    @property
+    def user_id(self) -> str:
+        return self._user_id
 
 
 class User:
     def __init__(self, session: Session):
-        self._sessions = [session]
-        self._id_user = session.get_id_user()
-
-    def get_events(self) -> List[Event]:
-        events = []
-        for session in self.sessions:
-            events.extend(session.get_events())
-        return events
-
-    @property
-    def sessions(self) -> List[Session]:
-        return self._sessions.copy()
+        self._sessions: List[Session] = [session]
+        self._user_id: str = session.user_id
 
     def add_session(self, session: Session):
-        self.sessions.append(session)
+        self._sessions.append(session)
 
-    def get_id_user(self) -> str:
-        return self._id_user
+    @property
+    def events(self) -> List[Event]:
+        return [event for session in self._sessions for event in session.events]
+
+    @property
+    def user_id(self) -> str:
+        return self._user_id

@@ -16,4 +16,4 @@ def warning(text):
 
 def error(text):
     QMessageBox.critical(
-        None, "Error", f"An error occurred while loading data:\n {str(text)}")
+        None, "Error", f"{str(text)}")

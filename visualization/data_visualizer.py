@@ -3,7 +3,7 @@ from core.filters import Filters
 from config.constants import EVENTS, SESSIONS, USERS, EVENT_JSON, DISPLAY_MODE, END_LOADING
 from visualization.plotter import Plotter
 from core.data_classes_visualization import VisualizationConfig
-from ui.messege import warning_dialog, warning
+from ui.message import warning_dialog, warning
 from config.graph_parameters import graph_parameters
 
 

@@ -1,6 +1,6 @@
 from enums import GraphType, TypeOfMeasurement, Orientation, HistogramType, DisplayMode
 from PyQt5.QtWidgets import QMessageBox
-from ui.messege import error
+from ui.message import error
 from collections import OrderedDict
 
 

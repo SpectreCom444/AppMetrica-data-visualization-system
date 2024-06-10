@@ -1,118 +1,196 @@
 import time
 import csv
 from core.models import Event, Session, User
-import config.constants as constants
-from ui.messege import error
-from config.constants import HIDDEN_ITEMS
+from config.constants import SESSION_ID, HIDDEN_ITEMS
+from ui.message import error
+from typing import Callable, List, Dict, Union
 
 
 class DataStorage:
     def __init__(self):
-        self.data_result = None
-        self.events_result = None
-        self.sessions_result = None
-        self.users_result = None
-        self.names = None
-        self.json_tree = {}
-        self.ui_names = None
+        self._raw_data: Union[None, List[List[str]]] = None
+        self._events: Union[None, List[Event]] = None
+        self._sessions: Union[None, List[Session]] = None
+        self._users: Union[None, List[User]] = None
+        self._headers: Union[None, List[str]] = None
+        self._json_structure: Dict = {}
 
-    def is_session_create(self):
-        return self.sessions_result != None
+    @property
+    def events(self) -> Union[None, List[Event]]:
+        return self._events
 
-    def add_to_json_tree(self, json_data):
-        def update_tree(tree, data):
-            for key, value in data.items():
-                if key not in HIDDEN_ITEMS:
-                    if isinstance(value, dict):
-                        if key not in tree:
-                            tree[key] = {}
-                        update_tree(tree[key], value)
-                    else:
-                        if key not in tree:
-                            tree[key] = {}
-                        tree[key][value] = {}
+    @property
+    def sessions(self) -> Union[None, List[Session]]:
+        return self._sessions
 
-        update_tree(self.json_tree, json_data)
+    @property
+    def users(self) -> Union[None, List[User]]:
+        return self._users
 
+    @property
+    def headers(self) -> Union[None, List[str]]:
+        return self._headers
 
-class DataLoader:
-    def __init__(self, path):
-        self.path = path
+    @property
+    def json_structure(self) -> Dict:
+        return self._json_structure
 
-    def load_data(self, load_data_done, data_storage):
-        try:
-            start_time = time.time()
-            with open(self.path, mode='r', encoding='utf-8') as file:
-                reader = csv.reader(file)
-                data_storage.names = next(reader)
-                data_storage.data_result = [
-                    list(map(str.strip, line)) for line in reader][:15000]
+    def is_session_created(self) -> bool:
+        return self._sessions is not None
 
-            data_storage.ui_names = list(
-                filter(lambda x: x not in constants.HIDDEN_ITEMS, data_storage.names))
-            print(f"> Data loaded in {time.time() - start_time:.2f} seconds")
-            load_data_done()
-        except (UnicodeDecodeError, FileNotFoundError) as te:
-            error(te)
-        except Exception as e:
-            error(e)
+    def load_data(self, file_path: str, on_data_loaded: Callable):
+        data_loader = self._DataLoader(file_path, self)
+        data_loader.load_data(on_data_loaded)
 
+    def process_events(self, on_events_processed: Callable):
+        event_processor = self._EventProcessor(self)
+        event_processor.process(on_events_processed)
 
-class DataProcessor:
+    def process_sessions(self, on_sessions_processed: Callable):
+        session_processor = self._SessionProcessor(self)
+        session_processor.process(on_sessions_processed)
 
-    def processing_data(self, create_events_done, data_storage):
-        start_time = time.time()
-        data_storage.events_result = self.create_events(
-            data_storage.data_result, data_storage.names)
-        for event in data_storage.events_result:
-            data_storage.add_to_json_tree(event.json_dict)
-        print(f"> Events {len(data_storage.events_result)} created in {
-              time.time() - start_time:.2f} seconds")
-        create_events_done()
+    def process_users(self, on_users_processed: Callable):
+        user_processor = self._UserProcessor(self)
+        user_processor.process(on_users_processed)
 
-    def processing_session(self, create_session_done, data_storage):
-        start_time = time.time()
-        data_storage.sessions_result = self.create_sessions(
-            data_storage.events_result)
-        print(f"> Sessions {len(data_storage.sessions_result)} created in {
-              time.time() - start_time:.2f} seconds")
-        create_session_done()
+    class _Timer:
+        def __init__(self):
+            self.start_time = None
 
-    def processing_users(self, create_user_done, data_storage):
-        start_time = time.time()
-        data_storage.users_result = self.create_users(
-            data_storage.sessions_result)
-        print(f"> Users {len(data_storage.users_result)} created in {
-              time.time() - start_time:.2f} seconds")
-        create_user_done()
+        def start(self):
+            self.start_time = time.time()
 
-    def create_events(self, data, names):
-        return [Event(zip(names, row)) for row in data]
+        def stop(self) -> float:
+            return time.time() - self.start_time if self.start_time else 0.0
 
-    def create_sessions(self, events):
-        sessions = []
-        session_dict = {}
+    class _JSONTreeBuilder:
+        def __init__(self, data_storage):
+            self.json_structure = data_storage.json_structure
 
-        for event in events:
-            session_id = event.get_value(constants.SESSION_ID)
-            if session_id not in session_dict:
-                new_session = Session(event)
-                sessions.append(new_session)
-                session_dict[session_id] = new_session
-            else:
-                session_dict[session_id].add_event(event)
+        def add_to_json_structure(self, json_data: Dict):
+            def update_structure(structure: Dict, data: Dict):
+                for key, value in data.items():
+                    if key not in HIDDEN_ITEMS:
+                        if isinstance(value, dict):
+                            structure.setdefault(key, {})
+                            update_structure(structure[key], value)
+                        else:
+                            structure.setdefault(key, {})
+                            structure[key][value] = {}
 
-        return sessions
+            update_structure(self.json_structure, json_data)
 
-    def create_users(self, sessions):
-        users = []
-        users_dict = {}
-        for session in sessions:
-            user_id = session.get_id_user()
-            if user_id not in users_dict:
-                new_user = User(session)
-                users.append(new_user)
-                users_dict[user_id] = new_user
-            else:
-                users_dict[user_id].add_session(session)
-        return users
+    class _SessionProcessor:
+        def __init__(self, data_storage: 'DataStorage'):
+            self.data_storage = data_storage
+
+        def process(self, on_sessions_processed: Callable):
+            try:
+                timer = self.data_storage._Timer()
+                timer.start()
+                self.data_storage._sessions = self.create_sessions(
+                    self.data_storage.events)
+                print(f"{len(self.data_storage.sessions)} sessions created in {
+                      timer.stop():.2f} seconds")
+                on_sessions_processed()
+            except Exception as err:
+                error(f"An error occurred during session processing: {err}")
+
+        @staticmethod
+        def create_sessions(events: List[Event]) -> List[Session]:
+            sessions = []
+            session_dict = {}
+
+            for event in events:
+                session_id = event.get_value(SESSION_ID)
+                if session_id not in session_dict:
+                    new_session = Session(event)
+                    sessions.append(new_session)
+                    session_dict[session_id] = new_session
+                else:
+                    session_dict[session_id].add_event(event)
+
+            return sessions
+
+    class _UserProcessor:
+        def __init__(self, data_storage: 'DataStorage'):
+            self.data_storage = data_storage
+
+        def process(self, on_users_processed: Callable):
+            try:
+                timer = self.data_storage._Timer()
+                timer.start()
+                self.data_storage._users = self.create_users(
+                    self.data_storage.sessions)
+                print(f"{len(self.data_storage.users)} users created in {
+                      timer.stop():.2f} seconds")
+                on_users_processed()
+            except Exception as err:
+                error(f"An error occurred during user processing: {err}")
+
+        @staticmethod
+        def create_users(sessions: List[Session]) -> List[User]:
+            users = []
+            user_dict = {}
+
+            for session in sessions:
+                user_id = session.user_id
+                if user_id not in user_dict:
+                    new_user = User(session)
+                    users.append(new_user)
+                    user_dict[user_id] = new_user
+                else:
+                    user_dict[user_id].add_session(session)
+
+            return users
+
+    class _DataLoader:
+        def __init__(self, file_path: str, data_storage: 'DataStorage'):
+            self.file_path = file_path
+            self.data_storage = data_storage
+
+        def load_data(self, on_data_loaded: Callable):
+            try:
+                if not self.file_path.lower().endswith('.csv'):
+                    raise ValueError("File is not a CSV file")
+
+                timer = self.data_storage._Timer()
+                timer.start()
+                with open(self.file_path, mode='r', encoding='utf-8') as file:
+                    reader = csv.reader(file)
+                    self.data_storage._headers = next(reader)
+                    self.data_storage._raw_data = [
+                        list(map(str.strip, line)) for line in reader][:15000]
+
+                print(f"Data loaded in {timer.stop():.2f} seconds")
+                on_data_loaded()
+            except (UnicodeDecodeError, FileNotFoundError) as err:
+                error(f"File error: {err}")
+            except Exception as err:
+                error(f"An error occurred: {err}")
+
+    class _EventProcessor:
+        def __init__(self, data_storage: 'DataStorage'):
+            self.data_storage = data_storage
+            self._json_builder = self.data_storage._JSONTreeBuilder(
+                self.data_storage)
+
+        def process(self, on_events_processed: Callable):
+            try:
+                timer = self.data_storage._Timer()
+                timer.start()
+                self.data_storage._events = self.create_events(
+                    self.data_storage._raw_data, self.data_storage._headers)
+                for event in self.data_storage._events:
+                    self._json_builder.add_to_json_structure(
+                        event.data)
+                print(f"{len(self.data_storage._events)} events created in {
+                    timer.stop():.2f} seconds")
+                on_events_processed()
+            except Exception as err:
+                error(f"An error occurred during event processing: {err}")
+
+        @staticmethod
+        def create_events(data: List[List[str]], headers: List[str]) -> List[Event]:
+            return [Event(dict(zip(headers, row))) for row in data]

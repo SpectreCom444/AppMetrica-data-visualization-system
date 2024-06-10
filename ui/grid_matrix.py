@@ -54,14 +54,14 @@ class GridMatrix:
         canvas_container.setMinimumSize(min_width, min_height)
         canvas_container.setMaximumSize(max_width, max_height)
 
-        self.workspace_window.canvas_container_layout.addWidget(
+        self.workspace_window.gridt_GS.addWidget(
             canvas_container, pos_x, pos_y)
         return canvas
 
     def _remove_canvas_ptl(self, pos_x, pos_y):
-        canvas_container = self.workspace_window.canvas_container_layout.itemAtPosition(
+        canvas_container = self.workspace_window.gridt_GS.itemAtPosition(
             pos_x, pos_y).widget()
-        self.workspace_window.canvas_container_layout.removeWidget(
+        self.workspace_window.gridt_GS.removeWidget(
             canvas_container)
         canvas_container.deleteLater()
 

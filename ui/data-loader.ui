@@ -194,7 +194,7 @@ border-color: rgb(85, 0, 0);</string>
            </font>
           </property>
           <property name="text">
-           <string>drag and drop the data file  .CSV or click on the button to specify the path</string>
+           <string>Drag and drop the data file  .CSV or click on the button to specify the path</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -245,7 +245,7 @@ border-color: rgb(85, 0, 0);</string>
               </font>
              </property>
              <property name="text">
-              <string>data uploaded</string>
+              <string>Data uploaded</string>
              </property>
             </widget>
            </item>
@@ -260,7 +260,7 @@ border-color: rgb(85, 0, 0);</string>
               </font>
              </property>
              <property name="text">
-              <string>create events</string>
+              <string>Create events</string>
              </property>
             </widget>
            </item>
@@ -275,7 +275,7 @@ border-color: rgb(85, 0, 0);</string>
               </font>
              </property>
              <property name="text">
-              <string>create sessions</string>
+              <string>Create sessions</string>
              </property>
             </widget>
            </item>
@@ -290,7 +290,7 @@ border-color: rgb(85, 0, 0);</string>
               </font>
              </property>
              <property name="text">
-              <string>create users</string>
+              <string>Create users</string>
              </property>
              <property name="checked">
               <bool>false</bool>
