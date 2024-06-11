@@ -1,5 +1,5 @@
 import config.constants as constants
-from enums import DisplayMode, HistogramType, Orientation, GraphType, TypeOfMeasurement
+from enums import SplitTimeMode, HistogramType, Orientation, GraphType, TypeOfMeasurement
 from PyQt5.QtCore import QDate
 from dataclasses import dataclass, field, fields
 
@@ -8,10 +8,10 @@ from dataclasses import dataclass, field, fields
 class VisualizationConfig:
     def __init__(self):
         self.type_data = constants.EVENTS
-        self.type_of_measurement = TypeOfMeasurement.UNITS
+        self.type_of_measurement = TypeOfMeasurement.UNITED
         self.selected_chart_type = GraphType.LINE
-        self.display_mode = DisplayMode.TOTAL
-        self.histogram_type = HistogramType.SUMMATION
+        self.display_mode = SplitTimeMode.NOSPLIT
+        self.histogram_type = HistogramType.STACKET
         self.orientation = Orientation.HORIZONTAL
         self.start_date_entry = QDate.currentDate()
         self.end_date_entry = QDate.currentDate()

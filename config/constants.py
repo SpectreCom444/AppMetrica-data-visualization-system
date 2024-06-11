@@ -7,7 +7,7 @@ USERS = "users"
 SESSIONS = "sessions"
 EVENTS = "events"
 
-DISPLAY_MODE = 'display mode'
+SPLIT_TIME_MODE = 'split time mode'
 TYPE_OF_MEASUREMENT = 'type of measurement'
 HISTOGRAM_TYPE = 'histogram type'
 ORIENTATION = 'orientation'

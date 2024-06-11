@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QMessageBox
+import traceback
 
 
 def warning_dialog(text):
@@ -17,3 +18,4 @@ def warning(text):
 def error(text):
     QMessageBox.critical(
         None, "Error", f"{str(text)}")
+    traceback.print_exc()

@@ -1,33 +1,39 @@
 from enum import Enum
 
 
-class DisplayMode(Enum):
-    TOTAL = 1
-    DAY = 2
-    HOURSE = 3
+class SplitTimeMode(Enum):
+    NOSPLIT = "No split"
+    SPLITBYDAY = "Split by day"
+    SPLITBYHOURS = "Split by hours"
 
 
 class HistogramType(Enum):
-    SUMMATION = 1
-    COMPARISON = 2
+    STACKET = "Stacket"
+    CLUSTERED = "Clustered"
 
 
 class Orientation(Enum):
-    HORIZONTAL = 1
-    VERTICAL = 2
+    VERTICAL = "Vertical"
+    HORIZONTAL = "Horizontal"
 
 
 class TypeOfMeasurement(Enum):
-    UNITS = 1
-    PERCENTAGES = 2
+    PERCENTED = "Percented"
+    UNITED = "United"
+
+
+class DateType(Enum):
+    EVENTS = "Events"
+    SESSIONS = "Sessions"
+    USERS = "Users"
 
 
 class GraphType(Enum):
-    LINE = 'line'
-    PIE = 'pie'
-    RING = 'ring'
-    SCATTER = 'scatter'
-    HISTOGRAM = 'histogram'
-    BUBBLE = 'bubble'
-    AREA = 'area'
-    FUNNEL = 'funnel'
+    LINE = 'Line'
+    PIE = 'Pie'
+    RING = 'Ring'
+    SCATTER = 'Scatter'
+    HISTOGRAM = 'Histogram'
+    BUBBLE = 'Bubble'
+    AREA = 'Area'
+    FUNNEL = 'Funnel'

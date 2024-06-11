@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
 from ui.custom_event_menu import CustomEventMenu
-from enums import DisplayMode, HistogramType, Orientation, GraphType, TypeOfMeasurement
+from enums import SplitTimeMode, HistogramType, Orientation, GraphType, TypeOfMeasurement, DateType
 from config.graph_parameters import graph_parameters
 
 
@@ -25,6 +25,10 @@ class WorkspaceWindow(QMainWindow):
         self.grid_matrix.update_matrix_size(int(self.combo_box_height_matrix.currentText(
         )), int(self.combo_box_width_matrix.currentText()))
 
+    def set_path_text_widget(self, path):
+        self.path_text_VS.clear()
+        self.path_text_VS.setPlainText(path)
+
     def hide_action_button(self):
         self.split_time_mod_panel_VS.hide()
         self.histogram_type_panel_VS.hide()
@@ -35,7 +39,7 @@ class WorkspaceWindow(QMainWindow):
         self.hide_action_button()
 
         for action in graph_parameters[GraphType(self.chart_type_combo_box_VS.currentText())]:
-            if action == constants.DISPLAY_MODE:
+            if action == constants.SPLIT_TIME_MODE:
                 self.split_time_mod_panel_VS.show()
             if action == constants.HISTOGRAM_TYPE:
                 self.histogram_type_panel_VS.show()
@@ -63,6 +67,26 @@ class WorkspaceWindow(QMainWindow):
         self.visualization_settings_panel.hide()
         self.metrics_list_panel.show()
 
+    def set_date_type(self):
+        self.data_visualizer.set_type_data(
+            DateType(self.data_type_combo_box_VS.currentText()))
+
+    def set_display_mode(self):
+        self.data_visualizer.set_display_mode(
+            SplitTimeMode(self.split_time_mod_combo_box_VS.currentText()))
+
+    def set_histogram_type(self):
+        self.data_visualizer.set_histogram_type(
+            HistogramType(self.histogram_type_combo_box_VS.currentText()))
+
+    def set_orientation(self):
+        self.data_visualizer.set_orientation(
+            Orientation(self.orientation_type_combo_box_VS.currentText()))
+
+    def set_type_of_measurement(self):
+        self.data_visualizer.set_type_of_measurement(
+            TypeOfMeasurement(self.type_of_measurement_combo_box_VS.currentText()))
+
     def create_vizualization_button(self):
 
         self.selection_metric_button_VS.clicked.connect(
@@ -88,34 +112,40 @@ class WorkspaceWindow(QMainWindow):
             self.grid_matrix.clear_all_canvases)
         self.delete_all_button_VS.clicked.connect(self.grid_matrix.remove_all)
 
-        # self.set_type_data_events.clicked.connect(
-        #     lambda: self.data_visualizer.set_type_data(constants.EVENTS))
-        # self.set_type_data_sessions.clicked.connect(
-        #     lambda:  self.data_visualizer.set_type_data(constants.SESSIONS))
-        # self.set_type_data_users.clicked.connect(
-        #     lambda:  self.data_visualizer.set_type_data(constants.USERS))
+        self.data_type_combo_box_VS.addItems(
+            [date_type.value for date_type in DateType])
+        self.data_type_combo_box_VS.setCurrentText(
+            next(iter([date_type.value for date_type in DateType])))
+        self.data_type_combo_box_VS.currentTextChanged.connect(
+            self.set_date_type)
 
-        # self.button_split_by_total.clicked.connect(
-        #     lambda: self.data_visualizer.set_display_mode(DisplayMode.TOTAL))
-        # self.button_split_bu_day.clicked.connect(
-        #     lambda:  self.data_visualizer.set_display_mode(DisplayMode.DAY))
-        # self.button_split_by_hourse.clicked.connect(
-        #     lambda:  self.data_visualizer.set_display_mode(DisplayMode.HOURSE))
+        self.split_time_mod_combo_box_VS.addItems(
+            [mode.value for mode in SplitTimeMode])
+        self.split_time_mod_combo_box_VS.setCurrentText(
+            next(iter([mode.value for mode in SplitTimeMode])))
+        self.split_time_mod_combo_box_VS.currentTextChanged.connect(
+            self.set_display_mode)
 
-        # self.button_summation.clicked.connect(
-        #     lambda: self.data_visualizer.set_histogram_type(HistogramType.SUMMATION))
-        # self.button_comparison.clicked.connect(
-        #     lambda:  self.data_visualizer.set_histogram_type(HistogramType.COMPARISON))
+        self.histogram_type_combo_box_VS.addItems(
+            [histogram_type.value for histogram_type in HistogramType])
+        self.histogram_type_combo_box_VS.setCurrentText(
+            next(iter([histogram_type.value for histogram_type in HistogramType])))
+        self.histogram_type_combo_box_VS.currentTextChanged.connect(
+            self.set_histogram_type)
 
-        # self.button_horizontally.clicked.connect(
-        #     lambda:  self.data_visualizer.set_orientation(Orientation.HORIZONTAL))
-        # self.button_vertically.clicked.connect(
-        #     lambda:  self.data_visualizer.set_orientation(Orientation.VERTICAL))
+        self.orientation_type_combo_box_VS.addItems(
+            [orientation.value for orientation in Orientation])
+        self.orientation_type_combo_box_VS.setCurrentText(
+            next(iter([orientation.value for orientation in Orientation])))
+        self.orientation_type_combo_box_VS.currentTextChanged.connect(
+            self.set_orientation)
 
-        # self.button_units.clicked.connect(
-        #     lambda:  self.data_visualizer.set_type_of_measurement(TypeOfMeasurement.UNITS))
-        # self.button_percentages.clicked.connect(
-        #     lambda:  self.data_visualizer.set_type_of_measurement(TypeOfMeasurement.PERCENTAGES))
+        self.type_of_measurement_combo_box_VS.addItems(
+            [type_of_measurement.value for type_of_measurement in TypeOfMeasurement])
+        self.type_of_measurement_combo_box_VS.setCurrentText(
+            next(iter([type_of_measurement.value for type_of_measurement in TypeOfMeasurement])))
+        self.type_of_measurement_combo_box_VS.currentTextChanged.connect(
+            self.set_type_of_measurement)
 
         self.loader_linet_GS.hide()
         self.update_tools()

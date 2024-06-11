@@ -1,6 +1,6 @@
-from enums import DisplayMode, GraphType
+from enums import SplitTimeMode, GraphType
 from core.filters import Filters
-from config.constants import EVENTS, SESSIONS, USERS, EVENT_JSON, DISPLAY_MODE, END_LOADING
+from config.constants import EVENTS, SESSIONS, USERS, EVENT_JSON, SPLIT_TIME_MODE, END_LOADING
 from visualization.plotter import Plotter
 from core.data_classes_visualization import VisualizationConfig
 from ui.message import warning_dialog, warning
@@ -208,7 +208,7 @@ class DataVisualizer:
         filters = Filters(self.visualization_config)
         filters.add_filter(filters.data_filter)
 
-        if self.visualization_config.display_mode == DisplayMode.TOTAL or DISPLAY_MODE not in graph_parameters[GraphType(self.visualization_config.selected_chart_type)]:
+        if self.visualization_config.display_mode == SplitTimeMode.TOTAL or SPLIT_TIME_MODE not in graph_parameters[GraphType(self.visualization_config.selected_chart_type)]:
             events_count = self.counter(data, filters)
             if not events_count:
                 warning(
@@ -223,7 +223,7 @@ class DataVisualizer:
                     return
             self.plotter.plot(events_count, loading)
 
-        elif self.visualization_config.display_mode == DisplayMode.DAY:
+        elif self.visualization_config.display_mode == SplitTimeMode.DAY:
             events_count = self.counter_split_time(data, filters, "%Y-%m-%d")
             if not events_count:
                 warning(
@@ -236,7 +236,7 @@ class DataVisualizer:
                 self.visualization_config)
             self.plotter.plot_split(events_count, 'Date', loading)
 
-        elif self.visualization_config.display_mode == DisplayMode.HOURSE:
+        elif self.visualization_config.display_mode == SplitTimeMode.HOURSE:
             events_count = self.counter_split_time(
                 data, filters, "%Y-%m-%d %H")
 

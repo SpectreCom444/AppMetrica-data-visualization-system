@@ -59,9 +59,10 @@
           <font>
            <family>MS Shell Dlg 2</family>
            <pointsize>8</pointsize>
-           <weight>75</weight>
+           <weight>50</weight>
            <italic>false</italic>
-           <bold>true</bold>
+           <bold>false</bold>
+           <underline>false</underline>
           </font>
          </property>
          <property name="styleSheet">
@@ -110,7 +111,7 @@ border: 1px solid gray;</string>
             <x>0</x>
             <y>0</y>
             <width>226</width>
-            <height>1001</height>
+            <height>978</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -136,6 +137,12 @@ border: 1px solid gray;</string>
        </item>
        <item>
         <widget class="QPushButton" name="apply_MS">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>50</height>
+          </size>
+         </property>
          <property name="font">
           <font>
            <family>MS Shell Dlg 2</family>
@@ -198,15 +205,16 @@ border: 1px solid gray;</string>
           <item>
            <widget class="QPlainTextEdit" name="path_text_VS">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="font">
              <font>
               <family>MS Shell Dlg 2</family>
               <pointsize>8</pointsize>
-              <weight>75</weight>
+              <weight>50</weight>
               <italic>false</italic>
-              <bold>true</bold>
+              <bold>false</bold>
+              <underline>false</underline>
              </font>
             </property>
             <property name="styleSheet">
@@ -297,23 +305,7 @@ border: 1px solid gray;</string>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="data_type_combo_box_VS">
-              <item>
-               <property name="text">
-                <string>Events</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Sessions</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Users</string>
-               </property>
-              </item>
-             </widget>
+             <widget class="QComboBox" name="data_type_combo_box_VS"/>
             </item>
            </layout>
           </item>
@@ -726,21 +718,6 @@ border: 1px solid gray;</string>
                  <bold>false</bold>
                 </font>
                </property>
-               <item>
-                <property name="text">
-                 <string>No split</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Split by day</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Split by hours</string>
-                </property>
-               </item>
               </widget>
              </item>
             </layout>
@@ -770,16 +747,6 @@ border: 1px solid gray;</string>
                  <bold>false</bold>
                 </font>
                </property>
-               <item>
-                <property name="text">
-                 <string>Stacket</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Clustered</string>
-                </property>
-               </item>
               </widget>
              </item>
             </layout>
@@ -800,7 +767,7 @@ border: 1px solid gray;</string>
             </property>
             <layout class="QFormLayout" name="formLayout_9">
              <item row="0" column="1">
-              <widget class="QComboBox" name="orientation_type_combo_box_VS_3">
+              <widget class="QComboBox" name="orientation_type_combo_box_VS">
                <property name="font">
                 <font>
                  <family>MS Shell Dlg 2</family>
@@ -809,16 +776,6 @@ border: 1px solid gray;</string>
                  <bold>false</bold>
                 </font>
                </property>
-               <item>
-                <property name="text">
-                 <string>Vertical</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Horizontal</string>
-                </property>
-               </item>
               </widget>
              </item>
             </layout>
@@ -839,7 +796,7 @@ border: 1px solid gray;</string>
             </property>
             <layout class="QFormLayout" name="formLayout_10">
              <item row="0" column="1">
-              <widget class="QComboBox" name="type_of_measurement_combo_box_VS_2">
+              <widget class="QComboBox" name="type_of_measurement_combo_box_VS">
                <property name="font">
                 <font>
                  <family>MS Shell Dlg 2</family>
@@ -848,16 +805,6 @@ border: 1px solid gray;</string>
                  <bold>false</bold>
                 </font>
                </property>
-               <item>
-                <property name="text">
-                 <string>Percented</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>United</string>
-                </property>
-               </item>
               </widget>
              </item>
             </layout>

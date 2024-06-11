@@ -19,11 +19,13 @@ class CustomEventMenu:
     def setup_ui(self):
         self.buttons_list_layout.setAlignment(QtCore.Qt.AlignTop)
         self.back_button.clicked.connect(self.undo_last_selection)
-        self.workspace_window.apply_MS.clicked.connect(self.close_panel)
+        self.workspace_window.apply_MS.clicked.connect(self.apply)
 
-    def close_panel(self):
+    def apply(self):
         self.workspace_window.visualization_settings_panel.show()
         self.workspace_window.metrics_list_panel.hide()
+        self.workspace_window.set_path_text_widget(
+            self.path_text_widget.toPlainText())
 
     def update_buttons(self):
         self.clear_buttons()
@@ -80,7 +82,7 @@ class CustomEventMenu:
             current_level, dict) else [current_level]
         self.update_buttons()
 
-    def update_text_widget(self):
+    def update_path_text_widget(self):
         self.path_text_widget.clear()
         for i, option in enumerate(self.selected_options):
             indent = '    ' * i
@@ -88,7 +90,7 @@ class CustomEventMenu:
                 f"{indent}﹂{str(option)}" if i > 0 else f"{indent}{str(option)}")
 
     def update_interface(self):
-        self.update_text_widget()
+        self.update_path_text_widget()
         self.update_options()
         self.update_back_button()
 
