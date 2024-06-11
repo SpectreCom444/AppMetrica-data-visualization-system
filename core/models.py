@@ -37,12 +37,9 @@ class Event:
 
 class Session:
     def __init__(self, event: Event):
-        self._events: List[Event] = [event]
+        self.events: List[Event] = [event]
         self._session_id: str = event.get_value(SESSION_ID)
         self._user_id: str = event.get_value(DEVICE_ID)
-
-    def add_event(self, event: Event):
-        self._events.append(event)
 
     @property
     def session_id(self) -> str:
@@ -55,11 +52,8 @@ class Session:
 
 class User:
     def __init__(self, session: Session):
-        self._sessions: List[Session] = [session]
+        self.sessions: List[Session] = [session]
         self._user_id: str = session.user_id
-
-    def add_session(self, session: Session):
-        self._sessions.append(session)
 
     @property
     def events(self) -> List[Event]:

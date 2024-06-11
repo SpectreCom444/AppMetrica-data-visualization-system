@@ -109,7 +109,7 @@ class DataStorage:
                     sessions.append(new_session)
                     session_dict[session_id] = new_session
                 else:
-                    session_dict[session_id].add_event(event)
+                    session_dict[session_id].events.append(event)
 
             return sessions
 
@@ -141,7 +141,7 @@ class DataStorage:
                     users.append(new_user)
                     user_dict[user_id] = new_user
                 else:
-                    user_dict[user_id].add_session(session)
+                    user_dict[user_id].sessions.append(session)
 
             return users
 

@@ -1,4 +1,4 @@
-import config.constants as constants
+from config.constants import EVENT_DATETIME
 
 
 class Filters:
@@ -16,5 +16,5 @@ class Filters:
         return True
 
     def data_filter(self, event):
-        event_datetime = event.get_value(constants.EVENT_DATATIME)
+        event_datetime = event.get_value(EVENT_DATETIME)
         return self.visualization_config.start_date_entry <= event_datetime <= self.visualization_config.end_date_entry

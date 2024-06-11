@@ -1,6 +1,6 @@
-from enums import SplitTimeMode, GraphType
+from enums import SplitTimeMode, GraphType, DateType
 from core.filters import Filters
-from config.constants import EVENTS, SESSIONS, USERS, EVENT_JSON, SPLIT_TIME_MODE, END_LOADING
+from config.constants import EVENT_JSON, SPLIT_TIME_MODE, END_LOADING
 from visualization.plotter import Plotter
 from core.data_classes_visualization import VisualizationConfig
 from ui.message import warning_dialog, warning
@@ -13,29 +13,30 @@ class Counter:
 
 class DataVisualizer:
 
-    def __init__(self):
+    def __init__(self, data_storage):
         self.visualization_config = VisualizationConfig()
         self.plotter = Plotter(self.visualization_config)
+        self.data_storage = data_storage
 
     def counter(self, elements, filters):
         count = {}
-        if self.visualization_config.type_data == EVENTS:
+        if self.visualization_config.type_data == DateType.EVENTS:
             self.counter_events(elements, count, filters)
-        elif self.visualization_config.type_data == SESSIONS:
+        elif self.visualization_config.type_data == DateType.SESSIONS:
             self.counter_sessions(elements, count, filters)
-        elif self.visualization_config.type_data == USERS:
+        elif self.visualization_config.type_data == DateType.USERS:
             self.counter_users(elements, count, filters)
         return count
 
     def counter_split_time(self, elements, filters, time_division_format):
         count = {}
-        if self.visualization_config.type_data == EVENTS:
+        if self.visualization_config.type_data == DateType.EVENTS:
             self.counter_events_split_time(
                 elements, count, filters, time_division_format)
-        elif self.visualization_config.type_data == SESSIONS:
+        elif self.visualization_config.type_data == DateType.SESSIONS:
             self.counter_sessions_split_time(
                 elements, count, filters, time_division_format)
-        elif self.visualization_config.type_data == USERS:
+        elif self.visualization_config.type_data == DateType.USERS:
             self.counter_users_split_time(
                 elements, count, filters, time_division_format)
         return count
@@ -43,7 +44,7 @@ class DataVisualizer:
     def counter_sessions(self, elements, count, filters):
         for sessions in elements:
             sessions_count = {}
-            self.counter_events(sessions.get_events(), sessions_count, filters)
+            self.counter_events(sessions.events, sessions_count, filters)
             for key in sessions_count.keys():
                 if key in count:
                     count[key] += 1
@@ -67,7 +68,7 @@ class DataVisualizer:
     def counter_users(self, elements, count, filters):
         for user in elements:
             user_count = {}
-            self.counter_sessions(user.get_sessions(), user_count, filters)
+            self.counter_sessions(user.sessions, user_count, filters)
             for key in user_count.keys():
                 if key in count:
                     count[key] += 1
@@ -144,7 +145,7 @@ class DataVisualizer:
                 return None
 
         events_count = {}
-        names = check_event(event.json_dict, metric_names)
+        names = check_event(event.data, metric_names)
         if names is not None:
             return names
 
@@ -203,12 +204,19 @@ class DataVisualizer:
         self.plotter_set_visualization_config()
         self.add_chart(loading)
 
-    def add_chart(self, loading, data):
+    def add_chart(self, loading):
         loading("data  processed...")
         filters = Filters(self.visualization_config)
         filters.add_filter(filters.data_filter)
 
-        if self.visualization_config.display_mode == SplitTimeMode.TOTAL or SPLIT_TIME_MODE not in graph_parameters[GraphType(self.visualization_config.selected_chart_type)]:
+        if self.visualization_config.type_data == DateType.EVENTS:
+            data = self.data_storage.events
+        elif self.visualization_config.type_data == DateType.SESSIONS:
+            data = self.data_storage.sessions
+        elif self.visualization_config.type_data == DateType.USERS:
+            data = self.data_storage.users
+
+        if self.visualization_config.display_mode == SplitTimeMode.NOSPLIT or SPLIT_TIME_MODE not in graph_parameters[GraphType(self.visualization_config.selected_chart_type)]:
             events_count = self.counter(data, filters)
             if not events_count:
                 warning(

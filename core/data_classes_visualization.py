@@ -1,5 +1,5 @@
-import config.constants as constants
-from enums import SplitTimeMode, HistogramType, Orientation, GraphType, TypeOfMeasurement
+
+from enums import SplitTimeMode, HistogramType, Orientation, GraphType, TypeOfMeasurement, DateType
 from PyQt5.QtCore import QDate
 from dataclasses import dataclass, field, fields
 
@@ -7,7 +7,7 @@ from dataclasses import dataclass, field, fields
 # @dataclass
 class VisualizationConfig:
     def __init__(self):
-        self.type_data = constants.EVENTS
+        self.type_data = DateType.EVENTS
         self.type_of_measurement = TypeOfMeasurement.UNITED
         self.selected_chart_type = GraphType.LINE
         self.display_mode = SplitTimeMode.NOSPLIT

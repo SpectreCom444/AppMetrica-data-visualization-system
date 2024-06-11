@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5.uic import loadUi
 from core.data import DataStorage
-from config.constants import SESSION_ID, DEVICE_ID
+from config.constants import SESSION_ID, DEVICE_ID, EVENT_DATETIME
 from ui.workspace import WorkspaceWindow
 from ui.message import error
 
@@ -25,6 +25,10 @@ class DataLoaderWindow(QMainWindow):
         self.repaint()
         try:
             self.data_storage.load_data(path, self.load_data_callback)
+            if EVENT_DATETIME not in self.data_storage.headers:
+                error(f"The parameter {
+                      EVENT_DATETIME} was not found. Add it when exporting data and try again.")
+                return
             self.data_storage.process_events(self.create_events_callback)
             if SESSION_ID not in self.data_storage.headers:
                 error(f"The parameter {

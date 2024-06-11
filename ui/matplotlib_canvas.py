@@ -34,5 +34,4 @@ class MatplotlibCanvas(FigureCanvasQTAgg):
         return (self.pos_x, self.pos_y)
 
     def on_click(self, event):
-        print(self.pos_x, self.pos_y)
         self.on_click_callback(self)

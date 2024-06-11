@@ -78,8 +78,8 @@ class GridMatrix:
         self.selected_canvas = self.get_canvas(0, 0)
         self.size_x = 1
         self.size_y = 1
-        self.workspace_window.combo_box_height_matrix.setCurrentIndex(0)
-        self.workspace_window.combo_box_width_matrix.setCurrentIndex(0)
+        self.workspace_window.size_x_comboboxt_GS.setCurrentIndex(0)
+        self.workspace_window.size_y_comboboxt_GS.setCurrentIndex(0)
         self.workspace_window.update_tools()
 
     def get_canvas(self, pos_x, pos_y):
@@ -87,6 +87,7 @@ class GridMatrix:
 
     def set_selected_canvas(self, canvas):
         self.selected_canvas = canvas
+        self.workspace_window.update_tools()
 
     def clear_selected_canvas(self):
         pos_x, pos_y = self.selected_canvas.get_position()

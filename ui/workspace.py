@@ -15,15 +15,15 @@ class WorkspaceWindow(QMainWindow):
         loadUi('ui/workspace.ui', self)
         self.setWindowTitle("Data visualization system:  Workspace")
         self.data_storage = data_storage
-        self.data_visualizer = DataVisualizer()
+        self.data_visualizer = DataVisualizer(self.data_storage)
         self.grid_matrix = GridMatrix(self)
         self.create_vizualization_button()
         self.custom_event_menu = CustomEventMenu(self)
         self.showMaximized()
 
     def set_matrix(self):
-        self.grid_matrix.update_matrix_size(int(self.combo_box_height_matrix.currentText(
-        )), int(self.combo_box_width_matrix.currentText()))
+        self.grid_matrix.update_matrix_size(int(self.size_x_comboboxt_GS.currentText(
+        )), int(self.size_y_comboboxt_GS.currentText()))
 
     def set_path_text_widget(self, path):
         self.path_text_VS.clear()
@@ -147,57 +147,50 @@ class WorkspaceWindow(QMainWindow):
         self.type_of_measurement_combo_box_VS.currentTextChanged.connect(
             self.set_type_of_measurement)
 
+        self.treshold_slider_VS.valueChanged.connect(self.sliderValueChanged)
         self.loader_linet_GS.hide()
         self.update_tools()
 
         self.metrics_list_panel.hide()
 
-        # if constants.EVENT_DATETIME in self.data_storage.names:
-        #     self.set_date_selector(
-        #         constants.EVENT_DATETIME in self.data_storage.names)
+        self.set_date_selector()
+
+    def sliderValueChanged(self):
+        value = self.treshold_slider_VS.value()
+        self.treshold_value_VS.setText(f"{round(value/10, 1)}%")
 
     def loading(self, text):
         if text == constants.END_LOADING:
-            self.loader_line.hide()
+            self.loader_linet_GS.hide()
         else:
-            self.loader_line.setText(text)
-            if self.loader_line.isHidden():
-                self.loader_line.show()
+            self.loader_linet_GS.setText(text)
+            if self.loader_linet_GS.isHidden():
+                self.loader_linet_GS.show()
         self.repaint()
 
     def data_for_chart(self):
 
         self.data_visualizer.set_canvas(self.grid_matrix.selected_canvas)
         self.data_visualizer.set_chart_type(
-            [graph_type.value for graph_type in GraphType][self.selected_chart_type.currentIndex()])
+            [graph_type.value for graph_type in GraphType][self.chart_type_combo_box_VS.currentIndex()])
         self.data_visualizer.set_other_reference(
-            self.other_reference_slider.value())
+            self.treshold_slider_VS.value())
 
         if len(self.custom_event_menu.get_selected_options()) > 0:
             self.data_visualizer.set_selected_data(
                 self.custom_event_menu.get_selected_options())
 
-        if constants.EVENT_DATATIME in self.data_storage.names:
-            self.data_visualizer.set_data_time(
-                self.start_date_entry.date(), self.end_date_entry.date())
+        self.data_visualizer.set_data_time(
+            self.start_date_combo_box_VS.date(), self.end_date_combo_box_VS.date())
 
-        if self.data_visualizer.visualization_config.type_data == constants.EVENTS:
-            data = self.data_storage.events_result
-        elif self.data_visualizer.visualization_config.type_data == constants.SESSIONS:
-            data = self.data_storage.sessions_result
-        elif self.data_visualizer.visualization_config.type_data == constants.USERS:
-            data = self.data_storage.users_result
-        self.data_visualizer.add_chart(self.loading, data)
+        self.data_visualizer.add_chart(self.loading)
 
-    def set_date_selector(self, enable: bool):
+    def set_date_selector(self):
         self.start_date_combo_box_VS.setDisplayFormat("yyyy-MM-dd")
         self.start_date_combo_box_VS.setDate(QDate.currentDate())
 
         self.end_date_combo_box_VS.setDisplayFormat("yyyy-MM-dd")
         self.end_date_combo_box_VS.setDate(QDate.currentDate())
-
-        self.start_date_combo_box_VS.setEnabled(enable)
-        self.end_date_combo_box_VS.setEnabled(enable)
 
         self.today_button_VS.clicked.connect(
             lambda: self.set_time_period(QDate.currentDate().addDays(-1)))
