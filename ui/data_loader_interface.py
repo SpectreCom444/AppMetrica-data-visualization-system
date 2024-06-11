@@ -7,7 +7,7 @@ from ui.message import error
 
 
 class DataLoaderWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, data_storage):
         super(DataLoaderWindow, self).__init__()
         loadUi('ui/data-loader.ui', self)
         self.setWindowTitle("Data visualization system")
@@ -15,7 +15,7 @@ class DataLoaderWindow(QMainWindow):
         self.drop_frame.dragEnterEvent = self.drag_enter_event
         self.drop_frame.dropEvent = self.drop_event
         self.indicator.hide()
-        self.data_storage = DataStorage()
+        self.data_storage = data_storage
 
         self.drop_frame.mousePressEvent = self.open_file_dialog
         self.showMaximized()

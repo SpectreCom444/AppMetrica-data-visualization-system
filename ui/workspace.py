@@ -1,6 +1,7 @@
 from visualization.data_visualizer import DataVisualizer
 import config.constants as constants
 from ui.grid_matrix import GridMatrix
+from ui.message import warning_dialog
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QDate
@@ -63,6 +64,13 @@ class WorkspaceWindow(QMainWindow):
             self.cut_button_VS.show()
             self.clear_button_VS.show()
 
+    def back_button_clicked(self):
+        if warning_dialog(f'Are you sure you want to go back? Any unsaved changes will be lost.'):
+            from ui.data_loader_interface import DataLoaderWindow
+            self.data_loader_window = DataLoaderWindow(self.data_storage)
+            self.data_loader_window.show()
+            self.hide()
+
     def create_CEM_for_set_metric(self):
         self.visualization_settings_panel.hide()
         self.metrics_list_panel.show()
@@ -102,6 +110,8 @@ class WorkspaceWindow(QMainWindow):
 
         self.set_grid_size_buttont_GS.clicked.connect(self.set_matrix)
 
+        self.back_to_uploading_data_button_VS.clicked.connect(
+            self.back_button_clicked)
         self.draw_button_VS.clicked.connect(self.grid_matrix.plot_canvas)
         self.copy_button_VS.clicked.connect(self.grid_matrix.copy_canvas)
         self.insert_button_VS.clicked.connect(self.grid_matrix.paste_canvas)
