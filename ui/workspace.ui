@@ -34,7 +34,7 @@
       <property name="title">
        <string>METRICS</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,2,20,2">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,3,0,20,2">
        <item>
         <widget class="QLabel" name="path_to_metrics_discription_MS">
          <property name="font">
@@ -53,20 +53,28 @@
        <item>
         <widget class="QTextEdit" name="path_text_MS">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="font">
           <font>
            <family>MS Shell Dlg 2</family>
-           <weight>50</weight>
+           <pointsize>8</pointsize>
+           <weight>75</weight>
            <italic>false</italic>
-           <bold>false</bold>
+           <bold>true</bold>
           </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(230, 230, 230);
+border: 1px solid gray;</string>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="back_button_selction_MS">
+        <widget class="QPushButton" name="back_button_selection_MS">
          <property name="font">
           <font>
            <family>MS Shell Dlg 2</family>
@@ -79,7 +87,7 @@
           <string notr="true">background-color: rgb(243, 130, 130);</string>
          </property>
          <property name="text">
-          <string>Back</string>
+          <string>←  Back</string>
          </property>
         </widget>
        </item>
@@ -102,12 +110,25 @@
             <x>0</x>
             <y>0</y>
             <width>226</width>
-            <height>1081</height>
+            <height>1001</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_10">
            <item>
-            <layout class="QVBoxLayout" name="buttons_list_MS"/>
+            <layout class="QVBoxLayout" name="buttons_list_MS">
+             <property name="leftMargin">
+              <number>6</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
+             </property>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -182,10 +203,18 @@
             <property name="font">
              <font>
               <family>MS Shell Dlg 2</family>
-              <weight>50</weight>
+              <pointsize>8</pointsize>
+              <weight>75</weight>
               <italic>false</italic>
-              <bold>false</bold>
+              <bold>true</bold>
              </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(230, 230, 230);
+border: 1px solid gray;</string>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
             </property>
            </widget>
           </item>

@@ -1,85 +1,96 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
+from typing import List, Union, Dict
 
 
 class CustomEventMenu:
     def __init__(self, workspace_window):
-
         self.workspace_window = workspace_window
-        self.buttons_list_MS = workspace_window.buttons_list_MS
-        self.path_text_MS = workspace_window.path_text_MS
-        self.back_button_selction_MS = workspace_window.back_button_selction_MS
-        self.back_button_selction_MS.clicked.connect(self.undo_last_selection)
-        self.selected_options = []
-        self.current_options = list(
-            self.workspace_window.data_storage.json_structure.keys())
-        self.update_buttons()
-        self.workspace_window.apply_MS.clicked.connect(
-            self.close_CEM_panel)
+        self.buttons_list_layout = workspace_window.buttons_list_MS
+        self.path_text_widget = workspace_window.path_text_MS
+        self.back_button = workspace_window.back_button_selection_MS
+        self.selected_options: List[str] = []
+        self.current_options: List[str] = list(
+            workspace_window.data_storage.json_structure.keys())
 
-    def close_CEM_panel(self):
+        self.setup_ui()
+        self.update_buttons()
+        self.update_back_button()
+
+    def setup_ui(self):
+        self.buttons_list_layout.setAlignment(QtCore.Qt.AlignTop)
+        self.back_button.clicked.connect(self.undo_last_selection)
+        self.workspace_window.apply_MS.clicked.connect(self.close_panel)
+
+    def close_panel(self):
         self.workspace_window.visualization_settings_panel.show()
         self.workspace_window.metrics_list_panel.hide()
 
     def update_buttons(self):
+        self.clear_buttons()
+        current_level = self.get_current_level()
 
-        for i in reversed(range(self.buttons_list_MS.count())):
-            widget = self.buttons_list_MS.itemAt(i).widget()
-            if isinstance(widget, QtWidgets.QPushButton) and widget != self.back_button_selction_MS:
+        for option in self.current_options:
+            button = self.create_button(
+                option, self.has_children(current_level, option))
+            self.buttons_list_layout.addWidget(button)
+
+    def create_button(self, text: str, enabled: bool) -> QtWidgets.QPushButton:
+        button = QtWidgets.QPushButton(text)
+        button.setEnabled(enabled)
+        button.clicked.connect(self.create_button_handler(text))
+        return button
+
+    def clear_buttons(self):
+        for i in reversed(range(self.buttons_list_layout.count())):
+            widget = self.buttons_list_layout.itemAt(i).widget()
+            if isinstance(widget, QtWidgets.QPushButton) and widget != self.back_button:
                 widget.deleteLater()
 
+    def get_current_level(self) -> Union[Dict, str]:
         current_level = self.workspace_window.data_storage.json_structure
-        for opt in self.selected_options:
-            if isinstance(current_level, dict):
-                current_level = current_level.get(opt, {})
-            else:
-                current_level = {}
-                break
+        for option in self.selected_options:
+            current_level = current_level.get(
+                option, {}) if isinstance(current_level, dict) else {}
+        return current_level
 
-        for idx, option in enumerate(self.current_options):
-            has_children = isinstance(current_level.get(
-                option, {}), dict) and bool(current_level.get(option, {}))
-            button = QtWidgets.QPushButton(option)
-            button.setEnabled(has_children)
-            button.clicked.connect(self.create_button_handler(option))
-            self.buttons_list_MS.addWidget(button)
+    def has_children(self, current_level: Dict, option: str) -> bool:
+        child_level = current_level.get(option, {})
+        return isinstance(child_level, dict) and bool(child_level)
 
-    def create_button_handler(self, option):
+    def create_button_handler(self, option: str):
         def handler():
             self.add_to_selected(option)
         return handler
 
-    def add_to_selected(self, option):
-        if option not in self.selected_options:
-            self.selected_options.append(option)
-            self.update_text_widget()
-            self.update_options()
+    def add_to_selected(self, option: str):
+        self.selected_options.append(option)
+        self.update_interface()
 
     def undo_last_selection(self):
         if self.selected_options:
             self.selected_options.pop()
-            self.update_text_widget()
-            self.update_options()
+            self.update_interface()
+
+    def update_back_button(self):
+        self.back_button.setVisible(bool(self.selected_options))
 
     def update_options(self):
-        current_level = self.workspace_window.data_storage.json_structure
-        for opt in self.selected_options:
-            if isinstance(current_level, dict):
-                current_level = current_level.get(opt, {})
-            else:
-                current_level = {}
-                break
-
-        if isinstance(current_level, dict):
-            self.current_options = list(current_level.keys())
-        else:
-            self.current_options = [current_level]
+        current_level = self.get_current_level()
+        self.current_options = list(current_level.keys()) if isinstance(
+            current_level, dict) else [current_level]
         self.update_buttons()
 
     def update_text_widget(self):
-        self.path_text_MS.clear()
-        for option in self.selected_options:
-            self.path_text_MS.setPlainText(
-                self.path_text_MS.toPlainText() + str(option) + '->')
+        self.path_text_widget.clear()
+        for i, option in enumerate(self.selected_options):
+            indent = '    ' * i
+            self.path_text_widget.append(
+                f"{indent}﹂{str(option)}" if i > 0 else f"{indent}{str(option)}")
 
-    def get_selected_options(self):
+    def update_interface(self):
+        self.update_text_widget()
+        self.update_options()
+        self.update_back_button()
+
+    def get_selected_options(self) -> List[str]:
         return self.selected_options
