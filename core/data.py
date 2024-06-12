@@ -3,32 +3,32 @@ import csv
 from core.models import Event, Session, User
 from config.constants import SESSION_ID, HIDDEN_ITEMS
 from ui.message import error
-from typing import Callable, List, Dict, Union
+from typing import Callable, List, Dict, Union, Optional
 
 
 class DataStorage:
     def __init__(self):
-        self._raw_data: Union[None, List[List[str]]] = None
-        self._events: Union[None, List[Event]] = None
-        self._sessions: Union[None, List[Session]] = None
-        self._users: Union[None, List[User]] = None
-        self._headers: Union[None, List[str]] = None
+        self._raw_data: Optional[List[List[str]]] = None
+        self._events: Optional[List[Event]] = None
+        self._sessions: Optional[List[Session]] = None
+        self._users: Optional[List[User]] = None
+        self._headers: Optional[List[str]] = None
         self._json_structure: Dict = {}
 
     @property
-    def events(self) -> Union[None, List[Event]]:
+    def events(self) -> Optional[List[Event]]:
         return self._events
 
     @property
-    def sessions(self) -> Union[None, List[Session]]:
+    def sessions(self) -> Optional[List[Session]]:
         return self._sessions
 
     @property
-    def users(self) -> Union[None, List[User]]:
+    def users(self) -> Optional[List[User]]:
         return self._users
 
     @property
-    def headers(self) -> Union[None, List[str]]:
+    def headers(self) -> Optional[List[str]]:
         return self._headers
 
     @property
@@ -38,38 +38,38 @@ class DataStorage:
     def is_session_created(self) -> bool:
         return self._sessions is not None
 
-    def load_data(self, file_path: str, on_data_loaded: Callable):
+    def load_data(self, file_path: str, on_data_loaded: Callable[[], None]) -> None:
         data_loader = self._DataLoader(file_path, self)
         data_loader.load_data(on_data_loaded)
 
-    def process_events(self, on_events_processed: Callable):
+    def process_events(self, on_events_processed: Callable[[], None]) -> None:
         event_processor = self._EventProcessor(self)
         event_processor.process(on_events_processed)
 
-    def process_sessions(self, on_sessions_processed: Callable):
+    def process_sessions(self, on_sessions_processed: Callable[[], None]) -> None:
         session_processor = self._SessionProcessor(self)
         session_processor.process(on_sessions_processed)
 
-    def process_users(self, on_users_processed: Callable):
+    def process_users(self, on_users_processed: Callable[[], None]) -> None:
         user_processor = self._UserProcessor(self)
         user_processor.process(on_users_processed)
 
     class _Timer:
         def __init__(self):
-            self.start_time = None
+            self.start_time: Optional[float] = None
 
-        def start(self):
+        def start(self) -> None:
             self.start_time = time.time()
 
         def stop(self) -> float:
             return time.time() - self.start_time if self.start_time else 0.0
 
     class _JSONTreeBuilder:
-        def __init__(self, data_storage):
-            self.json_structure = data_storage.json_structure
+        def __init__(self, data_storage: 'DataStorage'):
+            self.json_structure: Dict = data_storage.json_structure
 
-        def add_to_json_structure(self, json_data: Dict):
-            def update_structure(structure: Dict, data: Dict):
+        def add_to_json_structure(self, json_data: Dict) -> None:
+            def update_structure(structure: Dict, data: Dict) -> None:
                 for key, value in data.items():
                     if key not in HIDDEN_ITEMS:
                         if isinstance(value, dict):
@@ -83,9 +83,9 @@ class DataStorage:
 
     class _SessionProcessor:
         def __init__(self, data_storage: 'DataStorage'):
-            self.data_storage = data_storage
+            self.data_storage: DataStorage = data_storage
 
-        def process(self, on_sessions_processed: Callable):
+        def process(self, on_sessions_processed: Callable[[], None]) -> None:
             try:
                 timer = self.data_storage._Timer()
                 timer.start()
@@ -99,8 +99,8 @@ class DataStorage:
 
         @staticmethod
         def create_sessions(events: List[Event]) -> List[Session]:
-            sessions = []
-            session_dict = {}
+            sessions: List[Session] = []
+            session_dict: Dict[str, Session] = {}
 
             for event in events:
                 session_id = event.get_value(SESSION_ID)
@@ -115,9 +115,9 @@ class DataStorage:
 
     class _UserProcessor:
         def __init__(self, data_storage: 'DataStorage'):
-            self.data_storage = data_storage
+            self.data_storage: DataStorage = data_storage
 
-        def process(self, on_users_processed: Callable):
+        def process(self, on_users_processed: Callable[[], None]) -> None:
             try:
                 timer = self.data_storage._Timer()
                 timer.start()
@@ -131,8 +131,8 @@ class DataStorage:
 
         @staticmethod
         def create_users(sessions: List[Session]) -> List[User]:
-            users = []
-            user_dict = {}
+            users: List[User] = []
+            user_dict: Dict[str, User] = {}
 
             for session in sessions:
                 user_id = session.user_id
@@ -147,10 +147,10 @@ class DataStorage:
 
     class _DataLoader:
         def __init__(self, file_path: str, data_storage: 'DataStorage'):
-            self.file_path = file_path
-            self.data_storage = data_storage
+            self.file_path: str = file_path
+            self.data_storage: DataStorage = data_storage
 
-        def load_data(self, on_data_loaded: Callable):
+        def load_data(self, on_data_loaded: Callable[[], None]) -> None:
             try:
                 if not self.file_path.lower().endswith('.csv'):
                     raise ValueError("File is not a CSV file")
@@ -172,21 +172,20 @@ class DataStorage:
 
     class _EventProcessor:
         def __init__(self, data_storage: 'DataStorage'):
-            self.data_storage = data_storage
-            self._json_builder = self.data_storage._JSONTreeBuilder(
+            self.data_storage: DataStorage = data_storage
+            self._json_builder: DataStorage._JSONTreeBuilder = self.data_storage._JSONTreeBuilder(
                 self.data_storage)
 
-        def process(self, on_events_processed: Callable):
+        def process(self, on_events_processed: Callable[[], None]) -> None:
             try:
                 timer = self.data_storage._Timer()
                 timer.start()
                 self.data_storage._events = self.create_events(
                     self.data_storage._raw_data, self.data_storage._headers)
                 for event in self.data_storage._events:
-                    self._json_builder.add_to_json_structure(
-                        event.data)
+                    self._json_builder.add_to_json_structure(event.data)
                 print(f"{len(self.data_storage._events)} events created in {
-                    timer.stop():.2f} seconds")
+                      timer.stop():.2f} seconds")
                 on_events_processed()
             except Exception as err:
                 error(f"An error occurred during event processing: {err}")

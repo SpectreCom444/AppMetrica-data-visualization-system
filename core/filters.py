@@ -1,45 +1,48 @@
+from typing import List, Any
 from config.constants import EVENT_DATETIME
 
 
 class Filters:
-
-    def event_verification(self, event, filters_list):
+    def event_verification(self, event: Any, filters_list: List['BaseFilter']) -> bool:
         for filter in filters_list:
             if not filter.check(event):
                 return False
         return True
 
 
-class DateFilter():
-    def __init__(self, start_date_entry, end_date_entry):
-        self.start_date_entry = start_date_entry
-        self.end_date_entry = end_date_entry
+class BaseFilter:
+    def check(self, event: Any) -> bool:
+        raise NotImplementedError(
+            "This method should be overridden by subclasses")
 
-    def check(self, event):
+
+class DateFilter(BaseFilter):
+    def __init__(self, start_date_entry: Any, end_date_entry: Any):
+        self.__start_date_entry = start_date_entry
+        self.__end_date_entry = end_date_entry
+
+    def check(self, event: Any) -> bool:
         event_datetime = event.get_value(EVENT_DATETIME)
-        return self.start_date_entry <= event_datetime <= self.end_date_entry
+        return self.__start_date_entry <= event_datetime <= self.__end_date_entry
 
 
-class EventFilter():
-    def __init__(self,  invert, selected_options):
-        self.invert = invert
-        self.selected_options = selected_options
+class EventFilter(BaseFilter):
+    def __init__(self, invert: bool, selected_options: List[str]):
+        self.__invert = invert
+        self.__selected_options = selected_options
 
-    def check(self, event):
-        def check_event(tree, metric_names):
-            if metric_names[0] in tree:
-                if len(metric_names) > 1:
-                    return check_event(tree[metric_names[0]], metric_names[1:])
-                else:
-                    if isinstance(tree, dict):
-                        return True
-                    else:
-                        return None
-            else:
-                return None
-        if len(self.selected_options) == 0:
+    def check(self, event: Any) -> bool:
+        if not self.__selected_options:
             return True
-        if not self.invert:
-            return check_event(event.data, self.selected_options)
-        else:
-            return not check_event(event.data, self.selected_options)
+
+        result = self.__check_event(event.data, self.__selected_options)
+        return not result if self.__invert else result
+
+    def __check_event(self, tree: dict, metric_names: List[str]) -> bool:
+        if not metric_names:
+            return True
+        if metric_names[0] in tree:
+            if len(metric_names) > 1:
+                return self.__check_event(tree[metric_names[0]], metric_names[1:])
+            else:
+                return isinstance

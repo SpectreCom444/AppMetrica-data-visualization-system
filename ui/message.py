@@ -2,20 +2,25 @@ from PyQt5.QtWidgets import QMessageBox
 import traceback
 
 
-def warning_dialog(text):
-    msg_box = QMessageBox.warning(
-        None, "Warning", text, QMessageBox.Ok | QMessageBox.Cancel)
-    if msg_box == QMessageBox.Ok:
-        return True
-    elif msg_box == QMessageBox.Cancel:
-        return False
+def show_message_box(message_type: QMessageBox.Icon, title: str, text: str, buttons: QMessageBox.StandardButtons = QMessageBox.Ok) -> int:
+    msg_box = QMessageBox()
+    msg_box.setIcon(message_type)
+    msg_box.setWindowTitle(title)
+    msg_box.setText(text)
+    msg_box.setStandardButtons(buttons)
+    return msg_box.exec()
 
 
-def warning(text):
-    msg_box = QMessageBox.warning(None, "Warning", text)
+def warning_dialog(text: str) -> bool:
+    result = show_message_box(
+        QMessageBox.Warning, "Warning", text, QMessageBox.Ok | QMessageBox.Cancel)
+    return result == QMessageBox.Ok
 
 
-def error(text):
-    QMessageBox.critical(
-        None, "Error", f"{str(text)}")
+def warning(text: str) -> None:
+    show_message_box(QMessageBox.Warning, "Warning", text)
+
+
+def error(text: str) -> None:
+    show_message_box(QMessageBox.Critical, "Error", str(text))
     traceback.print_exc()

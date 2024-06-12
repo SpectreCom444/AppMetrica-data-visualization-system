@@ -219,7 +219,6 @@ class DataVisualizer:
             self.visualization_config.start_date_entry, self.visualization_config.end_date_entry))
 
         for filter in self.filter_panel.filters:
-            print(filter.invert)
             self.visualization_config.filters_list.append(
                 EventFilter(filter.invert, filter.selected_options))
 
@@ -238,7 +237,7 @@ class DataVisualizer:
                     return
             self.plotter.plot(events_count, loading)
 
-        elif self.visualization_config.display_mode == SplitTimeMode.DAY:
+        elif self.visualization_config.display_mode == SplitTimeMode.SPLITBYDAY:
             events_count = self.counter_split_time(data, "%Y-%m-%d")
             if not events_count:
                 warning(
@@ -251,7 +250,7 @@ class DataVisualizer:
                 self.visualization_config)
             self.plotter.plot_split(events_count, 'Date', loading)
 
-        elif self.visualization_config.display_mode == SplitTimeMode.HOURSE:
+        elif self.visualization_config.display_mode == SplitTimeMode.SPLITBYHOURS:
             events_count = self.counter_split_time(
                 data, "%Y-%m-%d %H")
 

@@ -3,9 +3,6 @@ EVENT_DATETIME = "event_datetime"
 EVENT_JSON = "event_json"
 EVENT_NAME = "event_name"
 DEVICE_ID = "appmetrica_device_id"
-USERS = "users"
-SESSIONS = "sessions"
-EVENTS = "events"
 
 SPLIT_TIME_MODE = 'split time mode'
 TYPE_OF_MEASUREMENT = 'type of measurement'

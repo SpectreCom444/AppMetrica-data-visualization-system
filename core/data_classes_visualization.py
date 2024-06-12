@@ -1,26 +1,25 @@
-
 from enums import SplitTimeMode, HistogramType, Orientation, GraphType, TypeOfMeasurement, DateType
 from PyQt5.QtCore import QDate
-from dataclasses import dataclass, field, fields
-import copy
+from dataclasses import dataclass, field
+from typing import List, Any
 
 
+@dataclass
 class VisualizationConfig:
-    def __init__(self):
-        self.type_data = DateType.EVENTS
-        self.type_of_measurement = TypeOfMeasurement.UNITED
-        self.selected_chart_type = GraphType.LINE
-        self.display_mode = SplitTimeMode.NOSPLIT
-        self.histogram_type = HistogramType.STACKET
-        self.orientation = Orientation.HORIZONTAL
-        self.start_date_entry = QDate.currentDate()
-        self.end_date_entry = QDate.currentDate()
-        self.other_reference = 0
-        self.selected_data = ""
-        self.canvas = None
-        self.filters_list = []
+    type_data: DateType = DateType.EVENTS
+    type_of_measurement: TypeOfMeasurement = TypeOfMeasurement.UNITED
+    selected_chart_type: GraphType = GraphType.LINE
+    display_mode: SplitTimeMode = SplitTimeMode.NOSPLIT
+    histogram_type: HistogramType = HistogramType.STACKET
+    orientation: Orientation = Orientation.HORIZONTAL
+    start_date_entry: QDate = field(default_factory=QDate.currentDate)
+    end_date_entry: QDate = field(default_factory=QDate.currentDate)
+    other_reference: int = 0
+    selected_data: str = ""
+    canvas: Any = None
+    filters_list: List[Any] = field(default_factory=list)
 
-    def copy(self, reference):
+    def copy(self, reference: 'VisualizationConfig') -> None:
         self.type_data = reference.type_data
         self.type_of_measurement = reference.type_of_measurement
         self.selected_chart_type = reference.selected_chart_type
