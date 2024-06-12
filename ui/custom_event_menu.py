@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore
-from typing import List, Union, Dict
+from typing import List, Union, Dict, Callable
 
 
 class CustomEventMenu:
@@ -24,8 +24,12 @@ class CustomEventMenu:
     def apply(self):
         self.workspace_window.visualization_settings_panel.show()
         self.workspace_window.metrics_list_panel.hide()
-        self.workspace_window.set_path_text_widget(
-            self.path_text_widget.toPlainText())
+        self.method_callback(self.selected_options)
+
+    def set_parameters(self, method_callback, selected_options: List[str]):
+        self.method_callback = method_callback
+        self.selected_options = selected_options
+        self.update_interface()
 
     def update_buttons(self):
         self.clear_buttons()
@@ -93,6 +97,3 @@ class CustomEventMenu:
         self.update_path_text_widget()
         self.update_options()
         self.update_back_button()
-
-    def get_selected_options(self) -> List[str]:
-        return self.selected_options

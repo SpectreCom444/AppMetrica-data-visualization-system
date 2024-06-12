@@ -140,16 +140,11 @@ class DataVisualizer:
                     if isinstance(tree, dict):
                         return tree[metric_names[0]]
                     else:
-                        return None
+                        return {}
             else:
-                return None
+                return {}
 
-        events_count = {}
-        names = check_event(event.data, metric_names)
-        if names is not None:
-            return names
-
-        return events_count
+        return check_event(event.data, metric_names)
 
     @staticmethod
     def counting_other(data, other_threshold):
@@ -206,6 +201,9 @@ class DataVisualizer:
 
     def add_chart(self, loading):
         loading("data  processed...")
+        if len(self.visualization_config.selected_data) == 0:
+            error("The metric for visualization is not selected.")
+            return
         filters = Filters(self.visualization_config)
         filters.add_filter(filters.data_filter)
 

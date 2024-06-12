@@ -22,6 +22,7 @@ class MatplotlibCanvas(FigureCanvasQTAgg):
     def create_axes(self):
         if self.ax is None:
             self.ax = self.fig.add_subplot(111)
+            self.ax.grid(True)
 
     def set_visualization_parameters(self, visualization_config):
         self.visualization_config.copy(visualization_config)

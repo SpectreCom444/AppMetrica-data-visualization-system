@@ -30,8 +30,8 @@ class Plotter:
         return OrderedDict(zip(sorted_keys, sorted_values))
 
     def _draw_figure(self):
-        self._get_canvas().ax.set_title(
-            self.visualization_config.selected_data)
+        self._get_canvas().ax.set_title(" → ".join(
+            self.visualization_config.selected_data))
         self._get_canvas().figure = self._get_canvas().fig
         self._get_canvas().draw()
 

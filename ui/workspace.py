@@ -8,6 +8,7 @@ from PyQt5.QtCore import QDate
 from ui.custom_event_menu import CustomEventMenu
 from enums import SplitTimeMode, HistogramType, Orientation, GraphType, TypeOfMeasurement, DateType
 from config.graph_parameters import graph_parameters
+from ui.filter_panel import FilterPanel
 
 
 class WorkspaceWindow(QMainWindow):
@@ -16,19 +17,17 @@ class WorkspaceWindow(QMainWindow):
         loadUi('ui/workspace.ui', self)
         self.setWindowTitle("Data visualization system:  Workspace")
         self.data_storage = data_storage
+        self.filter_panel = FilterPanel(self.filters_layout_VS, self)
         self.data_visualizer = DataVisualizer(self.data_storage)
         self.grid_matrix = GridMatrix(self)
         self.create_vizualization_button()
         self.custom_event_menu = CustomEventMenu(self)
         self.showMaximized()
+        self.selected_options = []
 
     def set_matrix(self):
         self.grid_matrix.update_matrix_size(int(self.size_x_comboboxt_GS.currentText(
         )), int(self.size_y_comboboxt_GS.currentText()))
-
-    def set_path_text_widget(self, path):
-        self.path_text_VS.clear()
-        self.path_text_VS.setPlainText(path)
 
     def hide_action_button(self):
         self.split_time_mod_panel_VS.hide()
@@ -74,6 +73,8 @@ class WorkspaceWindow(QMainWindow):
     def create_CEM_for_set_metric(self):
         self.visualization_settings_panel.hide()
         self.metrics_list_panel.show()
+        self.custom_event_menu.set_parameters(
+            self.applay_selected_options, self.selected_options)
 
     def set_date_type(self):
         self.data_visualizer.set_type_data(
@@ -94,6 +95,14 @@ class WorkspaceWindow(QMainWindow):
     def set_type_of_measurement(self):
         self.data_visualizer.set_type_of_measurement(
             TypeOfMeasurement(self.type_of_measurement_combo_box_VS.currentText()))
+
+    def applay_selected_options(self, selected_options):
+        self.selected_options = selected_options
+        self.path_text_VS.clear()
+        for i, option in enumerate(self.selected_options):
+            indent = '    ' * i
+            self.path_text_VS.appendPlainText(
+                f"{indent}﹂{str(option)}" if i > 0 else f"{indent}{str(option)}")
 
     def create_vizualization_button(self):
 
@@ -121,6 +130,7 @@ class WorkspaceWindow(QMainWindow):
         self.clear_all_button_VS.clicked.connect(
             self.grid_matrix.clear_all_canvases)
         self.delete_all_button_VS.clicked.connect(self.grid_matrix.remove_all)
+        self.add_filter_button_VS.clicked.connect(self.filter_panel.add_filter)
 
         self.data_type_combo_box_VS.addItems(
             [date_type.value for date_type in DateType])
@@ -185,10 +195,7 @@ class WorkspaceWindow(QMainWindow):
             [graph_type.value for graph_type in GraphType][self.chart_type_combo_box_VS.currentIndex()])
         self.data_visualizer.set_other_reference(
             self.treshold_slider_VS.value())
-
-        if len(self.custom_event_menu.get_selected_options()) > 0:
-            self.data_visualizer.set_selected_data(
-                self.custom_event_menu.get_selected_options())
+        self.data_visualizer.set_selected_data(self.selected_options())
 
         self.data_visualizer.set_data_time(
             self.start_date_combo_box_VS.date(), self.end_date_combo_box_VS.date())
