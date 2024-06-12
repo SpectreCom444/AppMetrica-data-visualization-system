@@ -1,10 +1,10 @@
 from enums import SplitTimeMode, GraphType, DateType
-from core.filters import Filters
 from config.constants import EVENT_JSON, SPLIT_TIME_MODE, END_LOADING
 from visualization.plotter import Plotter
 from core.data_classes_visualization import VisualizationConfig
 from ui.message import warning_dialog, warning
 from config.graph_parameters import graph_parameters
+from core.filters import DateFilter, EventFilter, Filters
 
 
 class Counter:
@@ -13,49 +13,51 @@ class Counter:
 
 class DataVisualizer:
 
-    def __init__(self, data_storage):
+    def __init__(self, data_storage, filter_panel):
         self.visualization_config = VisualizationConfig()
         self.plotter = Plotter(self.visualization_config)
         self.data_storage = data_storage
+        self.filter_panel = filter_panel
+        self.filters = Filters()
 
-    def counter(self, elements, filters):
+    def counter(self, elements):
         count = {}
         if self.visualization_config.type_data == DateType.EVENTS:
-            self.counter_events(elements, count, filters)
+            self.counter_events(elements, count)
         elif self.visualization_config.type_data == DateType.SESSIONS:
-            self.counter_sessions(elements, count, filters)
+            self.counter_sessions(elements, count)
         elif self.visualization_config.type_data == DateType.USERS:
-            self.counter_users(elements, count, filters)
+            self.counter_users(elements, count)
         return count
 
-    def counter_split_time(self, elements, filters, time_division_format):
+    def counter_split_time(self, elements, time_division_format):
         count = {}
         if self.visualization_config.type_data == DateType.EVENTS:
             self.counter_events_split_time(
-                elements, count, filters, time_division_format)
+                elements, count, time_division_format)
         elif self.visualization_config.type_data == DateType.SESSIONS:
             self.counter_sessions_split_time(
-                elements, count, filters, time_division_format)
+                elements, count, time_division_format)
         elif self.visualization_config.type_data == DateType.USERS:
             self.counter_users_split_time(
-                elements, count, filters, time_division_format)
+                elements, count, time_division_format)
         return count
 
-    def counter_sessions(self, elements, count, filters):
+    def counter_sessions(self, elements, count):
         for sessions in elements:
             sessions_count = {}
-            self.counter_events(sessions.events, sessions_count, filters)
+            self.counter_events(sessions.events, sessions_count)
             for key in sessions_count.keys():
                 if key in count:
                     count[key] += 1
                 else:
                     count[key] = 1
 
-    def counter_sessions_split_time(self, elements, count, filters, time_division_format):
+    def counter_sessions_split_time(self, elements, count, time_division_format):
         for sessions in elements:
             sessions_count = {}
             self.counter_events_split_time(
-                sessions.get_events(), sessions_count, filters, time_division_format)
+                sessions.get_events(), sessions_count, time_division_format)
             for event_time in sessions_count.keys():
                 if event_time not in count:
                     count[event_time] = {}
@@ -65,21 +67,21 @@ class DataVisualizer:
                     else:
                         count[event_time][key] = 1
 
-    def counter_users(self, elements, count, filters):
+    def counter_users(self, elements, count):
         for user in elements:
             user_count = {}
-            self.counter_sessions(user.sessions, user_count, filters)
+            self.counter_sessions(user.sessions, user_count)
             for key in user_count.keys():
                 if key in count:
                     count[key] += 1
                 else:
                     count[key] = 1
 
-    def counter_users_split_time(self, elements, count, filters, time_division_format):
+    def counter_users_split_time(self, elements, count, time_division_format):
         for user in elements:
             user_count = {}
             self.counter_sessions_split_time(
-                user.get_sessions(), user_count, filters, time_division_format)
+                user.get_sessions(), user_count, time_division_format)
             for event_time in user_count.keys():
                 if event_time not in count:
                     count[event_time] = {}
@@ -89,9 +91,9 @@ class DataVisualizer:
                     else:
                         count[event_time][key] = 1
 
-    def counter_events(self, elements, count, filters):
+    def counter_events(self, elements, count):
         for event in elements:
-            if filters.event_verification(event):
+            if self.filters.event_verification(event, self.visualization_config.filters_list):
                 value = self.counter_events_list(
                     event, self.visualization_config.selected_data)
                 if isinstance(value, str):
@@ -107,9 +109,9 @@ class DataVisualizer:
                             count[name] = 1
         return count
 
-    def counter_events_split_time(self, elements, count, filters, time_division_format):
+    def counter_events_split_time(self, elements, count, time_division_format):
         for event in elements:
-            if filters.event_verification(event):
+            if self.filters.event_verification(event, self.visualization_config.filters_list):
                 event_time = event.get_value(
                     "event_datetime").strftime(time_division_format)
 
@@ -204,8 +206,6 @@ class DataVisualizer:
         if len(self.visualization_config.selected_data) == 0:
             error("The metric for visualization is not selected.")
             return
-        filters = Filters(self.visualization_config)
-        filters.add_filter(filters.data_filter)
 
         if self.visualization_config.type_data == DateType.EVENTS:
             data = self.data_storage.events
@@ -214,8 +214,17 @@ class DataVisualizer:
         elif self.visualization_config.type_data == DateType.USERS:
             data = self.data_storage.users
 
+        self.visualization_config.filters_list.clear()
+        self.visualization_config.filters_list.append(DateFilter(
+            self.visualization_config.start_date_entry, self.visualization_config.end_date_entry))
+
+        for filter in self.filter_panel.filters:
+            print(filter.invert)
+            self.visualization_config.filters_list.append(
+                EventFilter(filter.invert, filter.selected_options))
+
         if self.visualization_config.display_mode == SplitTimeMode.NOSPLIT or SPLIT_TIME_MODE not in graph_parameters[GraphType(self.visualization_config.selected_chart_type)]:
-            events_count = self.counter(data, filters)
+            events_count = self.counter(data)
             if not events_count:
                 warning(
                     "Elements that would satisfy the selected filters are 0. It is impossible to build a chart.")
@@ -230,7 +239,7 @@ class DataVisualizer:
             self.plotter.plot(events_count, loading)
 
         elif self.visualization_config.display_mode == SplitTimeMode.DAY:
-            events_count = self.counter_split_time(data, filters, "%Y-%m-%d")
+            events_count = self.counter_split_time(data, "%Y-%m-%d")
             if not events_count:
                 warning(
                     "Elements that would satisfy the selected filters are 0. It is impossible to build a chart.")
@@ -244,7 +253,7 @@ class DataVisualizer:
 
         elif self.visualization_config.display_mode == SplitTimeMode.HOURSE:
             events_count = self.counter_split_time(
-                data, filters, "%Y-%m-%d %H")
+                data, "%Y-%m-%d %H")
 
             if not events_count:
                 warning(

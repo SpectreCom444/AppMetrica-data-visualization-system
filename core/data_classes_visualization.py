@@ -2,9 +2,9 @@
 from enums import SplitTimeMode, HistogramType, Orientation, GraphType, TypeOfMeasurement, DateType
 from PyQt5.QtCore import QDate
 from dataclasses import dataclass, field, fields
+import copy
 
 
-# @dataclass
 class VisualizationConfig:
     def __init__(self):
         self.type_data = DateType.EVENTS
@@ -18,6 +18,7 @@ class VisualizationConfig:
         self.other_reference = 0
         self.selected_data = ""
         self.canvas = None
+        self.filters_list = []
 
     def copy(self, reference):
         self.type_data = reference.type_data
@@ -31,3 +32,4 @@ class VisualizationConfig:
         self.other_reference = reference.other_reference
         self.selected_data = reference.selected_data
         self.canvas = reference.canvas
+        self.filters_list = reference.filters_list[:]

@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QCheckBox, QTextEdit, QApplication, QSizePolicy
 from PyQt5.QtCore import Qt
 import sys
-from core.filter_element import Filter
+from ui.filter_element import Filter
 
 
 class FilterPanel(QWidget):

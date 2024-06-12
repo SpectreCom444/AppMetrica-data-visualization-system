@@ -18,7 +18,8 @@ class WorkspaceWindow(QMainWindow):
         self.setWindowTitle("Data visualization system:  Workspace")
         self.data_storage = data_storage
         self.filter_panel = FilterPanel(self.filters_layout_VS, self)
-        self.data_visualizer = DataVisualizer(self.data_storage)
+        self.data_visualizer = DataVisualizer(
+            self.data_storage, self.filter_panel)
         self.grid_matrix = GridMatrix(self)
         self.create_vizualization_button()
         self.custom_event_menu = CustomEventMenu(self)
@@ -195,7 +196,7 @@ class WorkspaceWindow(QMainWindow):
             [graph_type.value for graph_type in GraphType][self.chart_type_combo_box_VS.currentIndex()])
         self.data_visualizer.set_other_reference(
             self.treshold_slider_VS.value())
-        self.data_visualizer.set_selected_data(self.selected_options())
+        self.data_visualizer.set_selected_data(self.selected_options)
 
         self.data_visualizer.set_data_time(
             self.start_date_combo_box_VS.date(), self.end_date_combo_box_VS.date())

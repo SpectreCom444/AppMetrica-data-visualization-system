@@ -10,4 +10,4 @@ class Filter:
         self.path_text.setText(" → ".join(selected_options))
 
     def invert_filter(self, state):
-        invert = bool(state)
+        self.invert = bool(state)
