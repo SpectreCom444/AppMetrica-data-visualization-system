@@ -1146,7 +1146,7 @@ border: 1px solid gray;</string>
             <height>1220</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="gridLayout_5">
+          <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridt_GS">
              <property name="sizeConstraint">

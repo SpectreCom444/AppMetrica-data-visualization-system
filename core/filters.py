@@ -1,5 +1,6 @@
 from typing import List, Any
 from config.constants import EVENT_DATETIME
+from datetime import datetime
 
 
 class Filters:
@@ -17,9 +18,10 @@ class BaseFilter:
 
 
 class DateFilter(BaseFilter):
-    def __init__(self, start_date_entry: Any, end_date_entry: Any):
-        self.__start_date_entry = start_date_entry
-        self.__end_date_entry = end_date_entry
+    def __init__(self, start_date_entry: str, end_date_entry: str):
+        self.__start_date_entry = datetime.strptime(
+            start_date_entry, "%Y-%m-%d")
+        self.__end_date_entry = datetime.strptime(end_date_entry, "%Y-%m-%d")
 
     def check(self, event: Any) -> bool:
         event_datetime = event.get_value(EVENT_DATETIME)
