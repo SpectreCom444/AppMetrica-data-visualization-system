@@ -1,7 +1,6 @@
 SESSION_ID = "session_id"
 EVENT_DATETIME = "event_datetime"
 EVENT_JSON = "event_json"
-EVENT_NAME = "event_name"
 DEVICE_ID = "appmetrica_device_id"
 
 SPLIT_TIME_MODE = 'split time mode'

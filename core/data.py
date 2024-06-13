@@ -4,6 +4,7 @@ from core.models import Event, Session, User
 from config.constants import SESSION_ID, HIDDEN_ITEMS
 from ui.message import error
 from typing import Callable, List, Dict, Union, Optional
+from typing import Any
 
 
 class DataStorage:
@@ -34,9 +35,6 @@ class DataStorage:
     @property
     def json_structure(self) -> Dict:
         return self._json_structure
-
-    def is_session_created(self) -> bool:
-        return self._sessions is not None
 
     def load_data(self, file_path: str, on_data_loaded: Callable[[], None]) -> None:
         data_loader = self._DataLoader(file_path, self)

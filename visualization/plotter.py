@@ -16,7 +16,7 @@ class Plotter:
         total = sum(events_count.values())
         return {k: (v / total) * 100 for k, v in events_count.items()}
 
-    def _convert_to_percentage_split_event(self, events_count: Dict[str, Dict[str, int]]) -> Dict[str, Dict[str, float]]:
+    def _convert_to_percentage_split_event(self, events_count: Dict[str, Any]) -> Dict[str, Any]:
         total = sum(sum(events.values()) for events in events_count.values())
         for date, events in events_count.items():
             for event in events:

@@ -67,9 +67,7 @@ class CustomEventMenu:
         return False
 
     def _create_button_handler(self, option: str) -> Callable[[], None]:
-        def handler() -> None:
-            self._add_to_selected(option)
-        return handler
+        return lambda: self._add_to_selected(option)
 
     def _add_to_selected(self, option: str) -> None:
         self._selected_options.append(option)
