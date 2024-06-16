@@ -86,8 +86,8 @@ class GridMatrix:
         self.selected_canvas = self.get_canvas(0, 0)
         self._size_x = 1
         self._size_y = 1
-        self._workspace_window.size_x_combobox.setCurrentIndex(0)
-        self._workspace_window.size_y_combobox.setCurrentIndex(0)
+        self._workspace_window.size_x_comboboxt_GS.setCurrentIndex(0)
+        self._workspace_window.size_y_comboboxt_GS.setCurrentIndex(0)
 
     def get_canvas(self, pos_x: int, pos_y: int) -> MatplotlibCanvas:
         return self._matrix[pos_x][pos_y]

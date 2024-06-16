@@ -159,7 +159,7 @@ class DataStorage:
                     reader = csv.reader(file)
                     self.data_storage._headers = next(reader)
                     self.data_storage._raw_data = [
-                        list(map(str.strip, line)) for line in reader][:15000]
+                        list(map(str.strip, line)) for line in reader][:50000]
 
                 print(f"Data loaded in {timer.stop():.2f} seconds")
                 on_data_loaded()
@@ -180,6 +180,7 @@ class DataStorage:
                 timer.start()
                 self.data_storage._events = self.create_events(
                     self.data_storage._raw_data, self.data_storage._headers)
+                del self.data_storage._raw_data
                 for event in self.data_storage._events:
                     self._json_builder.add_to_json_structure(event.data)
                 print(f"{len(self.data_storage._events)} events created in {

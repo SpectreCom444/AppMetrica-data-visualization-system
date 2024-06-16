@@ -479,6 +479,9 @@ border: 1px solid gray;</string>
                <property name="widgetResizable">
                 <bool>true</bool>
                </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+               </property>
                <widget class="QWidget" name="scrollAreaWidgetContents_VS">
                 <property name="geometry">
                  <rect>
@@ -489,6 +492,9 @@ border: 1px solid gray;</string>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_8">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetMaximumSize</enum>
+                 </property>
                  <item>
                   <layout class="QVBoxLayout" name="filters_layout_VS">
                    <property name="sizeConstraint">
@@ -498,6 +504,12 @@ border: 1px solid gray;</string>
                  </item>
                  <item>
                   <widget class="QPushButton" name="add_filter_button_VS">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="font">
                     <font>
                      <family>MS Shell Dlg 2</family>

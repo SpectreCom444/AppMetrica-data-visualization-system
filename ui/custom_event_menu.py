@@ -41,9 +41,9 @@ class CustomEventMenu:
             self._buttons_list_layout.addWidget(button)
 
     def _create_button(self, text: str, enabled: bool) -> QtWidgets.QPushButton:
-        button: QtWidgets.QPushButton = QtWidgets.QPushButton(text)
+        button: QtWidgets.QPushButton = QtWidgets.QPushButton(str(text))
         button.setEnabled(enabled)
-        button.clicked.connect(self._create_button_handler(text))
+        button.clicked.connect(self._create_button_handler(str(text)))
         return button
 
     def _clear_buttons(self) -> None:

@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMessageBox
 from ui.message import error
 from collections import OrderedDict
 from typing import Callable, Dict, List, Any
+import matplotlib.colors as mcolors
 
 
 class Plotter:
@@ -24,7 +25,22 @@ class Plotter:
         return events_count
 
     def _sort_x_axis(self, events_count: Dict[Any, int]) -> OrderedDict:
-        sorted_items = sorted(events_count.items())
+        def is_number(s: str) -> bool:
+            try:
+                float(s)
+                return True
+            except ValueError:
+                return False
+
+        all_numbers = all(is_number(key) for key in events_count.keys())
+
+        if all_numbers:
+            sorted_items = sorted(events_count.items(),
+                                  key=lambda item: float(item[0]))
+        else:
+            sorted_items = sorted(events_count.items(),
+                                  key=lambda item: str(item[0]))
+
         sorted_keys, sorted_values = zip(*sorted_items)
         return OrderedDict(zip(sorted_keys, sorted_values))
 
@@ -49,14 +65,26 @@ class Plotter:
         ).ax.bar if self.visualization_config.orientation == Orientation.HORIZONTAL else self._get_canvas().ax.barh
         self._plot_chart(x, y, plot_func)
 
+    def get_pastel_colors(self, num_colors):
+        base_colors = list(mcolors.TABLEAU_COLORS.values())
+        pastel_colors = []
+        for base in base_colors:
+            rgb = mcolors.hex2color(base)
+            pastel_rgb = [(x + 1) / 2.0 for x in rgb]
+            pastel_colors.append(pastel_rgb)
+        return pastel_colors[:num_colors]
+
     def plot_pie_chart(self, events_count: Dict[Any, int]) -> None:
         x, y = zip(*self._sort_x_axis(events_count).items())
-        self._get_canvas().ax.pie(y, labels=x, autopct='%1.1f%%')
+        pastel_colors = self.get_pastel_colors(len(x))
+        self._get_canvas().ax.pie(y, labels=x, autopct='%1.1f%%', colors=pastel_colors)
         self._draw_figure()
 
     def plot_ring_chart(self, events_count: Dict[Any, int]) -> None:
         x, y = zip(*self._sort_x_axis(events_count).items())
-        self._get_canvas().ax.pie(y, labels=x, autopct='%1.1f%%', wedgeprops=dict(width=0.65))
+        pastel_colors = self.get_pastel_colors(len(x))
+        self._get_canvas().ax.pie(y, labels=x, autopct='%1.1f%%',
+                                  wedgeprops=dict(width=0.65), colors=pastel_colors)
         self._draw_figure()
 
     def plot_scatter_plot(self, events_count: Dict[Any, int]) -> None:
@@ -84,28 +112,34 @@ class Plotter:
         self._draw_figure()
 
     def plot_histogram_chart_split(self, element: List[Any], event_types: List[str], data: Dict[str, List[int]], x_label: str) -> None:
-        if self.visualization_config.histogram_type == HistogramType.COMPARISON:
-            width = 0.8 / len(event_types)
+        if self.visualization_config.histogram_type == HistogramType.CLUSTERED:
             positions = range(len(element))
-            for i, event in enumerate(event_types):
-                plot_func = self._get_canvas(
-                ).ax.bar if self.visualization_config.orientation == Orientation.HORIZONTAL else self._get_canvas().ax.barh
-                plot_func([p + i * width for p in positions],
-                          data[event], width=width, label=event)
-            ticks_func = self._get_canvas(
-            ).ax.set_xticks if self.visualization_config.orientation == Orientation.HORIZONTAL else self._get_canvas().ax.set_yticks
-            labels_func = self._get_canvas(
-            ).ax.set_xticklabels if self.visualization_config.orientation == Orientation.HORIZONTAL else self._get_canvas().ax.set_yticklabels
-            ticks_func([p + width * (len(event_types) / 2) -
-                       width / 2 for p in positions])
-            labels_func(element)
-        elif self.visualization_config.histogram_type == HistogramType.SUMMATION:
-            bottom = [0] * len(element)
+
+            if self.visualization_config.orientation == Orientation.HORIZONTAL:
+                height = 0.8 / len(event_types)
+                for i, event in enumerate(event_types):
+                    self._get_canvas().ax.barh([p + i * height for p in positions],
+                                               data[event], height=height, label=event)
+                self._get_canvas().ax.set_yticks(
+                    [p + height * (len(event_types) / 2) - height / 2 for p in positions])
+                self._get_canvas().ax.set_yticklabels(element)
+            else:
+                width = 0.8 / len(event_types)
+                for i, event in enumerate(event_types):
+                    self._get_canvas().ax.bar([p + i * width for p in positions],
+                                              data[event], width=width, label=event)
+                self._get_canvas().ax.set_xticks(
+                    [p + width * (len(event_types) / 2) - width / 2 for p in positions])
+                self._get_canvas().ax.set_xticklabels(element)
+
+        elif self.visualization_config.histogram_type == HistogramType.STACKET:
             for event in event_types:
-                plot_func = self._get_canvas(
-                ).ax.bar if self.visualization_config.orientation == Orientation.HORIZONTAL else self._get_canvas().ax.barh
-                plot_func(element, data[event], bottom=bottom, label=event)
-                bottom = [i + j for i, j in zip(bottom, data[event])]
+                if self.visualization_config.orientation == Orientation.HORIZONTAL:
+                    plot_func = self._get_canvas().ax.bar
+                    plot_func(element, data[event], label=event)
+                else:
+                    plot_func = self._get_canvas().ax.barh
+                    plot_func(element, data[event], label=event)
         self._get_canvas().ax.set_ylabel('Counts')
         self._get_canvas().ax.set_xlabel(x_label)
         self._get_canvas().ax.legend()
@@ -150,7 +184,7 @@ class Plotter:
                 {event for events in events_count.values() for event in events})
             data = {event: [events.get(
                 event, 0) for events in events_count.values()] for event in event_types}
-            chart_type = self.visualization_config.selected_chart_type
+            chart_type = self.visualization_config.chart_type
             if chart_type == GraphType.LINE.value:
                 self.plot_line_chart_split(element, event_types, data, x_label)
             elif chart_type == GraphType.SCATTER.value:
@@ -173,7 +207,7 @@ class Plotter:
             self._get_canvas().create_axes()
             if self.visualization_config.type_of_measurement == TypeOfMeasurement.PERCENTED:
                 events_count = self._convert_to_percentage(events_count)
-            chart_type = self.visualization_config.selected_chart_type
+            chart_type = self.visualization_config.chart_type
             if chart_type == GraphType.LINE.value:
                 self.plot_line_chart(events_count)
             elif chart_type == GraphType.HISTOGRAM.value:

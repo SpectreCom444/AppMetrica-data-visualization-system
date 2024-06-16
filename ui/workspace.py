@@ -22,7 +22,7 @@ class WorkspaceWindow(QMainWindow):
         self.data_visualizer = DataVisualizer(
             self.data_storage, self._filter_panel)
         self._grid_matrix = GridMatrix(self)
-        self._custom_event_menu = CustomEventMenu(self)
+        self.custom_event_menu = CustomEventMenu(self)
         self._selected_options: List[str] = []
         self._initialize_ui()
 
@@ -32,6 +32,7 @@ class WorkspaceWindow(QMainWindow):
         self.update_tools()
         self._set_date_selector()
         self.metrics_list_panel.hide()
+        self.loader_linet_GS.hide()
 
     def _create_vizualization_button(self) -> None:
         self._setup_comboboxes()
@@ -87,7 +88,7 @@ class WorkspaceWindow(QMainWindow):
         self.treshold_slider_VS.valueChanged.connect(
             self._slider_value_changed)
         self.selection_metric_button_VS.clicked.connect(
-            self._create_CEM_for_set_metric)
+            self.create_CEM_for_set_metric)
 
     def _add_items_to_combobox(self, combobox: QComboBox, enum_class: any) -> None:
         combobox.addItems([item.value for item in enum_class])
@@ -145,10 +146,10 @@ class WorkspaceWindow(QMainWindow):
             self.data_loader_window.show()
             self.hide()
 
-    def _create_CEM_for_set_metric(self) -> None:
+    def create_CEM_for_set_metric(self) -> None:
         self.visualization_settings_panel.hide()
         self.metrics_list_panel.show()
-        self._custom_event_menu.set_parameters(
+        self.custom_event_menu.set_parameters(
             self._apply_selected_options, self._selected_options)
 
     def _set_date_type(self) -> None:
@@ -196,7 +197,7 @@ class WorkspaceWindow(QMainWindow):
         self.data_visualizer.set_chart_type(
             [graph_type.value for graph_type in GraphType][self.chart_type_combo_box_VS.currentIndex()]
         )
-        self.data_visualizer.set_other_reference(
+        self.data_visualizer.set_treshold_reference(
             self.treshold_slider_VS.value())
         self.data_visualizer.set_selected_data(self._selected_options)
         self.data_visualizer.set_data_time(

@@ -20,12 +20,12 @@ class Counter:
 
     @staticmethod
     def count_split_time(elements: List[Any], visualization_config: VisualizationConfig, filters: Filters, time_division_format: str) -> Dict[str, Dict[str, int]]:
-        counter_map = {
-            DateType.EVENTS: Counter._count_events_split_time,
-            DateType.SESSIONS: Counter._count_sessions_split_time,
-            DateType.USERS: Counter._count_users_split_time
-        }
-        return counter_map[visualization_config.type_data](elements, visualization_config, filters, time_division_format)
+        if visualization_config.type_data == DateType.EVENTS:
+            return Counter._count_events_split_time(elements, {}, visualization_config, filters, time_division_format)
+        elif visualization_config.type_data == DateType.SESSIONS:
+            return Counter._count_sessions_split_time(elements, visualization_config, filters)
+        elif visualization_config.type_data == DateType.USERS:
+            return Counter._count_users_split_time(elements, visualization_config, filters, time_division_format)
 
     @staticmethod
     def _count_sessions(elements: List[Any], visualization_config: VisualizationConfig, filters: Filters) -> Dict[str, int]:
@@ -41,7 +41,7 @@ class Counter:
     def _count_sessions_split_time(elements: List[Any], count: Dict[str, Dict[str, int]], visualization_config: VisualizationConfig, filters: Filters, time_division_format: str) -> Dict[str, Dict[str, int]]:
         for sessions in elements:
             sessions_count = Counter._count_events_split_time(
-                sessions.get_events(), count, visualization_config, filters, time_division_format)
+                sessions.events, count, visualization_config, filters, time_division_format)
             for event_time, events in sessions_count.items():
                 if event_time not in count:
                     count[event_time] = {}
@@ -81,11 +81,12 @@ class Counter:
             if filters.event_verification(event, visualization_config.filters_list):
                 value = Counter._get_event_value(
                     event, visualization_config.selected_data)
-                if isinstance(value, str):
-                    count[value] = count.get(value, 0) + 1
-                else:
+                if isinstance(value, dict):
                     for name in value:
                         count[name] = count.get(name, 0) + 1
+                else:
+                    value = str(value)
+                    count[value] = count.get(value, 0) + 1
         return count
 
     @staticmethod
@@ -98,13 +99,14 @@ class Counter:
                     count[event_time] = {}
                 value = Counter._get_event_value(
                     event, visualization_config.selected_data)
-                if isinstance(value, str):
-                    count[event_time][value] = count[event_time].get(
-                        value, 0) + 1
-                else:
+                if isinstance(value, dict):
                     for name in value:
                         count[event_time][name] = count[event_time].get(
                             name, 0) + 1
+                else:
+                    value = str(value)
+                    count[event_time][value] = count[event_time].get(
+                        value, 0) + 1
         return count
 
     @staticmethod
@@ -125,7 +127,7 @@ class Counter:
         total = sum(data.values())
         other_sum = 0
         keys_to_remove = [key for key, value in data.items() if (
-            value / total) * 100 < other_threshold]
+            value / total) < other_threshold/1000]
 
         for key in keys_to_remove:
             other_sum += data.pop(key)
@@ -146,7 +148,7 @@ class Counter:
                 event_sums[event] = event_sums.get(event, 0) + count
 
         keys_to_remove = [key for key, value in event_sums.items() if (
-            value / total) * 100 < other_threshold]
+            value / total) < other_threshold/1000]
 
         for date, events in data.items():
             other_sum = 0
@@ -170,6 +172,7 @@ class DataVisualizer:
 
     def plot_copy_chart(self, visualization_config: VisualizationConfig, loading: Any) -> None:
         self._visualization_config.copy(visualization_config)
+        print(visualization_config.selected_data)
         self._plotter.visualization_config = self._visualization_config
         self.add_chart(loading)
 
@@ -182,7 +185,7 @@ class DataVisualizer:
         data = self._get_data()
         self._set_filters()
 
-        if self._visualization_config.display_mode == SplitTimeMode.NOSPLIT or SPLIT_TIME_MODE not in graph_parameters[GraphType(self._visualization_config.selected_chart_type)]:
+        if self._visualization_config.display_mode == SplitTimeMode.NOSPLIT or SPLIT_TIME_MODE not in graph_parameters[GraphType(self._visualization_config.chart_type)]:
             events_count = Counter.count(
                 data, self._visualization_config, self._filters)
             if not events_count:
@@ -190,7 +193,7 @@ class DataVisualizer:
                     "Elements that would satisfy the selected filters are 0. It is impossible to build a chart.")
                 return
             events_count = Counter.apply_other_threshold(
-                events_count, self._visualization_config.other_reference)
+                events_count, self._visualization_config.treshold)
             self._visualization_config.canvas.set_visualization_parameters(
                 self._visualization_config)
             self._check_parameter_count(events_count)
@@ -204,9 +207,10 @@ class DataVisualizer:
                     "Elements that would satisfy the selected filters are 0. It is impossible to build a chart.")
                 return
             events_count = Counter.apply_other_threshold_split_time(
-                events_count, self._visualization_config.other_reference)
+                events_count, self._visualization_config.treshold)
             self._visualization_config.canvas.set_visualization_parameters(
                 self._visualization_config)
+            self._check_parameter_count(events_count)
             self._plotter.plot_split(
                 events_count, 'Date' if time_format == "%Y-%m-%d" else 'Hours', loading)
 
@@ -231,8 +235,9 @@ class DataVisualizer:
                 EventFilter(filter.invert, filter.selected_options))
 
     def _check_parameter_count(self, events_count: Dict[str, int]) -> None:
-        if len(events_count.keys()) > 15:
-            if warning_dialog('There are too many parameters in this visualization. The names can be superimposed on each other. Increase the value of the "other" parameter to improve readability.'):
+        total_chars = sum(len(key) for key in events_count.keys())
+        if total_chars > 150:
+            if warning_dialog('There are too many characters in the parameter names of this visualization. The names can be superimposed on each other. Increase the value of the "other" parameter to improve readability.'):
                 return
 
     def _get_time_format(self) -> str:
@@ -241,8 +246,8 @@ class DataVisualizer:
     def set_orientation(self, orientation: str) -> None:
         self._visualization_config.orientation = orientation
 
-    def set_other_reference(self, other_reference: float) -> None:
-        self._visualization_config.other_reference = other_reference
+    def set_treshold_reference(self, treshold: float) -> None:
+        self._visualization_config.treshold = treshold
 
     def set_selected_data(self, selected_data: List[str]) -> None:
         self._visualization_config.selected_data = selected_data
@@ -250,8 +255,8 @@ class DataVisualizer:
     def set_canvas(self, canvas: Any) -> None:
         self._visualization_config.canvas = canvas
 
-    def set_chart_type(self, selected_chart_type: str) -> None:
-        self._visualization_config.selected_chart_type = selected_chart_type
+    def set_chart_type(self, chart_type: str) -> None:
+        self._visualization_config.chart_type = chart_type
 
     def set_display_mode(self, display_mode: SplitTimeMode) -> None:
         self._visualization_config.display_mode = display_mode
