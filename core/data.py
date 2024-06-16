@@ -159,7 +159,7 @@ class DataStorage:
                     reader = csv.reader(file)
                     self.data_storage._headers = next(reader)
                     self.data_storage._raw_data = [
-                        list(map(str.strip, line)) for line in reader][:50000]
+                        list(map(str.strip, line)) for line in reader]
 
                 print(f"Data loaded in {timer.stop():.2f} seconds")
                 on_data_loaded()
