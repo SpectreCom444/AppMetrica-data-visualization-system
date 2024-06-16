@@ -1,0 +1,1 @@
+pyinstaller --onefile --name "AppMetrica-data-visualization-system" --add-data "config;config" --add-data "core;core" --add-data "ui;ui" --add-data "visualization;visualization" main.py

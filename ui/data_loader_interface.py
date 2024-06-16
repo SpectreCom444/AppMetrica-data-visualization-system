@@ -28,18 +28,15 @@ class DataLoaderWindow(QMainWindow):
         try:
             self.data_storage.load_data(path, self._load_data_callback)
             if EVENT_DATETIME not in self.data_storage.headers:
-                error(f"The parameter {
-                      EVENT_DATETIME} was not found. Add it when exporting data and try again.")
+                error(f"The parameter {EVENT_DATETIME} was not found. Add it when exporting data and try again.")
                 return
             self.data_storage.process_events(self._create_events_callback)
             if SESSION_ID not in self.data_storage.headers:
-                error(f"The parameter {
-                      SESSION_ID} was not found. Add it when exporting data and try again.")
+                error(f"The parameter {SESSION_ID} was not found. Add it when exporting data and try again.")
                 return
             self.data_storage.process_sessions(self._create_sessions_callback)
             if DEVICE_ID not in self.data_storage.headers:
-                error(f"The parameter {
-                      DEVICE_ID} was not found. Add it when exporting data and try again.")
+                error(f"The parameter {DEVICE_ID} was not found. Add it when exporting data and try again.")
                 return
             self.data_storage.process_users(self._create_users_callback)
             self._show_workspace_window()
