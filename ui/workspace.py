@@ -53,7 +53,7 @@ class WorkspaceWindow(QMainWindow):
         self._add_items_to_combobox(
             self.split_time_mod_combo_box_VS, SplitTimeMode)
         self.split_time_mod_combo_box_VS.currentTextChanged.connect(
-            self._set_display_mode)
+            self._set_split_time_mode)
 
         self._add_items_to_combobox(
             self.histogram_type_combo_box_VS, HistogramType)
@@ -156,8 +156,8 @@ class WorkspaceWindow(QMainWindow):
         self.data_visualizer.set_type_data(
             DateType(self.data_type_combo_box_VS.currentText()))
 
-    def _set_display_mode(self) -> None:
-        self.data_visualizer.set_display_mode(SplitTimeMode(
+    def _set_split_time_mode(self) -> None:
+        self.data_visualizer.set_split_time_mode(SplitTimeMode(
             self.split_time_mod_combo_box_VS.currentText()))
 
     def _set_histogram_type(self) -> None:
@@ -195,11 +195,11 @@ class WorkspaceWindow(QMainWindow):
     def data_for_chart(self) -> None:
         self.data_visualizer.set_canvas(self._grid_matrix.selected_canvas)
         self.data_visualizer.set_chart_type(
-            [graph_type.value for graph_type in GraphType][self.chart_type_combo_box_VS.currentIndex()]
+            [chart_type.value for chart_type in GraphType][self.chart_type_combo_box_VS.currentIndex()]
         )
         self.data_visualizer.set_treshold_reference(
             self.treshold_slider_VS.value())
-        self.data_visualizer.set_selected_data(self._selected_options)
+        self.data_visualizer.set_selected_options(self._selected_options)
         self.data_visualizer.set_data_time(
             self.start_date_combo_box_VS.date(), self.end_date_combo_box_VS.date())
         self.data_visualizer.add_chart(self.loading)

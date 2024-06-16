@@ -80,7 +80,7 @@ class Counter:
         for event in elements:
             if filters.event_verification(event, visualization_config.filters_list):
                 value = Counter._get_event_value(
-                    event, visualization_config.selected_data)
+                    event, visualization_config.selected_options)
                 if isinstance(value, dict):
                     for name in value:
                         count[name] = count.get(name, 0) + 1
@@ -98,7 +98,7 @@ class Counter:
                 if event_time not in count:
                     count[event_time] = {}
                 value = Counter._get_event_value(
-                    event, visualization_config.selected_data)
+                    event, visualization_config.selected_options)
                 if isinstance(value, dict):
                     for name in value:
                         count[event_time][name] = count[event_time].get(
@@ -116,7 +116,10 @@ class Counter:
                 if len(metric_names) > 1:
                     return check_event(tree[metric_names[0]], metric_names[1:])
                 else:
-                    return tree.get(metric_names[0], {})
+                    if isinstance(tree, str):
+                        return tree
+                    else:
+                        return tree.get(metric_names[0], {})
             else:
                 return {}
 
@@ -172,20 +175,19 @@ class DataVisualizer:
 
     def plot_copy_chart(self, visualization_config: VisualizationConfig, loading: Any) -> None:
         self._visualization_config.copy(visualization_config)
-        print(visualization_config.selected_data)
         self._plotter.visualization_config = self._visualization_config
         self.add_chart(loading)
 
     def add_chart(self, loading: Any) -> None:
         loading("data processed...")
-        if not self._visualization_config.selected_data:
+        if not self._visualization_config.selected_options:
             error("The metric for visualization is not selected.")
             return
 
         data = self._get_data()
         self._set_filters()
 
-        if self._visualization_config.display_mode == SplitTimeMode.NOSPLIT or SPLIT_TIME_MODE not in graph_parameters[GraphType(self._visualization_config.chart_type)]:
+        if self._visualization_config.split_time_mode == SplitTimeMode.NOSPLIT or SPLIT_TIME_MODE not in graph_parameters[GraphType(self._visualization_config.chart_type)]:
             events_count = Counter.count(
                 data, self._visualization_config, self._filters)
             if not events_count:
@@ -241,7 +243,7 @@ class DataVisualizer:
                 return
 
     def _get_time_format(self) -> str:
-        return "%Y-%m-%d" if self._visualization_config.display_mode == SplitTimeMode.SPLITBYDAY else "%Y-%m-%d %H"
+        return "%Y-%m-%d" if self._visualization_config.split_time_mode == SplitTimeMode.SPLITBYDAY else "%Y-%m-%d %H"
 
     def set_orientation(self, orientation: str) -> None:
         self._visualization_config.orientation = orientation
@@ -249,8 +251,8 @@ class DataVisualizer:
     def set_treshold_reference(self, treshold: float) -> None:
         self._visualization_config.treshold = treshold
 
-    def set_selected_data(self, selected_data: List[str]) -> None:
-        self._visualization_config.selected_data = selected_data
+    def set_selected_options(self, selected_options: List[str]) -> None:
+        self._visualization_config.selected_options = selected_options
 
     def set_canvas(self, canvas: Any) -> None:
         self._visualization_config.canvas = canvas
@@ -258,8 +260,8 @@ class DataVisualizer:
     def set_chart_type(self, chart_type: str) -> None:
         self._visualization_config.chart_type = chart_type
 
-    def set_display_mode(self, display_mode: SplitTimeMode) -> None:
-        self._visualization_config.display_mode = display_mode
+    def set_split_time_mode(self, split_time_mode: SplitTimeMode) -> None:
+        self._visualization_config.split_time_mode = split_time_mode
 
     def set_histogram_type(self, histogram_type: str) -> None:
         self._visualization_config.histogram_type = histogram_type
