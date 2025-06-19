@@ -155,7 +155,7 @@ class DataStorage:
 
                 timer = self.data_storage._Timer()
                 timer.start()
-                with open(self.file_path, mode='r', encoding='utf-8') as file:
+                with open(self.file_path, mode='r', encoding='utf-8-sig') as file:
                     reader = csv.reader(file)
                     self.data_storage._headers = next(reader)
                     self.data_storage._raw_data = [

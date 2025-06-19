@@ -34,6 +34,7 @@ class Plotter:
 
         all_numbers = all(is_number(key) for key in events_count.keys())
 
+        print(all_numbers)
         if all_numbers:
             sorted_items = sorted(events_count.items(),
                                   key=lambda item: float(item[0]))
