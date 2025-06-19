@@ -89,7 +89,7 @@ class DataStorage:
                 timer.start()
                 self.data_storage._sessions = self.create_sessions(
                     self.data_storage.events)
-                print(f"{len(self.data_storage.sessions)} sessions created in {time_elapsed} seconds.")
+                print(f"{len(self.data_storage.sessions)} sessions created in {timer.stop():.2f} seconds.")
 
                 on_sessions_processed()
             except Exception as err:
