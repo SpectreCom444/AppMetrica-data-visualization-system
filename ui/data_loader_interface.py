@@ -20,7 +20,6 @@ class DataLoaderWindow(QMainWindow):
         self.data_storage = data_storage
 
         self.drop_frame.mousePressEvent = self._open_file_dialog
-        self.showMaximized()
 
     def _uploading_and_processing(self, path: str) -> None:
         self.indicator.show()
