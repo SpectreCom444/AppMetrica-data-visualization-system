@@ -25,25 +25,28 @@ class Plotter:
         return events_count
 
     def _sort_x_axis(self, events_count: Dict[Any, int]) -> OrderedDict:
-        def is_number(s: str) -> bool:
+        def is_number(s: Any) -> bool:
             try:
                 float(s)
                 return True
-            except ValueError:
+            except (ValueError, TypeError):
                 return False
+        numeric_items = []
+        string_items = []
+        for key, value in events_count.items():
+            if is_number(key):
+                numeric_items.append((float(key), key, value))  
+            else:
+                string_items.append((str(key), value))
 
-        all_numbers = all(is_number(key) for key in events_count.keys())
-
-        print(all_numbers)
-        if all_numbers:
-            sorted_items = sorted(events_count.items(),
-                                  key=lambda item: float(item[0]))
-        else:
-            sorted_items = sorted(events_count.items(),
-                                  key=lambda item: str(item[0]))
-
-        sorted_keys, sorted_values = zip(*sorted_items)
-        return OrderedDict(zip(sorted_keys, sorted_values))
+        numeric_items.sort(key=lambda x: x[0])
+        string_items.sort(key=lambda x: x[0])
+        result = OrderedDict()
+        for _, key, value in numeric_items:
+            result[key] = value
+        for key, value in string_items:
+            result[key] = value
+        return result
 
     def _draw_figure(self) -> None:
         self._get_canvas().ax.set_title(" → ".join(
